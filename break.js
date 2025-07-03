@@ -2,32 +2,22 @@
 import { BreakActor } from "./module/actors/actor.js";
 import { BreakItem } from "./module/items/item.js";
 import { preloadHandlebarsTemplates } from "./module/templates.js";
-import { createbreakMacro } from "./module/macro.js";
 import { BreakToken, BreakTokenDocument } from "./module/token.js";
 import { BreakActorSheet } from "./module/actors/actor-sheet.js";
 import { BreakAdversarySheet } from "./module/actors/adversary-sheet.js";
+import {ArmorTypeSettingsForm} from "./module/system/armor-type-settings.js";
+import {WeaponTypeSettingsForm} from "./module/system/weapon-type-settings.js";
+import {ShieldTypeSettingsForm} from "./module/system/shield-type-settings.js";
 ////// EQUIPMENT
 import { BreakWeaponSheet } from "./module/items/weapon-sheet.js";
 import { BreakArmorSheet } from "./module/items/armor-sheet.js";
 import { BreakShieldSheet } from "./module/items/shield-sheet.js";
-import { BreakWeaponTypeSheet } from "./module/items/weapon-type-sheet.js";
-import { BreakArmorTypeSheet } from "./module/items/armor-type-sheet.js";
-import { BreakShieldTypeSheet } from "./module/items/shield-type-sheet.js";
 ////// INVENTORY
 import { BreakInjurySheet } from "./module/items/injury-sheet.js";
 import { ActiveEffectsPanel } from "./module/apps/active-effects-list.js";
 import { BreakGiftSheet } from "./module/items/gift-sheet.js";
-import { BreakBookSheet } from "./module/items/book-sheet.js";
-import { BreakCombustibleSheet } from "./module/items/combustible-sheet.js";
-import { BreakConsumableSheet } from "./module/items/consumable-sheet.js";
-import { BreakCuriositySheet } from "./module/items/curiosity-sheet.js";
-import { BreakOtherworldSheet } from "./module/items/otherworld-sheet.js";
-import { BreakMiscellaneousSheet } from "./module/items/miscellaneous-sheet.js";
 import { BreakOutfitSheet } from "./module/items/outfit-sheet.js";
 import { BreakAccessorySheet } from "./module/items/accessory-sheet.js";
-import { BreakKitSheet } from "./module/items/kit-sheet.js";
-import { BreakWayfindingSheet } from "./module/items/wayfinding-sheet.js";
-import { BreakIlluminationSheet } from "./module/items/illumination-sheet.js";
 ////// STATUS
 import { BreakCallingSheet } from "./module/items/calling-sheet.js";
 import { BreakSpeciesSheet } from "./module/items/species-sheet.js";
@@ -46,8 +36,6 @@ import { BreakAdvancementSheet } from "./module/items/advancement-sheet.js";
  * Init hook.
  */
 Hooks.once("init", async function() {
-  console.log(`Initializing BREAK!! System`);
-
   /**
    * Set an initiative formula for the system. This will be updated later.
    * @type {String}
@@ -67,7 +55,6 @@ Hooks.once("init", async function() {
 
   game.break = {
     BreakActor,
-    createbreakMacro,
     activeEffectPanel: new ActiveEffectsPanel()
   };
 
@@ -76,6 +63,337 @@ Hooks.once("init", async function() {
   CONFIG.Item.documentClass = BreakItem;
   CONFIG.Token.documentClass = BreakTokenDocument;
   CONFIG.Token.objectClass = BreakToken;
+  CONFIG.BREAK = CONFIG.BREAK || {};
+  CONFIG.BREAK.armorTypes = {
+    naked: {
+      label: "Naked",
+      defense: 0,
+      speedLimit: 3,
+      slots: 1,
+      value: {
+        gems: 0,
+        coins: 0,
+        stones: 0
+      }
+    },
+    light: {
+      label: "Light",
+      defense: 0,
+      speedLimit: 3,
+      slots: 1,
+      value: {
+        gems: 0,
+        coins: 0,
+        stones: 0
+      }
+    },
+    medium: {
+      label: "Medium",
+      defense: 0,
+      speedLimit: 3,
+      slots: 1,
+      value: {
+        gems: 0,
+        coins: 0,
+        stones: 0
+      }
+    },
+    heavy: {
+      label: "Heavy",
+      defense: 0,
+      speedLimit: 3,
+      slots: 1,
+      value: {
+        gems: 0,
+        coins: 0,
+        stones: 0
+      }
+    },
+    superheavy: {
+      label: "Superheavy",
+      defense: 0,
+      speedLimit: 3,
+      slots: 1,
+      value: {
+        gems: 0,
+        coins: 0,
+        stones: 0
+      }
+    }
+  };
+
+  game.settings.register("break", "armorTypes", {
+    name: "Armor Types",
+    scope: "world",
+    config: false,
+    type: Object,
+    default: CONFIG.BREAK.armorTypes
+  });
+
+  game.settings.registerMenu("break", "armorTypeMenu", {
+    name: "CONFIG.ArmorTypes",
+    label: "CONFIG.ArmorTypeConfig",
+    hint: "CONFIG.ArmorTypeConfigHint",
+    icon: "fas fa-helmet-battle",
+    type: ArmorTypeSettingsForm,
+    restricted: true
+  });
+
+  CONFIG.BREAK.weaponTypes = {
+    unarmed: {
+      label: "Unarmed",
+      ranged: false,
+      extraDamage: 20,
+      loadingTime: 1,
+      hands: 1,
+      slots: 0,
+      range: 0,
+      abilities: [],
+      value: {
+        gems: 0,
+        coins: 0,
+        stones: 0
+      }
+    },
+    standard: {
+      label: "Standard",
+      ranged: false,
+      extraDamage: 20,
+      loadingTime: 1,
+      hands: 1,
+      slots: 0,
+      range: 0,
+      abilities: [],
+      value: {
+        gems: 0,
+        coins: 0,
+        stones: 0
+      }
+    },
+    concealed: {
+      label: "Concealed",
+      ranged: false,
+      extraDamage: 20,
+      loadingTime: 1,
+      hands: 1,
+      slots: 0,
+      range: 0,
+      abilities: [],
+      value: {
+        gems: 0,
+        coins: 0,
+        stones: 0
+      }
+    },
+    quick: {
+      label: "Quick",
+      ranged: false,
+      extraDamage: 20,
+      loadingTime: 1,
+      hands: 1,
+      slots: 0,
+      range: 0,
+      abilities: [],
+      value: {
+        gems: 0,
+        coins: 0,
+        stones: 0
+      }
+    },
+    master: {
+      label: "Master",
+      ranged: false,
+      extraDamage: 20,
+      loadingTime: 1,
+      hands: 1,
+      slots: 0,
+      range: 0,
+      abilities: [],
+      value: {
+        gems: 0,
+        coins: 0,
+        stones: 0
+      }
+    },
+    mighty: {
+      label: "Mighty",
+      ranged: false,
+      extraDamage: 20,
+      loadingTime: 1,
+      hands: 1,
+      slots: 0,
+      range: 0,
+      abilities: [],
+      value: {
+        gems: 0,
+        coins: 0,
+        stones: 0
+      }
+    },
+    arc: {
+      label: "Arc",
+      ranged: false,
+      extraDamage: 20,
+      loadingTime: 1,
+      hands: 1,
+      slots: 0,
+      range: 0,
+      abilities: [],
+      value: {
+        gems: 0,
+        coins: 0,
+        stones: 0
+      }
+    },
+    lash: {
+      label: "Lash",
+      ranged: false,
+      extraDamage: 20,
+      loadingTime: 1,
+      hands: 1,
+      slots: 0,
+      range: 0,
+      abilities: [],
+      value: {
+        gems: 0,
+        coins: 0,
+        stones: 0
+      }
+    },
+    thrown: {
+      label: "Thrown",
+      ranged: false,
+      extraDamage: 20,
+      loadingTime: 1,
+      hands: 1,
+      slots: 0,
+      range: 0,
+      abilities: [],
+      value: {
+        gems: 0,
+        coins: 0,
+        stones: 0
+      }
+    },
+    drawn: {
+      label: "Drawn",
+      ranged: false,
+      extraDamage: 20,
+      loadingTime: 1,
+      hands: 1,
+      slots: 0,
+      range: 0,
+      abilities: [],
+      value: {
+        gems: 0,
+        coins: 0,
+        stones: 0
+      }
+    },
+    mechanicalSmall: {
+      label: "Mechanical (Small)",
+      ranged: false,
+      extraDamage: 20,
+      loadingTime: 1,
+      hands: 1,
+      slots: 0,
+      range: 0,
+      abilities: [],
+      value: {
+        gems: 0,
+        coins: 0,
+        stones: 0
+      }
+    },
+    mechanicalLarge: {
+      label: "Mechanical (Large)",
+      ranged: false,
+      extraDamage: 20,
+      loadingTime: 1,
+      hands: 1,
+      slots: 0,
+      range: 0,
+      abilities: [],
+      value: {
+        gems: 0,
+        coins: 0,
+        stones: 0
+      }
+    }
+  };
+
+  game.settings.register("break", "weaponTypes", {
+    name: "Weapon Types",
+    scope: "world",
+    config: false,
+    type: Object,
+    default: CONFIG.BREAK.weaponTypes
+  });
+
+  game.settings.registerMenu("break", "weaponTypeMenu", {
+    name: "CONFIG.WeaponTypes",
+    label: "CONFIG.WeaponTypeConfig",
+    hint: "CONFIG.WeaponTypeConfigHint",
+    icon: "fas fa-sword",
+    type: WeaponTypeSettingsForm,
+    restricted: true
+  });
+
+  CONFIG.BREAK.shieldTypes = {
+    small: {
+      label: "Small",
+      defense: 0,
+      slots: 1,
+      speedPenalty: 0,
+      hands: 0,
+      value: {
+        gems: 0,
+        coins: 0,
+        stones: 0
+      }
+    },
+    light: {
+      label: "Standard",
+      defense: 0,
+      slots: 1,
+      speedPenalty: 0,
+      hands: 0,
+      value: {
+        gems: 0,
+        coins: 0,
+        stones: 0
+      }
+    },
+    large: {
+      label: "Large",
+      defense: 0,
+      slots: 1,
+      speedPenalty: 0,
+      hands: 0,
+      value: {
+        gems: 0,
+        coins: 0,
+        stones: 0
+      }
+    }
+  };
+
+  game.settings.register("break", "shieldTypes", {
+    name: "Shield Types",
+    scope: "world",
+    config: false,
+    type: Object,
+    default: CONFIG.BREAK.shieldTypes
+  });
+
+  game.settings.registerMenu("break", "shieldTypeMenu", {
+    name: "CONFIG.ShieldTypes",
+    label: "CONFIG.ShieldTypeConfig",
+    hint: "CONFIG.ShieldTypeConfigHint",
+    icon: "fas fa-shield-alt",
+    type: ShieldTypeSettingsForm,
+    restricted: true
+  });
 
   // Register sheet application classes
   Actors.unregisterSheet("core", foundry.applications.sheets.ActorSheetV2);
@@ -86,22 +404,10 @@ Hooks.once("init", async function() {
   Items.registerSheet("break", BreakWeaponSheet, {types:['weapon'], makeDefault: true });
   Items.registerSheet("break", BreakArmorSheet, {types:['armor'], makeDefault: true });
   Items.registerSheet("break", BreakShieldSheet, { types: ['shield'], makeDefault: true });
-  Items.registerSheet("break", BreakWeaponTypeSheet, {types:['weapon-type'], makeDefault: true });
-  Items.registerSheet("break", BreakArmorTypeSheet, {types:['armor-type'], makeDefault: true });
-  Items.registerSheet("break", BreakShieldTypeSheet, {types:['shield-type'], makeDefault: true });
 /////// INVENTORY
   Items.registerSheet("break", BreakGiftSheet, { types: ['gift'], makeDefault: true });
-  Items.registerSheet("break", BreakBookSheet, { types: ['book'], makeDefault: true });
-  Items.registerSheet("break", BreakCombustibleSheet, { types: ['combustible'], makeDefault: true });
-  Items.registerSheet("break", BreakConsumableSheet, { types: ['consumable'], makeDefault: true });
-  Items.registerSheet("break", BreakCuriositySheet, { types: ['curiosity'], makeDefault: true });
-  Items.registerSheet("break", BreakOtherworldSheet, { types: ['otherworld'], makeDefault: true });
-  Items.registerSheet("break", BreakMiscellaneousSheet, { types: ['miscellaneous'], makeDefault: true });
   Items.registerSheet("break", BreakOutfitSheet, { types: ['outfit'], makeDefault: true });
   Items.registerSheet("break", BreakAccessorySheet, { types: ['accessory'], makeDefault: true });
-  Items.registerSheet("break", BreakKitSheet, { types: ['kit'], makeDefault: true });
-  Items.registerSheet("break", BreakWayfindingSheet, { types: ['wayfinding'], makeDefault: true });
-  Items.registerSheet("break", BreakIlluminationSheet, { types: ['illumination'], makeDefault: true });
 /////// STATUS
   Items.registerSheet("break", BreakInjurySheet, {types:['injury'], makeDefault: true });
   Items.registerSheet("break", BreakCallingSheet, {types:['calling'], makeDefault: true });
@@ -112,45 +418,6 @@ Hooks.once("init", async function() {
   Items.registerSheet("break", BreakQuirkSheet, { types: ['quirk'], makeDefault: true });
   Items.registerSheet("break", BreakAbilitySheet, {types:['ability'], makeDefault: true });
   Items.registerSheet("break", BreakAdvancementSheet, {types:['advancement'], makeDefault: true });
-
-  // Register system settings
-  game.settings.register("break", "macroShorthand", {
-    name: "SETTINGS.SimpleMacroShorthandN",
-    hint: "SETTINGS.SimpleMacroShorthandL",
-    scope: "world",
-    type: Boolean,
-    default: true,
-    config: true
-  });
-
-  // Register initiative setting.
-  game.settings.register("break", "initFormula", {
-    name: "SETTINGS.SimpleInitFormulaN",
-    hint: "SETTINGS.SimpleInitFormulaL",
-    scope: "world",
-    type: String,
-    default: "1d20",
-    config: true,
-    onChange: formula => _breakUpdateInit(formula, true)
-  });
-
-  // Retrieve and assign the initiative formula setting.
-  const initFormula = game.settings.get("break", "initFormula");
-  _breakUpdateInit(initFormula);
-
-  /**
-   * Update the initiative formula.
-   * @param {string} formula - Dice formula to evaluate.
-   * @param {boolean} notify - Whether or not to post nofications.
-   */
-  function _breakUpdateInit(formula, notify = false) {
-    const isValid = Roll.validate(formula);
-    if ( !isValid ) {
-      if ( notify ) ui.notifications.error(`${game.i18n.localize("SIMPLE.NotifyInitFormulaInvalid")}: ${formula}`);
-      return;
-    }
-    CONFIG.Combat.initiative.formula = formula;
-  }
 
   /**
    * Slugify a string.
@@ -198,82 +465,18 @@ Hooks.once("init", async function() {
     return options.inverse(this);       
   });
 
+  Handlebars.registerHelper('times', function(n, block) {
+    let accum = '';
+    for (let i = 0; i < n; ++i) {
+      accum += block.fn(i);
+    }
+    return accum;
+  });
+
   // Preload template partials
   await preloadHandlebarsTemplates();
 });
 
-/**
- * Macrobar hook.
- */
-Hooks.on("hotbarDrop", (bar, data, slot) => createbreakMacro(data, slot));
-
-/**
- * Adds the actor template context menu.
- */
-Hooks.on("getActorDirectoryEntryContext", (html, options) => {
-
-  // Define an actor as a template.
-  options.push({
-    name: game.i18n.localize("SIMPLE.DefineTemplate"),
-    icon: '<i class="fas fa-stamp"></i>',
-    condition: li => {
-      const actor = game.actors.get(li.data("documentId"));
-      return !actor.isTemplate;
-    },
-    callback: li => {
-      const actor = game.actors.get(li.data("documentId"));
-      actor.setFlag("break", "isTemplate", true);
-    }
-  });
-
-  // Undefine an actor as a template.
-  options.push({
-    name: game.i18n.localize("SIMPLE.UnsetTemplate"),
-    icon: '<i class="fas fa-times"></i>',
-    condition: li => {
-      const actor = game.actors.get(li.data("documentId"));
-      return actor.isTemplate;
-    },
-    callback: li => {
-      const actor = game.actors.get(li.data("documentId"));
-      actor.setFlag("break", "isTemplate", false);
-    }
-  });
-});
-
-/**
- * Adds the item template context menu.
- */
-Hooks.on("getItemDirectoryEntryContext", (html, options) => {
-
-  // Define an item as a template.
-  options.push({
-    name: game.i18n.localize("SIMPLE.DefineTemplate"),
-    icon: '<i class="fas fa-stamp"></i>',
-    condition: li => {
-      const item = game.items.get(li.data("documentId"));
-      return !item.isTemplate;
-    },
-    callback: li => {
-      const item = game.items.get(li.data("documentId"));
-      item.setFlag("break", "isTemplate", true);
-    }
-  });
-
-  // Undefine an item as a template.
-  options.push({
-    name: game.i18n.localize("SIMPLE.UnsetTemplate"),
-    icon: '<i class="fas fa-times"></i>',
-    condition: li => {
-      const item = game.items.get(li.data("documentId"));
-      return item.isTemplate;
-    },
-    callback: li => {
-      const item = game.items.get(li.data("documentId"));
-      item.setFlag("break", "isTemplate", false);
-    }
-  });
-});
 
 Hooks.once('canvasInit', (canvas) => {
   game.break.activeEffectPanel.render(true);
@@ -287,9 +490,7 @@ Hooks.once('canvasInit', (canvas) => {
       const actor = dropTarget?.actor;
       if(actor && item.type == "injury") {
         item.effects.forEach(async (effect) => {
-          console.log(ActiveEffect);
           const newEffect = ActiveEffect.create({...effect}, {parent: actor});
-          console.log(newEffect)
         });
       }
     }

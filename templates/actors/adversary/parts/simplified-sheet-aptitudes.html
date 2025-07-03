@@ -3,8 +3,8 @@
     {{#each actor.system.aptitudes as |attr key|}}
     <div class="aptitude-container">
         <div style="display:flex;">
-            <div class="aptitude-value-circle clickable" data-id="{{key}}">
-                <div class="aptitude-value-inner-circle">
+            <div class="aptitude-value-circle clickable" data-action="rollAptitude">
+                <div class="aptitude-value-inner-circle" data-id="{{key}}">
                     <p class="aptitude-value">{{sum attr.value attr.bon attr.trait}}</p>
                 </div>
             </div>

@@ -1,0 +1,76 @@
+<div style="width:100%; display:grid; grid-template-columns: repeat(10, 1fr); row-gap:4px">
+    <div class="advancement-grid" style="grid-column: 1; grid-row: 1;">
+        <label style="text-transform: uppercase;">{{localize "BREAK.Rank"}}</label>
+    </div>
+    <div class="advancement-grid" style="grid-column: 2; grid-row: 1;">
+        <label style="text-transform: uppercase;">{{localize "BREAK.Attack"}}</label>
+    </div>
+    <div class="advancement-grid" style="grid-column: 3; grid-row: 1;">
+        <label style="text-transform: uppercase;">{{localize "BREAK.Hearts"}}</label>
+    </div>
+    <div class="advancement-grid" style="width: 250px; grid-column: 4 / 8; grid-row: 1;">
+        <label style="text-transform: uppercase;">{{localize "BREAK.Aptitudes"}}</label>
+    </div>
+    <div class="advancement-grid" style="border-right: none; grid-column: 9; grid-row: 1;">
+        <label style="text-transform: uppercase;">{{localize "BREAK.XP"}}</label>
+    </div>
+
+    <div class="advancement-grid" style="grid-column: 1; grid-row: 2;">
+        <i class="fa-solid fa-shield" style="margin: 0px;"></i>
+    </div>
+    <div class="advancement-grid" style="grid-column: 2; grid-row: 2;">
+        <i class="fa-solid fa-sword" style="margin: 0px;"></i>
+    </div>
+    <div class="advancement-grid" style="grid-column: 3; grid-row: 2;">
+        <i class="fa-solid fa-heart" style="margin: 0px;"></i>
+    </div>
+    <div class="advancement-grid" style="grid-column: 4; grid-row: 2;">
+        <label style="text-transform: uppercase;">{{localize "BREAK.APTITUDE.Might"}}</label>
+    </div>
+    <div class="advancement-grid" style="grid-column: 5; grid-row: 2;">
+        <label style="text-transform: uppercase;">{{localize "BREAK.APTITUDE.DeftnessShort"}}</label>
+    </div>
+    <div class="advancement-grid" style="grid-column: 6; grid-row: 2;">
+        <label style="text-transform: uppercase;">{{localize "BREAK.APTITUDE.Grit"}}</label>
+    </div>
+    <div class="advancement-grid" style="grid-column: 7; grid-row: 2;">
+        <label style="text-transform: uppercase;">{{localize "BREAK.APTITUDE.Insight"}}</label>
+    </div>
+    <div class="advancement-grid" style="grid-column: 8; grid-row: 2;">
+        <label style="text-transform: uppercase;">{{localize "BREAK.APTITUDE.Aura"}}</label>
+    </div>
+
+    {{#each advancementTable}}
+        <div class="advancement-grid" style="grid-column: 1; grid-row: {{sum @index 3 0}};">
+            <label>{{this.rank}}</label>
+        </div>
+        <div class="advancement-grid" style="grid-column: 2; grid-row: {{sum @index 3 0}};">
+            <input name="attack" class="advancement-input" id="attack-{{@index}}" type="number" min="0" step="1" value="{{this.attack}}" style="width: 30px; text-align: right;">
+        </div>
+        <div class="advancement-grid" style="grid-column: 3; grid-row: {{sum @index 3 0}};">
+            <input name="hearts" class="advancement-input" id="hearts-{{@index}}" type="number" min="0" step="1" value="{{this.hearts}}" style="width: 30px; text-align: right;">
+        </div>
+        <div class="advancement-grid" style="grid-column: 4; grid-row: {{sum @index 3 0}};">
+            <input name="might" class="advancement-input" id="might-{{@index}}" type="number" min="0" step="1" value="{{this.might}}" style="width: 30px; text-align: right;">
+        </div>
+        <div class="advancement-grid" style="grid-column: 5; grid-row: {{sum @index 3 0}};">
+            <input name="deftness" class="advancement-input" id="deftness-{{@index}}" type="number" min="0" step="1" value="{{this.deftness}}" style="width: 30px; text-align: right;">
+        </div>
+        <div class="advancement-grid" style="grid-column: 6; grid-row: {{sum @index 3 0}};">
+            <input name="grit" class="advancement-input" id="grit-{{@index}}" type="number" min="0" step="1" value="{{this.grit}}" style="width: 30px; text-align: right;">
+        </div>
+        <div class="advancement-grid" style="grid-column: 7; grid-row: {{sum @index 3 0}};">
+            <input name="insight" class="advancement-input" id="insight-{{@index}}" type="number" min="0" step="1" value="{{this.insight}}" style="width: 30px; text-align: right;">
+        </div>
+        <div class="advancement-grid" style="grid-column: 8; grid-row: {{sum @index 3 0}};">
+            <input name="aura" class="advancement-input" id="aura-{{@index}}" type="number" min="0" step="1" value="{{this.aura}}" style="width: 30px; text-align: right;">
+        </div>
+        <div class="advancement-grid" style="grid-column: 9; grid-row: {{sum @index 3 0}};">
+            <input name="xp" class="advancement-input" id="xp-{{@index}}" type="number" min="0" step="1" value="{{this.xp}}" style="width: 30px; text-align: right;">
+        </div>
+        {{#if @last}}
+            <a class="remove-rank" style="grid-column: 10; grid-row: {{sum @index 3 0}};margin-top: auto; margin-bottom: auto; width:10.5px;" data-index="{{@index}}"><i class="fa-regular fa-xmark"></i></a>
+        {{/if}}
+    {{/each}}
+</div>
+<a class="add-rank" style="margin-left: auto;"><i class="fa-regular fa-plus"></i></a>

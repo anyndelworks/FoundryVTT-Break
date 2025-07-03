@@ -32,8 +32,27 @@
       "history": "History",
       "quirk": "Quirk",
       "ability": "Ability",
-      "advancement": "Advancement"
+      "advancement": "Advancement",
+      "item": "Item"
     }
+  },
+
+  "CONFIG": {
+    "ArmorTypes": "Armor types",
+    "ArmorTypeConfig": "Armor type config",
+    "ArmorTypeConfiguration": "Armor type configuration",
+    "ArmorTypeConfigHint": "Define bonuses and abilities for each armor type.",
+    "ArmorTypeSettings": "Armor type settings",
+    "WeaponTypes": "Weapon types",
+    "WeaponTypeConfig": "Weapon type config",
+    "WeaponTypeConfiguration": "Weapon type configuration",
+    "WeaponTypeConfigHint": "Define bonuses and abilities for each weapon type.",
+    "WeaponTypeSettings": "Weapon type settings",
+    "ShieldTypes": "Shield types",
+    "ShieldTypeConfig": "Shield type config",
+    "ShieldTypeConfiguration": "Shield type configuration",
+    "ShieldTypeConfigHint": "Define bonuses and abilities for each shield type.",
+    "ShieldTypeSettings": "Shield type settings"
   },
 
   "BREAK": {
@@ -312,6 +331,7 @@
     "Contest": "Contest",
     "RollType": "Roll type",
     "Attack": "Attack",
+    "Attacks": "Attacks",
     "ActorAttacksActor":"{name} attacks {target}",
     "Slots": "Slots",
     "Details": "Details",
@@ -358,6 +378,9 @@
     "Modifiers": "Modifiers",
     "Equip": "Equip",
     "UnEquip": "Unequip",
-    "PickOrDrag": "Pick or drag"
+    "PickOrDrag": "Pick or drag",
+    "FeatureSelector": "Feature selector",
+    "Hands": "Hands",
+    "FreeHand": "Free hand"
   }
 }

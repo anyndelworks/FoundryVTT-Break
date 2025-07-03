@@ -101,25 +101,12 @@ export class BreakInjurySheet extends BreakItemSheet {
     const button = event.currentTarget.closest("[data-id]");
     const id = button.dataset.id;
     const effect = this.document.effects.get(id);
-    //ChatMessage.create({ content: `@Effect[${id}]{${effect.name}}` });
   }
 
-  /** @inheritdoc */
-  /*async _onDrop(event) {
-    const data = TextEditor.getDragEventData(event);
-    if(data.type !== "Item") return;
-    const draggedItem = await fromUuid(data.uuid)
-    if(draggedItem.type === "ability" && draggedItem.system.subtype === "weapon") {
-      const abilityArray = this.item.system.abilities ?? [];
-      abilityArray.push(draggedItem.toObject());
-      this.item.update({"system.abilities": abilityArray});
-    }
-  }*/
 
-    async _onAddEffect(event) {
-      event.preventDefault();
-      console.log(this);
-      return ActiveEffect.implementation.create({name: 'New effect'}, {parent: this.item, renderSheet: true});
-    }
+  async _onAddEffect(event) {
+    event.preventDefault();
+    return ActiveEffect.implementation.create({name: 'New effect'}, {parent: this.item, renderSheet: true});
+  }
   
 }

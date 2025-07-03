@@ -1,0 +1,11 @@
+<div class="section-header" style="margin-top:12px;">
+    {{localize "BREAK.Abilities"}}
+</div>
+<div class="ability-list" style="display: flex; flex-wrap: wrap;flex-grow: 0;">
+    {{#each abilities}}
+        <div style="display: flex; margin-bottom: 6px;align-items: center; width: 100%;">
+            <label class="tooltip">{{this.name}}<span class="tooltiptext">{{{this.system.description}}}</span></label>
+            <button class="delete-ability" data-action="deleteAbility" data-id="{{this._id}}" style="margin-left: auto; max-width: 32px; margin-right: 8px;"><i class="fas fa-trash" style="margin: 0px;"></i></button>
+        </div>
+    {{/each}}
+</div>

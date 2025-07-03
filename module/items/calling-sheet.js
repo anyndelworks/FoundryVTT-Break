@@ -106,7 +106,6 @@ export class BreakCallingSheet extends BreakItemSheet {
       event.preventDefault();
       
       const table = this.item.system.advancementTable ?? []
-      console.log(table);
       table.push({
         rank: table.length + 1,
         attack: 0,
@@ -177,7 +176,6 @@ export class BreakCallingSheet extends BreakItemSheet {
             secrets: this.document.isOwner,
             async: true
         });
-        console.log(context.item.system.advancementTable)
         context.advancementTable = context.item.system.advancementTable ?? [];
 
         context.startingAbilities = context.item.system.startingAbilities ?? [];
@@ -202,7 +200,6 @@ export class BreakCallingSheet extends BreakItemSheet {
         context.hasMeleeAllowances = context.meleeAllowances.length > 0;
         context.hasMissileAllowances = context.missileAllowances.length > 0;
 
-        console.log("DEBUG CONTEXT:" + JSON.stringify(context, null, 2));
         return context;
     }
 

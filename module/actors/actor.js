@@ -94,9 +94,9 @@ export class BreakActor extends Actor {
     }).render(true);
   }
 
-  async rollAttack(bonus, extraDamage) {
+  async rollAttack(bonus, extraDamage, weaponName = "") {
     const attack = +this.system.attack.value + +this.system.attack.bon + +bonus;
-    let flavor = game.i18n.format("BREAK.Attack");
+    let flavor = game.i18n.format("BREAK.Attacks");
     new Dialog({
       title: "Roll attack",
       content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-dialog.hbs",{bonuses: RollBonuses}),
@@ -110,6 +110,9 @@ export class BreakActor extends Actor {
             if(target && target.actor.system.defense != null) {
               targetValue = target.actor.system.defense.value + target.actor.system.defense.bon;
               flavor = game.i18n.format("BREAK.ActorAttacksActor", {name: this.name, target: target.document.name});
+            }
+            if(weaponName) {
+              flavor = `${flavor} with ${weaponName}`;
             }
             return roll(flavor, RollType.ATTACK, targetValue, form.edge.value, form.bonus.value, form.customBonus.value, attack, +extraDamage);
           }

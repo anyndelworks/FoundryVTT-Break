@@ -56,24 +56,6 @@
       "type": "Item",
       "private": false,
       "flags": {}
-    },
-    {
-      "name": "weapon-types",
-      "label": "Weapon types",
-      "system": "break",
-      "path": "packs/weapon-types",
-      "type": "Item",
-      "private": false,
-      "flags": {}
-    },
-    {
-      "name": "armor-types",
-      "label": "Armor types",
-      "system": "break",
-      "path": "packs/armor-types",
-      "type": "Item",
-      "private": false,
-      "flags": {}
     }
   ],
   "languages": [

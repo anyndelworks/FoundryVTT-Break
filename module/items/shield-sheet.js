@@ -2,65 +2,93 @@ import { BreakItemSheet } from "./item-sheet.js";
 
 export class BreakShieldSheet extends BreakItemSheet {
 
-  /** @inheritdoc */
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["break", "sheet", "shield"],
-      template: "systems/break/templates/items/shield-sheet.hbs",
+  //#region DocumentV2 initialization and setup
+  static DEFAULT_OPTIONS = {
+    tag: "form",
+    classes: ["break", "sheet", "shield"],
+    position: {
       width: 600,
       height: 480,
-      dragDrop: [{dragSelector: null, dropSelector: null}]
-    });
+    },
+    form: {
+      handler: BreakShieldSheet.#onSubmit,
+      submitOnChange: true
+    },
+    window: {
+      resizable: true
+    },
+    actions: {
+      deleteAbility: this.onDeleteAbility,
+      editImage: this.onEditImage,
+    }
   }
 
-  /* -------------------------------------------- */
+  static PARTS = {
+    header: {
+      template: "systems/break/templates/items/shared/item-header.hbs"
+    },
+    body: {
+      template: "systems/break/templates/items/shield/shield-sheet.hbs"
+    }
+  }
 
-  /** @inheritdoc */
-  async getData(options) {
-    const context = await super.getData(options);
-    context.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.item.system.description, {
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    context.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.description, {
       secrets: this.document.isOwner,
       async: true
     });
     context.isShield = true;
+    context.abilities = context.document.system.abilities ?? [];
+    const shieldTypes = foundry.utils.deepClone(game.settings.get("break", "shieldTypes"));
+    context.itemTypes = Object.keys(shieldTypes).map(k => ({
+      key: k,
+      label: shieldTypes[k].label,
+      active: context.document.system.type === k
+    }));
     return context;
   }
+  //#endregion
 
-  /** @inheritdoc */
-  activateListeners(html) {
-    super.activateListeners(html);
-
-    if ( !this.isEditable ) return;
-    html.find(".delete-ability").on("click", this.item.onDeleteAbility.bind(this));
-  }
-
-  /** @inheritdoc */
   async _onDrop(event) {
     const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
     if(data.type !== "Item") return;
     const draggedItem = await fromUuid(data.uuid)
-    if(draggedItem.type === "shield-type") {
-      if(event.target.id === "shieldtype" ){
-        const prunedAbilities = this.item.mergeAndPruneAbilities(draggedItem.system.abilities ?? []);
-        await this.item.update({"system.type": draggedItem.toObject(), "system.abilities": prunedAbilities});
-        this._onSetShieldType();
-      }
-    } else if(draggedItem.type === "ability" && draggedItem.system.subtype === "shield") {
+    if(draggedItem.type === "ability" && draggedItem.system.subtype === "shield") {
       const abilityArray = this.item.system.abilities ?? [];
       abilityArray.push(draggedItem.toObject());
       this.item.update({"system.abilities": abilityArray});
     }
   }
 
-  _onSetShieldType() {
-    const shieldType = this.item.system.type?.system;
-    const updates = {};
-    if(shieldType.speedPenalty != null) {
-      updates["system.speedPenalty"] = shieldType.speedPenalty;
+  //#region DocumentV2 submit
+  static async #onSubmit(event, form, formData) {
+    event.preventDefault();
+    const updateData = foundry.utils.expandObject(formData.object);
+    if(updateData.system.type !== this.item.system.type) {
+      const currentType = this.item.system.type;
+      const newType = updateData.system.type;
+      const shieldTypes = foundry.utils.deepClone(game.settings.get("break", "shieldTypes"));
+      if(this.item.system.defenseBonus === shieldTypes[currentType].defense) {
+        updateData.system.defenseBonus = shieldTypes[newType].defense;
+      }
+      if(this.item.system.slots === shieldTypes[currentType].slots) {
+        updateData.system.slots = shieldTypes[newType].slots;
+      }
+      if(this.item.system.speedPenalty === shieldTypes[currentType].speedPenalty) {
+        updateData.system.speedPenalty = shieldTypes[newType].speedPenalty;
+      }
+      if(this.item.system.hands === shieldTypes[currentType].hands) {
+        updateData.system.hands = shieldTypes[newType].hands;
+      }
+      if(this.item.system.value.gems === shieldTypes[currentType].value.gems
+        && this.item.system.value.coins === shieldTypes[currentType].value.coins
+        && this.item.system.value.stones === shieldTypes[currentType].value.stones
+      ) {
+        updateData.system.value = shieldTypes[newType].value;
+      }
     }
-    updates["system.defenseBonus"] = shieldType.defenseBonus;
-    updates["system.slots"] = shieldType.slots;
-    updates["system.value"] = shieldType.value;
-    this.item.update(updates);
+    await this.item.update(updateData);
   }
+  //#endregion
 }

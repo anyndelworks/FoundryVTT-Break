@@ -280,9 +280,9 @@
   font-weight: 700;
 }
 .break.sheet .portrait {
-  border-radius: 50%;
-  width: 150px;
-  height: 150px;
+  max-width: 150px;
+  max-height: 150px;
+  object-fit: scale-down;
 }
 .break.sheet .aptitude-trait {
   display: flex;

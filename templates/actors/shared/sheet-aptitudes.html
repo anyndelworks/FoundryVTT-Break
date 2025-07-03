@@ -1,0 +1,74 @@
+<div class="flexcol" style="width: 100%;">
+    <div class="section-header">{{localize "BREAK.Aptitudes"}}</div>
+    {{#each document.system.aptitudes as |attr key|}}
+    <div class="aptitude-container">
+        <div class="aptitude-upper">
+            <div>
+                <p class="aptitude-name">{{localize attr.label}}</p>
+                <p class="aptitude-description">{{localize attr.description}}</p>
+            </div>
+            <div class="aptitude-base-container">
+                <label style="text-transform: uppercase;">{{localize "BREAK.Base"}}</label>
+                <input name="system.aptitudes.{{key}}.value" type="number" class="aptitude-base-circle" style="text-align: center;" value="{{attr.value}}" placeholder="0"/>
+            </div>
+        </div>
+        <div style="display:flex;">
+            <div class="aptitude-value-circle clickable" data-action="rollAptitude">
+                <div class="aptitude-value-inner-circle" data-id="{{key}}">
+                    <p class="aptitude-value">{{sum attr.value attr.bon attr.trait}}</p>
+                </div>
+            </div>
+            <div class="aptitude-bar-container">
+                <div class="aptitude-trait-picker">
+                    <input name="system.aptitudes.{{key}}.trait" type="number" style="display: none;" value="{{attr.trait}}" placeholder=""/>
+                    <label class="aptitude-trait-label" data-aptitude="{{key}}">{{localize "BREAK.Trait"}}</label>
+                    {{#when attr.trait 'eq' -2}}
+                        <label class="aptitude-picked-trait" data-option="-2">-2</label>
+                    {{/when}}
+                    {{#when attr.trait 'noteq' -2}}
+                        <a class="aptitude-trait" data-option="-2" data-action="setTrait">-2</a>
+                    {{/when}}
+                    {{#when attr.trait 'eq' -1}}
+                        <label class="aptitude-picked-trait" data-option="-1">-1</label>
+                    {{/when}}
+                    {{#when attr.trait 'noteq' -1}}
+                        <a class="aptitude-trait" data-option="-1" data-action="setTrait">-1</a>
+                    {{/when}}
+                    {{#when attr.trait 'noteq' 0}}
+                        <a class="aptitude-trait" data-option="0" data-action="setTrait">0</a>
+                    {{/when}}
+                    {{#when attr.trait 'eq' 0}}
+                        <label class="aptitude-picked-trait" data-option="0">0</label>
+                    {{/when}}
+                    {{#when attr.trait 'eq' 1}}
+                        <label class="aptitude-picked-trait" data-option="1">+1</label>
+                    {{/when}}
+                    {{#when attr.trait 'noteq' 1}}
+                        <a class="aptitude-trait" data-option="1" data-action="setTrait">+1</a>
+                    {{/when}}
+                    {{#when attr.trait 'eq' 2}}
+                        <label class="aptitude-picked-trait" data-option="2">+2</label>
+                    {{/when}}
+                    {{#when attr.trait 'noteq' 2}}
+                        <a class="aptitude-trait" data-option="+2" data-action="setTrait">+2</a>
+                    {{/when}}
+                </div>
+                <div style="display: flex;">
+                    {{#for 0 20 1}}
+                        {{#when this 'lt' (sum attr.value attr.bon attr.trait)}}
+                        <div class="trait-square-full" style="background-color: {{attr.color}};"></div>
+                        {{/when}}
+                        {{#when this 'gt' (sum attr.value attr.bon attr.trait)}}
+                        <div class="trait-square-empty"></div>
+                        {{/when}}
+                    {{/for}}
+                </div>
+                <div style="display: flex; align-items: center; margin-left: 8px;">
+                    <label class="aptitude-bon-label">{{localize "BREAK.BonPen"}}</label>
+                    <input name="system.aptitudes.{{key}}.bon" type="number" class="aptitude-bon-input" value="{{attr.bon}}" placeholder="{{ localize 'BREAK.None' }}"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</div>

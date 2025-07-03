@@ -1,6 +1,6 @@
 import { BreakItem } from "../items/item.js";
 
-const allowedItemTypes = ["ability", "accessory", "armor", "book", "combustible", "consumable", "curiosity", "illumination", "kit", "miscellaneous", "otherworld", "outfit", "shield", "wayfinding", "weapon"]
+const allowedItemTypes = ["ability", "accessory", "armor", "otherworld", "outfit", "shield", "item", "weapon"]
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -49,7 +49,6 @@ export class BreakAdversarySheet extends ActorSheet {
   /** @inheritdoc */
   async getData(options) {
     const context = await super.getData(options);
-    context.shorthand = !!game.settings.get("break", "macroShorthand");
     context.notesHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.actor.system.notes, {
       secrets: this.document.isOwner,
       async: true
@@ -104,8 +103,6 @@ export class BreakAdversarySheet extends ActorSheet {
     context.actor.system.misc.customization = context.actor.system.misc.customization.replaceAll("\n", "&#10;")
     context.actor.system.misc.yield = context.actor.system.misc.yield.replaceAll("\n", "&#10;")
     context.actor.system.misc.reskin = context.actor.system.misc.reskin.replaceAll("\n", "&#10;")
-
-    console.log(context);
 
     return context;
   }
@@ -294,7 +291,7 @@ export class BreakAdversarySheet extends ActorSheet {
   async _onAddItemCustom(event) {
     event.preventDefault();
     return Item.implementation.createDialog({}, {
-      parent: this.actor, pack: this.actor.pack, types: ["weapon", "armor", "shield", "outfit", "accessory", "wayfinding", "illumination", "kit", "book", "consumable", "combustible", "miscellaneous", "curiosity", "otherworld"]
+      parent: this.actor, pack: this.actor.pack, types: ["weapon", "armor", "shield", "outfit", "accessory", "item"]
     });
   }
 

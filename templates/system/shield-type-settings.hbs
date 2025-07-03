@@ -1,0 +1,21 @@
+<section class="scrollable">
+    <h2>{{localize "CONFIG.WeaponTypeConfiguration"}}</h2>
+    {{#each shieldTypes as |type key|}}
+    <fieldset>
+        <legend>{{key}}</legend>
+        <label>{{localize "BREAK.Name"}}: <input type="text" name="shieldTypes.{{key}}.label" value="{{type.label}}"/></label>
+        <label>{{localize "BREAK.Defense"}}: <input type="number" name="shieldTypes.{{key}}.defense" value="{{type.defense}}"/></label>
+        <label>{{localize "BREAK.SpeedPenalty"}}: <input type="number" name="shieldTypes.{{key}}.speedPenalty" value="{{type.speedPenalty}}"/></label>
+        <label>{{localize "BREAK.Slots"}}: <input type="number" name="shieldTypes.{{key}}.slots" value="{{type.slots}}"/></label>
+        <label>{{localize "BREAK.Hands"}}: <input type="number" name="shieldTypes.{{key}}.hands" value="{{type.hands}}"/></label>
+        <div style="display: flex;align-items:center; flex: 1;justify-content:flex-end;column-gap: 12px; margin-top:17px;">
+            <i class="fas fa-gem"></i>
+            <input name="shieldTypes.{{key}}.value.gems" value="{{type.value.gems}}" placeholder="0" class="money-input" type="number"/>
+            <i class="fas fa-coins"></i>
+            <input name="shieldTypes.{{key}}.value.coins" value="{{type.value.coins}}" placeholder="0" class="money-input" type="number"/>
+            <i class="fas fa-coin-vertical"></i>
+            <input name="shieldTypes.{{key}}.value.stones" value="{{type.value.stones}}" placeholder="0" class="money-input" type="number"/>
+        </div>
+    </fieldset>
+    {{/each}}
+</section>

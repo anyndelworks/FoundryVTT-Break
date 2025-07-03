@@ -1,0 +1,65 @@
+<div class="flexcol" style="width: 100%;">
+    <div class="section-header">{{localize "BREAK.Equipment"}}</div>
+    <div style="display:flex;row-gap:4px;flex-direction:column;border-bottom:1px solid grey;padding-bottom:8px;">
+        <div>
+            <p style="flex: 0;font-weight:600;font-size:18px;border-bottom: 1px solid;">{{localize "BREAK.Hands"}}</p>
+            {{#times freeHands}}
+                <p>{{localize "BREAK.FreeHand"}}</p>
+            {{/times}}
+            {{#if document.system.equipment.weapon}}
+                {{#each document.system.equipment.weapon}}
+                    <div style="display:flex;margin-bottom:10px;align-items:center;">
+                        {{> "systems/break/templates/actors/shared/sheet-equipment-card.hbs" item=this}}
+                        <i style="margin-left:10px;"  class="fas fa-shield-slash clickable" data-action="unequipItem" data-type="weapon" data-item-id="{{this._id}}"></i>
+                    </div>
+                {{/each}}
+            {{/if}}
+            {{#if document.system.equipment.shield}}
+                <div style="display:flex;margin-bottom:10px;align-items:center;">
+                    {{> "systems/break/templates/actors/shared/sheet-equipment-card.hbs" item=document.system.equipment.shield}}
+                    <i class="fas fa-shield-slash clickable" data-action="unequipItem" style="margin-left:10px; margin-right:12px;" data-type="shield" data-item-id="{{document.system.equipment.shield._id}}"></i>
+                </div>
+            {{/if}}
+        </div>
+        <div>
+            <p style="flex: 0;font-weight:600;font-size:18px;border-bottom: 1px solid;">{{localize "BREAK.GEAR.TYPE.Armor"}}</p>
+            {{#if document.system.equipment.armor}}
+                <div style="display:flex;margin-bottom:10px;align-items:center;">
+                    {{> "systems/break/templates/actors/shared/sheet-equipment-card.hbs" item=document.system.equipment.armor}}
+                    <i class="fas fa-shield-slash clickable" data-action="unequipItem" style="margin-left:10px; margin-right:12px;" data-type="armor" data-item-id="{{document.system.equipment.armor._id}}"></i>
+                </div>
+            {{/if}}
+            {{#unless document.system.equipment.armor}}
+                <p>{{localize "BREAK.None"}}</p>
+            {{/unless}}
+
+        </div>
+        <div>
+            <p style="flex: 0;font-weight:600;font-size:18px;border-bottom: 1px solid;">{{localize "BREAK.Outfit"}}</p>
+            {{#if document.system.equipment.outfit}}
+                <div style="display:flex;margin-bottom:10px;align-items:center;">
+                    {{> "systems/break/templates/actors/shared/sheet-equipment-card.hbs" item=document.system.equipment.outfit}}
+                    <i style="margin-left:10px;" class="fas fa-shield-slash clickable" data-action="unequipItem" data-type="outfit" data-item-id="{{document.system.equipment.outfit._id}}"></i>
+                </div>
+            {{/if}}
+            {{#unless document.system.equipment.outfit}}
+                <p>{{localize "BREAK.None"}}</p>
+            {{/unless}}
+
+        </div>
+        <div>
+            <p style="flex: 0;font-weight:600;font-size:18px;border-bottom: 1px solid;">{{localize "BREAK.Accessories"}}</p>
+            {{#if document.system.equipment.accessory}}
+                {{#each document.system.equipment.accessory}}
+                    <div style="display:flex;margin-bottom:10px;align-items:center;">
+                        {{> "systems/break/templates/actors/shared/sheet-equipment-card.hbs" item=this}}
+                        <i style="margin-left:10px;" class="fas fa-shield-slash clickable" data-action="unequipItem" data-type="accessory" data-item-id="{{this._id}}"></i>
+                    </div>
+                {{/each}}
+            {{/if}}
+            {{#unless document.system.equipment.accessory}}
+                <p>{{localize "BREAK.None"}}</p>
+            {{/unless}}
+        </div>
+    </div>
+</div>

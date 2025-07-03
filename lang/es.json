@@ -32,8 +32,26 @@
       "history": "Historia",
       "quirk": "Peculiaridad",
       "ability": "Habilidad",
-      "advancement": "Avance"
+      "advancement": "Avance",
+      "item": "Objeto"
     }
+  },
+  "CONFIG": {
+    "ArmorTypes": "Tipos de armadura",
+    "ArmorTypeConfig": "Config. tipos de armadura",
+    "ArmorTypeConfiguration": "Configuración de tipos de armadura",
+    "ArmorTypeConfigHint": "Establece bonuses y habilidades para cada tipo de armadura.",
+    "ArmorTypeSettings": "Ajustes de tipos de armadura",
+    "WeaponTypes": "Tipos de arma",
+    "WeaponTypeConfig": "Config. tipos de arma",
+    "WeaponTypeConfiguration": "Configuración de tipos de arma",
+    "WeaponTypeConfigHint": "Establece bonuses y habilidades para cada tipo de arma.",
+    "WeaponTypeSettings": "Ajustes de tipos de arma",
+    "ShieldTypes": "Tipos de escudo",
+    "ShieldTypeConfig": "Config. tipos de escudo",
+    "ShieldTypeConfiguration": "Configuración de tipos de escudo",
+    "ShieldTypeConfigHint": "Establece bonuses y habilidades para cada tipo de escudo.",
+    "ShieldTypeSettings": "Ajustes de tipos de escudo"
   },
 
   "BREAK": {
@@ -312,6 +330,7 @@
     "Contest": "Contienda",
     "RollType": "Tipo de tirada",
     "Attack": "Atacar",
+    "Attacks": "Ataca",
     "ActorAttacksActor":"{name} ataca a {target}",
     "Slots": "Huecos",
     "Details": "Detalles",
@@ -359,6 +378,9 @@
     "Modifiers": "Modificadores",
     "Equip": "Equipar",
     "UnEquip": "Desequipar",
-    "PickOrDrag": "Selecciona o arrastra"
+    "PickOrDrag": "Selecciona o arrastra",
+    "FeatureSelector": "Selector de caracteristicas",
+    "Hands": "Manos",
+    "FreeHand": "Mano libre"
   }
 }

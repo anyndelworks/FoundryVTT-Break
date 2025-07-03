@@ -1,13 +1,13 @@
 <section class="tab description scrollable {{tabs.combat.cssClass}}" data-group="primary" data-tab="combat">
-    {{> "systems/break/templates/actors/templates/sheet-combat.html"}}
-    {{> "systems/break/templates/actors/templates/sheet-abilities.html"}}
+    {{> "systems/break/templates/actors/shared/sheet-combat.html"}}
+    {{> "systems/break/templates/actors/shared/sheet-abilities.html"}}
     <div style="display: flex; column-gap: 24px;margin-top: 12px;">
         <div class="flexcol" style="width: 100%;">
             <div class="section-header">{{localize "BREAK.Quirk"}}</div>
             <div style="display: flex;column-gap: 8px; flex-wrap: wrap;">
                 {{#each quirks}}
                 <div style="display: flex; margin-bottom: 6px;align-items: center; width: 33%;" data-id="{{this._id}}">
-                    <a class="item-link">{{this.name}}</a>
+                    <a class="item-link" data-action="linkItem">{{this.name}}</a>
                     <a style="margin-left: 6px;" class="item-control interface-only" data-context-menu>
                         <i class="fas fa-ellipsis-vertical"></i>
                     </a>
@@ -15,12 +15,12 @@
                 {{/each}}
             </div>
         </div>
-        {{> "systems/break/templates/actors/templates/sheet-xp.html"}}
+        {{> "systems/break/templates/actors/shared/sheet-xp.html"}}
     </div>
     <div class="flexcol" style="row-gap:12px;margin-top: 12px;">
         <div class="section-header" style="margin-bottom:0px;">{{localize "BREAK.Weapons"}}</div>
         {{#each weapons}}
-        {{> "systems/break/templates/actors/templates/sheet-weapon-card.hbs" weapon=this}}
+        {{> "systems/break/templates/actors/shared/sheet-weapon-card.hbs" weapon=this}}
         {{/each}}
     </div>
 </section>

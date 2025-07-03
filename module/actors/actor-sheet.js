@@ -1,6 +1,7 @@
 import { parseInputDelta } from "../../utils/utils.mjs";
 import { RANK_XP} from "../constants.js";
 import { BreakItem } from "../items/item.js";
+import { FeatureSelectionDialog } from "../dialogs/feature-selection-dialog.js";
 
 const allowedItemTypes = [
 // Equipment
@@ -8,18 +9,9 @@ const allowedItemTypes = [
   "armor",
   "shield",
 // Inventory
-  "gift",
   "accessory",
-  "book",
-  "combustible",
-  "consumable",
-  "curiosity",
-  "illumination",
-  "kit",
-  "miscellaneous",
-  "otherworld",
+  "item",
   "outfit",
-  "wayfinding",
 // Status
   "calling",
   "species",
@@ -28,13 +20,15 @@ const allowedItemTypes = [
   "history",
   "quirk",
   "ability",
-  "advancement"
+  "gift",
 ]
 
 const {ActorSheetV2} = foundry.applications.sheets;
 const {HandlebarsApplicationMixin} = foundry.applications.api;
 
 export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
+
+  freeHands;
 
   //#region DocumentV2 initialization and setup
   static DEFAULT_OPTIONS = {
@@ -47,9 +41,21 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     form: {
       submitOnChange: true
     },
+    window: {
+      resizable: true
+    },
     actions: {
-      rollAttack: BreakActorSheet._onRollAttack,
-      deleteItem: BreakActorSheet.deleteItemAction
+      rollAttack: this.#onRollAttack,
+      deleteItem: this.#deleteItemAction,
+      editImage: this.#onEditImage,
+      rollAptitude: this.#onRollAptitude,
+      modifyHearts: this.#onModifyHearts,
+      selectFeature: this.#onSelectFeature,
+      setTrait: this.#onSetTrait,
+      unequipItem: this.#onUnequipItem,
+      linkItem: this.#onLinkItem,
+      addCustomItem: this.#onAddCustomItem,
+      adjustItemQuantity: this.#onAdjustItemQuantity,
     }
   }
 
@@ -83,34 +89,13 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
 
   async _onRender(context, options) {
+    await super._onRender(context, options);
     const html = $(this.element);
-    html.find(".aptitude-value-circle.clickable").on("click", this._onRollAptitude.bind(this));
 
     // Everything below here is only needed if the sheet is editable
     if ( !this.isEditable ) return;
 
-    html.find(".select-feature").on("click", this._onSelectFeature.bind(this));
-    html.find(".delete-feature").on("click", this._onDeleteFeature.bind(this));
-
-    html.find(".aptitude-container").on("click", ".aptitude-trait", this._onSetTrait.bind(this));
-
-    html.find("button.hearts.clickable").on("click", this._onModifyHearts.bind(this));
-
-    html.find("i.unequip-item").on("click", this._onUnequipItem.bind(this));
-    html.find("a.item-link").on("click", this._onLinkItem.bind(this));
-
-    html.find("a.add-item-custom").on("click", this._onAddItemCustom.bind(this));
-    html.find("a.adjustment-button").on("click", this._onAdjustItemQuantity.bind(this));
     html.find("input.item-quantity").on("change", this._onChangeItemInput.bind(this));
-
-    // Add draggable for Macro creation
-    html.find(".aptitudes a.aptitude-roll").each((i, a) => {
-      a.setAttribute("draggable", true);
-      a.addEventListener("dragstart", ev => {
-        let dragData = ev.currentTarget.dataset;
-        ev.dataTransfer.setData('text/plain', JSON.stringify(dragData));
-      }, false);
-    });
 
     html.find("[data-context-menu]").each((i, a) =>{
       a.addEventListener("click", event => {
@@ -125,7 +110,7 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
     new foundry.applications.ux.ContextMenu.implementation(html[0], "[data-id]", [], {onOpen: this._onOpenContextMenu.bind(this), jQuery: false});
 
-    new foundry.applications.ux.DragDrop.implementation({
+    /*new foundry.applications.ux.DragDrop.implementation({
           dragSelector: ".draggable",
           permissions: {
             dragstart: this._canDragStart.bind(this),
@@ -136,13 +121,11 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
             dragover: this._onDragOver.bind(this),
             drop: this._onDrop.bind(this)
           }
-    }).bind(this.element);
+    }).bind(this.element);*/
   }
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
-    console.log(context);
-    context.shorthand = !!game.settings.get("break", "macroShorthand");
     context.biographyHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.biography, {
       secrets: this.document.isOwner,
       async: true
@@ -214,8 +197,8 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         id: w._id,
         name: w.name,
         type: (w.system.weaponType1?.name ?? "") + " " + (w.system.weaponType2?.name ?? ""),
-        isRanged: w.system.weaponType1?.system.ranged || w.system.weaponType2?.system.ranged,
-        isMelee: (w.system.weaponType1 && !w.system.weaponType1.system.ranged) || (w.system.weaponType2 && !w.system.weaponType2.system.ranged),
+        isRanged: w.system.ranged,
+        isMelee: w.system.melee,
         rangedExtraDamage: w.system.rangedExtraDamage,
         extraDamage: w.system.extraDamage,
         rangedAttackBonus: w.system.rangedAttackBonus,
@@ -249,8 +232,12 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       context.allegiance = 2;
     }
 
+    context.hands = 2;
     const equipment = context.document.system.equipment;
-    const equippedItemIds = [equipment.armor?._id, equipment.outfit?._id, ...equipment.weapon.map(i => i._id), ...equipment.accessory.map(i => i._id)];
+    const weaponHands = equipment.weapon.reduce((a, w) => a+(w.hands ?? 1), 0);
+    this.freeHands = context.hands - weaponHands - (equipment.shield?.system.hands ?? 0);
+    context.freeHands = this.freeHands;
+    const equippedItemIds = [equipment.armor?._id, equipment.outfit?._id, equipment.shield?._id, ...equipment.weapon.map(i => i._id), ...equipment.accessory.map(i => i._id)];
     context.bagContent = context.document.items.filter(i => !["ability", "quirk", "gift", "calling", "history", "homeland", "species"].includes(i.type)
       && !equippedItemIds.includes(i._id) && i.bag == this.selectedBag).map(i => ({ ...i, _id: i._id, equippable: ["armor", "weapon", "outfit", "accessory", "shield"].includes(i.type) }));
     const precision = 2;
@@ -258,7 +245,6 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     context.usedInventorySlots = Math.round(context.bagContent.reduce((ac, cv) => ac + cv.system.slots * cv.system.quantity, 0) * factor) / factor;
     context.document.system.purviews = context.document.system.purviews.replaceAll("\n", "&#10;")
     context.inventorySlots = size?.system.inventory ?? 0;
-    console.log(size);
     return context;
   }
   //#endregion
@@ -307,10 +293,121 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
   //#endregion
 
+  //#region Actions
+  static #deleteItemAction(event) {
+    this._onDeleteItem(event.current);
+  }
+
+  async _onDeleteItem(element) {
+    const id = element.dataset?.id ?? element.currentTarget?.attributes?.getNamedItem("data-id")?.value;
+    this.actor.deleteItem(id);
+  }
+
+  static async #onRollAttack(event) {
+    event.preventDefault();
+    const button = event.target;
+    const bonus = button.dataset.bonus ?? 0;
+    const extraDamage = button.dataset.extradamage ?? 0;
+    this.actor.rollAttack(bonus, extraDamage, button.dataset.name);
+  }
+
+  static async #onEditImage(event, target) {
+    const field = target.dataset.field || "img"
+    const current = foundry.utils.getProperty(this.document, field)
+
+    const fp = new foundry.applications.apps.FilePicker({
+      type: "image",
+      current: current,
+      callback: (path) => this.document.update({ [field]: path })
+    })
+
+    fp.render(true)
+  }
+
+  static async #onRollAptitude(event) {
+    event.preventDefault();
+    const button = event.target;
+    const aptitudeId = button.dataset.id;
+    this.actor.rollAptitude(aptitudeId)
+  }
+
+  static async #onModifyHearts(event) {
+    event.preventDefault();
+    const amount = event.target.dataset.amount;
+    this.actor.modifyHp(+amount);
+  }
+
+  static async #onSelectFeature(event) {
+    event.preventDefault();
+    const featureType = event.target.dataset.type;
+
+    new FeatureSelectionDialog({
+      itemType: featureType,
+      restricted: true,
+      actor: this.document
+    }).render(true);
+  }
+
+  static async #onSetTrait(event) {
+    event.preventDefault();
+    const button = event.target;
+    const aptitude = button.parentElement.children[1].dataset.aptitude;
+    const value = button.dataset.option;
+    if(aptitude == undefined || value == undefined) {
+      return;
+    }
+    this.actor.setAptitudeTrait(aptitude, +value)
+  }
+
+  static async #onUnequipItem(event) {
+    event.preventDefault();
+    const button = event.target;
+    const id = button.dataset.itemId;
+    const type = button.dataset.type;
+
+    this.actor.unequipItem(id, type);
+  }
+
+  static async #onLinkItem(event) {
+    event.preventDefault();
+    const button = event.target.closest("[data-id]");
+    const id = button.dataset.id;
+    const item = this.document.items.get(id);
+    item.sheet.render(true);
+  }
+
+  static async #onAddCustomItem(event) {
+    event.preventDefault();
+    return Item.implementation.createDialog({}, {
+      parent: this.actor, pack: this.actor.pack, types: [
+        "weapon",
+        "armor",
+        "shield",
+        "outfit",
+        "accessory",
+        "item",
+      ]
+    });
+  }
+
+  static async #onAdjustItemQuantity(event) {
+    event.preventDefault();
+    const button = event.target;
+    const { type } = button.dataset;
+    const input = button.parentElement.querySelector("input");
+    const min = input.min ? Number(input.min) : -Infinity;
+    const max = input.max ? Number(input.max) : Infinity;
+    let value = Number(input.value);
+    if ( isNaN(value) ) return;
+    value += type === "increase" ? 1 : -1;
+    input.value = Math.min(Math.max(value, min), max);
+    input.dispatchEvent(new Event("change"));
+  }
+
+  //#endregion
+
   _onOpenContextMenu(element) {
     const item = this.document.items.get(element.dataset.id);
-    console.log(this.document.items);
-    console.log(item);
     if (!item || (item instanceof Promise)) return;
 
     item.equippable = element.dataset.equippable;
@@ -346,82 +443,14 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     return options;
   }
 
-
-  async _onSelectFeature(event) {
+  async _onChangeItemInput(event) {
     event.preventDefault();
-    const featureType = event.currentTarget.id;
-
-    function selectFeature(actor, item) {
-      actor.createEmbeddedDocuments("Item", [item.toObject()]);
-    }
-
-    function getItemsList(featureType, actor) {
-      switch (featureType) {
-        case "history":
-          return actor.system.homeland?.system?.histories && actor.system.homeland.system.histories.length > 0 ? actor.system.homeland.system.histories : game.items;
-        default:
-          return game.items;
-      }
-    }
-
-    const buttons = {}
-    const items = getItemsList(featureType, this.actor);
-
-    for (const item of items) {
-      if (item.type === featureType) {
-        buttons[item._id] = {
-          label: item.name,
-          callback: (_) => selectFeature(this.actor, item)
-        }
-      }
-    }
-
-    const content = `
-      <style>
-      #featureSelector .dialog-buttons {
-        flex-direction: column
-      }
-      </style>
-    `
-
-    const options = {
-      id: "featureSelector",
-      resizable: true
-    }
-
-    new Dialog({
-      title: "Feature Selector",
-      content: content,
-      buttons: buttons
-    }, options).render(true);
-  }
-
-  async _onDeleteFeature(event) {
-    event.preventDefault();
-    const featureType = event.currentTarget.id;
-    const deleteableFeatures = [
-      "calling",
-      "species",
-      "homeland",
-      "history"
-    ]
-
-    if (deleteableFeatures.includes(featureType)) {
-      const upd = {};
-      upd["system." + featureType] = null;
-      this.actor.update(upd);
-    }
-  }
-
-  async _onSetTrait(event) {
-    event.preventDefault();
-    const button = event.currentTarget;
-    const aptitude = button.parentElement.children[1].dataset.aptitude;
-    const value = button.dataset.option;
-    if(aptitude == undefined || value == undefined) {
-      return;
-    }
-    this.actor.setAptitudeTrait(aptitude, +value)
+    const input = event.target;
+    const itemId = input.closest("[data-id]")?.dataset.id;
+    const item = this.document.items.get(itemId);
+    if ( !item ) return;
+    const result = parseInputDelta(input, item);
+    if ( result !== undefined ) item.update({ [input.dataset.name]: result });
   }
 
   async _onEquipItem(item) {
@@ -433,8 +462,20 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         this.actor.update({ "system.equipment.outfit": { ...item, _id: item._id } });
         return;
       case "weapon":
-        this.actor.system.equipment.weapon.push({ ...item, _id: item._id }) 
-        this.actor.update({ "system.equipment.weapon": this.actor.system.equipment.weapon });
+        if((item.system.hands ?? 1) <= this.freeHands) {
+          this.actor.system.equipment.weapon.push({ ...item, _id: item._id }) 
+          this.actor.update({ "system.equipment.weapon": this.actor.system.equipment.weapon });
+        } else {
+          ui.notifications.warn("Not enough free hands to wield that weapon");
+        }
+        return;
+      case "shield":
+        if((item.system.hands ?? 1) <= this.freeHands) {
+          this.actor.system.equipment.shield = item;
+          this.actor.update({ "system.equipment.shield": this.actor.system.equipment.shield });
+        } else {
+          ui.notifications.warn("Not enough free hands to wield that shield");
+        }
         return;
       case "accessory":
         this.actor.system.equipment.accessory.push({ ...item, _id: item._id })
@@ -443,112 +484,10 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     }
   }
 
-  async _onUnequipItem(event) {
-    event.preventDefault();
-    const button = event.currentTarget;
-    const id = button.dataset.itemId;
-    const type = button.dataset.type;
-
-    this.actor.unequipItem(id, type);
-  }
-
-  static deleteItemAction(event) {
-    this._onDeleteItem(event.current);
-  }
-
-  async _onDeleteItem(element) {
-    const id = element.dataset?.id ?? element.currentTarget?.attributes?.getNamedItem("data-id")?.value;
-    this.actor.deleteItem(id);
-  }
-
   async _onSendToChat(element) {
     const id = element.dataset.id;
     const item = this.document.items.get(id);
     await item.sendToChat();
-  }
-
-  async _onLinkItem(event) {
-    event.preventDefault();
-    const button = event.currentTarget.closest("[data-id]");
-    const id = button.dataset.id;
-    const item = this.document.items.get(id);
-    item.sheet.render(true);
-  }
-
-  async _onAddItemCustom(event) {
-    event.preventDefault();
-    return Item.implementation.createDialog({}, {
-      parent: this.actor, pack: this.actor.pack, types: [
-        "weapon",
-        "armor",
-        "shield",
-        "outfit",
-        "accessory",
-        "wayfinding",
-        "illumination",
-        "kit",
-        "book",
-        "consumable",
-        "combustible",
-        "miscellaneous",
-        "curiosity",
-        "otherworld",
-        "calling",
-        "species",
-        "size",
-        "homeland",
-        "history",
-        "quirk",
-        "ability",
-        "advancement"
-      ]
-    });
-  }
-
-  async _onAdjustItemQuantity(event) {
-    event.preventDefault();
-    const button = event.currentTarget;
-    const { action } = button.dataset;
-    const input = button.parentElement.querySelector("input");
-    const min = input.min ? Number(input.min) : -Infinity;
-    const max = input.max ? Number(input.max) : Infinity;
-    let value = Number(input.value);
-    if ( isNaN(value) ) return;
-    value += action === "increase" ? 1 : -1;
-    input.value = Math.min(Math.max(value, min), max);
-    input.dispatchEvent(new Event("change"));
-  }
-
-  async _onChangeItemInput(event) {
-    event.preventDefault();
-    const input = event.target;
-    const itemId = input.closest("[data-id]")?.dataset.id;
-    const item = this.document.items.get(itemId);
-    if ( !item ) return;
-    const result = parseInputDelta(input, item);
-    if ( result !== undefined ) item.update({ [input.dataset.name]: result });
-  }
-
-  async _onRollAptitude(event) {
-    event.preventDefault();
-    const button = event.currentTarget;
-    const aptitudeId = button.dataset.id;
-    this.actor.rollAptitude(aptitudeId)
-    
-  }
-
-  static async _onRollAttack(event) {
-    event.preventDefault();
-    const button = event.currentTarget;
-    const bonus = button.dataset.bonus ?? 0;
-    const extraDamage = button.dataset.extradamage ?? 0;
-    this.actor.rollAttack(bonus, extraDamage)
-  }
-
-  async _onModifyHearts(event) {
-    event.preventDefault();
-    const amount = event.currentTarget.dataset.amount;
-    this.actor.modifyHp(+amount);
   }
 
   _onItemRoll(event) {
@@ -570,7 +509,6 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
 
   async _updateObject(event, formData) {
-    console.log(formData);
     const updateData = foundry.utils.expandObject(formData);
     await this.actor.update(updateData);
   }
