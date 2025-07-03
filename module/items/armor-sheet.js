@@ -39,6 +39,7 @@ export class BreakArmorSheet extends BreakItemSheet {
       async: true
     });
     context.isArmor = true;
+    context.requiresType = true;
     context.abilities = context.document.system.abilities ?? [];
     const armorTypes = foundry.utils.deepClone(game.settings.get("break", "armorTypes"));
     context.itemTypes = Object.keys(armorTypes).map(k => ({

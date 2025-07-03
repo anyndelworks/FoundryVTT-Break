@@ -24,13 +24,13 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/break/templates/rolls/roll-check.hbs",
     "systems/break/templates/rolls/roll-dialog.hbs",
     "systems/break/templates/items/shared/item-header.hbs",
-    "systems/break/templates/items/generic-header.hbs",
+    "systems/break/templates/items/shared/generic-header.hbs",
     "systems/break/templates/items/shared/item-abilities.hbs",
     "systems/break/templates/items/weapon/weapon-details.hbs",
     "systems/break/templates/items/shared/weapon-type-details.hbs",
     "systems/break/templates/items/armor/armor-details.hbs",
     "systems/break/templates/items/shield/shield-details.hbs",
-    "systems/break/templates/items/shared/advancement-table.hbs",
+    "systems/break/templates/items/calling/advancement-table.hbs",
     "systems/break/templates/actors/shared/sheet-equipment-card.hbs",
     "systems/break/templates/system/active-effects-panel.hbs"
   ];

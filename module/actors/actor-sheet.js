@@ -68,7 +68,7 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
   static PARTS = {
     tabs: {
-      template: "systems/break/templates/actors/character/parts/sheet-tabs.hbs",
+      template: "systems/break/templates/shared/sheet-tabs.hbs",
     },
     identity: {
       template: "systems/break/templates/actors/character/parts/sheet-tab-identity.hbs",

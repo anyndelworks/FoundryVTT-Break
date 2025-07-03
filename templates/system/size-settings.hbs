@@ -1,0 +1,17 @@
+<section class="scrollable">
+    <h2>{{localize "CONFIG.WeaponTypeConfiguration"}}</h2>
+    {{#each sizes as |size key|}}
+    <fieldset>
+        <legend>{{key}}</legend>
+        <label>{{localize "BREAK.Name"}}: <input type="text" name="sizes.{{key}}.label" value="{{size.label}}"/></label>
+        <label>{{localize "BREAK.InventorySlots"}}: <input type="number" name="sizes.{{key}}.inventorySize" value="{{size.inventorySize}}"/></label>
+        <label>{{localize "BREAK.Slots"}}: <input type="number" name="sizes.{{key}}.inventorySize" value="{{size.inventorySize}}"/></label>
+        <label>{{localize "BREAK.Slots"}}: <input type="number" name="sizes.{{key}}.slots" value="{{size.slots}}"/></label>
+        <label>{{localize "BREAK.APTITUDE.Deftness"}}: <input type="number" name="sizes.{{key}}.deftness" value="{{size.deftness}}"/></label>
+        <label>{{localize "BREAK.APTITUDE.Grit"}}: <input type="number" name="sizes.{{key}}.grit" value="{{size.grit}}"/></label>
+        <label>{{localize "BREAK.APTITUDE.Insight"}}: <input type="number" name="sizes.{{key}}.insight" value="{{size.insight}}"/></label>
+        <label>{{localize "BREAK.APTITUDE.Aura"}}: <input type="number" name="sizes.{{key}}.aura" value="{{size.aura}}"/></label>
+        <label>{{localize "BREAK.APTITUDE.Might"}}: <input type="number" name="sizes.{{key}}.might" value="{{size.might}}"/></label>
+    </fieldset>
+    {{/each}}
+</section>

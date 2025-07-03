@@ -8,6 +8,7 @@ import { BreakAdversarySheet } from "./module/actors/adversary-sheet.js";
 import {ArmorTypeSettingsForm} from "./module/system/armor-type-settings.js";
 import {WeaponTypeSettingsForm} from "./module/system/weapon-type-settings.js";
 import {ShieldTypeSettingsForm} from "./module/system/shield-type-settings.js";
+import {SizeSettingsForm} from "./module/system/size-settings.js";
 ////// EQUIPMENT
 import { BreakWeaponSheet } from "./module/items/weapon-sheet.js";
 import { BreakArmorSheet } from "./module/items/armor-sheet.js";
@@ -26,7 +27,6 @@ import { BreakHomelandSheet } from "./module/items/homeland-sheet.js";
 import { BreakHistorySheet } from "./module/items/history-sheet.js";
 import { BreakQuirkSheet } from "./module/items/quirk-sheet.js";
 import { BreakAbilitySheet } from "./module/items/ability-sheet.js";
-import { BreakAdvancementSheet } from "./module/items/advancement-sheet.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -395,6 +395,56 @@ Hooks.once("init", async function() {
     restricted: true
   });
 
+  CONFIG.BREAK.sizes = {
+    small: {
+      label: "Small",
+      inventorySize: 0,
+      slots: 0,
+      deftness: 0,
+      might: 0,
+      insight: 0,
+      aura: 0,
+      grit: 0
+    },
+    medium: {
+      label: "Medium",
+      inventorySize: 0,
+      slots: 0,
+      deftness: 0,
+      might: 0,
+      insight: 0,
+      aura: 0,
+      grit: 0
+    },
+    large: {
+      label: "Large",
+      inventorySize: 0,
+      slots: 0,
+      deftness: 0,
+      might: 0,
+      insight: 0,
+      aura: 0,
+      grit: 0
+    }
+  }
+
+  game.settings.register("break", "sizes", {
+    name: "Sizes",
+    scope: "world",
+    config: false,
+    type: Object,
+    default: CONFIG.BREAK.sizes
+  });
+
+  game.settings.registerMenu("break", "sizesMenu", {
+    name: "CONFIG.Sizes",
+    label: "CONFIG.SizesConfig",
+    hint: "CONFIG.SizesConfigHint",
+    icon: "fas fa-hood-cloak",
+    type: SizeSettingsForm,
+    restricted: true
+  });
+
   // Register sheet application classes
   Actors.unregisterSheet("core", foundry.applications.sheets.ActorSheetV2);
   Actors.registerSheet("break", BreakActorSheet, {types:['character'], makeDefault: true });
@@ -417,7 +467,6 @@ Hooks.once("init", async function() {
   Items.registerSheet("break", BreakHistorySheet, {types:['history'], makeDefault: true });
   Items.registerSheet("break", BreakQuirkSheet, { types: ['quirk'], makeDefault: true });
   Items.registerSheet("break", BreakAbilitySheet, {types:['ability'], makeDefault: true });
-  Items.registerSheet("break", BreakAdvancementSheet, {types:['advancement'], makeDefault: true });
 
   /**
    * Slugify a string.

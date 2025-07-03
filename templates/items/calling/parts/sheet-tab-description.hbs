@@ -1,0 +1,14 @@
+<section class="tab description scrollable {{tabs.description.cssClass}}" style="height: 100%;" data-group="primary" data-tab="description">
+    <div class="flexcol" style="min-height: 256px;">
+        <div class="section-header">
+            {{localize "BREAK.Description"}}
+        </div>
+        {{#if editable}}
+        <prose-mirror name="system.description" value="{{ document.system.description }}"></prose-mirror>
+        {{else}}
+        <div class="editor">
+            <div class="editor-content">{{{ descriptionHTML }}}</div>
+        </div>
+        {{/if}}
+    </div>
+</section>

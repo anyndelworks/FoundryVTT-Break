@@ -1,0 +1,16 @@
+<section class="flexcol {{cssClass}}" autocomplete="off">
+    <div style="display:flex;column-gap: 24px;">
+        <div class="flexcol" style="flex: 1;">
+            <div class="section-header">
+                {{localize "BREAK.Description"}}
+            </div>
+            {{#if editable}}
+                <prose-mirror name="system.description" value="{{ document.system.description }}"></prose-mirror>
+            {{else}}
+                <div class="editor">
+                    <div class="editor-content">{{{ descriptionHTML }}}</div>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+</section>

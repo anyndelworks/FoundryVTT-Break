@@ -51,7 +51,12 @@
     "ShieldTypeConfig": "Config. tipos de escudo",
     "ShieldTypeConfiguration": "Configuración de tipos de escudo",
     "ShieldTypeConfigHint": "Establece bonuses y habilidades para cada tipo de escudo.",
-    "ShieldTypeSettings": "Ajustes de tipos de escudo"
+    "ShieldTypeSettings": "Ajustes de tipos de escudo",
+    "Sizes": "Tamaños",
+    "SizesConfig": "Config. tamaños",
+    "SizesConfiguration": "Configuración de tamaños",
+    "SizesConfigHint": "Establece bonuses y habilidades para cada tamaño.",
+    "SizeSettings": "Ajustes de tamaños"
   },
 
   "BREAK": {
@@ -248,6 +253,7 @@
       "ShieldType": "<Shield type>",
       "MissileAllowances": "<Missile Allowances>",
       "MissileType": "<Missile weapon type>",
+      "WeaponAllowances": "<Weapon allowances>",
 
       "TYPE": {
         "Ranged": "A distancia",
@@ -381,6 +387,7 @@
     "PickOrDrag": "Selecciona o arrastra",
     "FeatureSelector": "Selector de caracteristicas",
     "Hands": "Manos",
-    "FreeHand": "Mano libre"
+    "FreeHand": "Mano libre",
+    "InventorySlots": "Huecos de inventario"
   }
 }

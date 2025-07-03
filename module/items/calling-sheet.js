@@ -2,107 +2,99 @@ import { BreakItemSheet } from "./item-sheet.js";
 
 export class BreakCallingSheet extends BreakItemSheet {
 
-    /** @inheritdoc */
-    static get defaultOptions() {
-      return foundry.utils.mergeObject(super.defaultOptions, {
-        classes: ["break", "sheet", "calling"],
-        template: "systems/break/templates/items/calling-sheet.hbs",
-        tabs: [{navSelector: ".tabs", contentSelector: ".sheet-body", initial: "description"}],
-        width: 650,
-        height: 520,
-        dragDrop: [{dragSelector: null, dropSelector: null}]
-      });
+    //#region DocumentV2 initialization and setup
+    static DEFAULT_OPTIONS = {
+      tag: "form",
+      classes: ["break", "sheet", "calling"],
+      position: {
+        width: 600,
+        height: 480,
+      },
+      form: {
+        handler: BreakCallingSheet.#onSubmit,
+        submitOnChange: true
+      },
+      window: {
+        resizable: true
+      },
+      actions: {
+        deleteAbility: this.onDeleteAbility,
+        editImage: this.onEditImage,
+        addAdvancementRank: this.#addAdvancementRank,
+        removeAdvancementRank: this.#removeAdvancementRank,
+        removeAllowance: this.#removeAllowance
+      }
+    }
+
+    static TABS = {
+      primary: {
+        initial: "description",
+        tabs: [{id:"description", icon: "fas fa-scroll"}, {id:"details", icon: "fas fa-swords"}, {id: "advancement", icon: "fas fa-book-sparkles"}],
+      }
     }
   
-    /** @inheritdoc */
-    activateListeners(html) {
-      super.activateListeners(html);
-      if ( !this.isEditable ) return;
-      html.find(".delete-starting-ability").on("click", this.onDeleteStartingAbility.bind(this));
-      html.find(".delete-elective-ability").on("click", this.onDeleteElectiveAbility.bind(this));
-      html.find(".delete-allowance").on("click", this.onDeleteAllowance.bind(this));
-      html.find(".add-rank").on("click", this.onAddAdvancementRank.bind(this));
-      html.find(".remove-rank").on("click", this.onRemoveAdvancementRank.bind(this));
-      html.find(".select-feature").on("click", this._onSelectFeature.bind(this));
-      const editorOptions = {
-        target: html.find('.html-editor')[0],
-        min_height: 300,
-        height: 400
-      };
-      if (typeof tinymce !== 'undefined') {
-        tinymce.init(editorOptions);
-      }
-      html.on('blur', '.advancement-input', this.updateAdvancement.bind(this));
-    }
-
-    async updateAdvancement(event) {
-        const element = event.currentTarget;
-
-        let idParts = element.id.split('-');
-        let stat = idParts[0];
-        let index = parseInt(idParts[1], 10);
-
-        let value = parseInt(element.value, 10);
-        switch(stat) {
-            case "attack": this.item.system.advancementTable[index].attack = value; break;
-            case "hearts": this.item.system.advancementTable[index].hearts = value; break;
-            case "might": this.item.system.advancementTable[index].might = value; break;
-            case "deftness": this.item.system.advancementTable[index].deftness = value; break;
-            case "grit": this.item.system.advancementTable[index].grit = value; break;
-            case "insight": this.item.system.advancementTable[index].insight = value; break;
-            case "aura": this.item.system.advancementTable[index].aura = value; break;
-            case "startingAbilites": this.item.system.advancementTable[index].startingAbilites = value; break;
-            case "standardAbilities": this.item.system.advancementTable[index].standardAbilities = value; break;
-            case "advancedAbilities": this.item.system.advancementTable[index].advancedAbilities = value; break;
-            case "xp": this.item.system.advancementTable[index].xp = value; break;
-        }
-
-      this.item.update({ "system.advancementTable": this.item.system.advancementTable }, { render: false });
-    }
-
-    async onDeleteStartingAbility(event) {
-      event.preventDefault();
-      const index = parseInt(event.currentTarget.id.split('-')[1], 10);
-      this.item.system.startingAbilities.splice(index, 1);
-      this.item.update({"system.startingAbilities": this.item.system.startingAbilities});
-    }
-
-    async onDeleteElectiveAbility(event) {
-      event.preventDefault();
-      const index = parseInt(event.currentTarget.id.split('-')[1], 10);
-      this.item.system.abilities.splice(index, 1);
-      this.item.update({"system.abilities": this.item.system.abilities});
-    }
-
-    async onDeleteAllowance(event) {
-      event.preventDefault();
-      const ids = event.currentTarget.id.split('-');
-
-      if (ids[0] === "armor") {
-        let index = this.item.system.armorAllowances?.findIndex(i => i._id === ids[1]);
-        if (index >= 0) {
-          this.item.system.armorAllowances.splice(index, 1);
-          this.item.update({"system.armorAllowances": this.item.system.armorAllowances});
-        } else {
-          index = this.item.system.shieldAllowances?.findIndex(i => i._id === ids[1]);
-          this.item.system.shieldAllowances.splice(index, 1);
-          this.item.update({"system.shieldAllowances": this.item.system.shieldAllowances});
-        }
-      } else {
-        const index = this.item.system.weaponAllowances?.findIndex(i => i._id === ids[1]);
-        this.item.system.weaponAllowances.splice(index, 1);
-        this.item.update({"system.weaponAllowances": this.item.system.weaponAllowances});
+    static PARTS = {
+      header: {
+        template: "systems/break/templates/items/shared/generic-header.hbs"
+      },
+      tabs: {
+        template: "systems/break/templates/shared/sheet-tabs.hbs",
+      },
+      description: {
+        template: "systems/break/templates/items/calling/parts/sheet-tab-description.hbs"
+      },
+      details: {
+        template: "systems/break/templates/items/calling/parts/sheet-tab-details.hbs"
+      },
+      advancement: {
+        template: "systems/break/templates/items/calling/parts/sheet-tab-advancement.hbs"
       }
     }
+  
+    async _prepareContext(options) {
+      const context = await super._prepareContext(options);
+      context.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.description, {
+          secrets: this.document.isOwner,
+          async: true
+      });
+      context.advancementTable = context.document.system.advancementTable ?? [];
 
-    async onRemoveAdvancementRank(event) {
-      event.preventDefault();
-      const table = this.item.system.advancementTable;
-      table.pop();
-      this.item.update({"system.advancementTable": table});
+      context.startingAbilities = context.document.system.startingAbilities ?? [];
+      context.hasStartingAbilities = context.startingAbilities.length > 0;
+      context.electiveAbilities = context.document.system.abilities ?? [];
+      context.hasElectiveAbilities = context.electiveAbilities.length > 0;
+
+      context.armorAllowances = context.document.system.armorAllowances ?? [];
+      context.weaponAllowances = context.document.system.weaponAllowances ?? [];
+      context.shieldAllowances = context.document.system.shieldAllowances ?? [];
+
+      const weaponTypes = foundry.utils.deepClone(game.settings.get("break", "weaponTypes"));
+      context.weaponTypes = Object.keys(weaponTypes).map(k => ({
+        key: k,
+        label: weaponTypes[k].label,
+        disabled: context.weaponAllowances.includes(k)
+      }));
+      context.weaponAllowances = Object.keys(weaponTypes).filter(k => context.weaponAllowances.includes(k)).map(k => ({...weaponTypes[k], key: k}));
+      const armorTypes = foundry.utils.deepClone(game.settings.get("break", "armorTypes"));
+      context.armorTypes = Object.keys(armorTypes).map(k => ({
+        key: k,
+        label: armorTypes[k].label,
+        disabled: context.armorAllowances.includes(k)
+      }));
+      context.armorAllowances = Object.keys(armorTypes).filter(k => context.armorAllowances.includes(k)).map(k => ({...armorTypes[k], key: k}));
+      const shieldTypes = foundry.utils.deepClone(game.settings.get("break", "shieldTypes"));
+      context.shieldTypes = Object.keys(shieldTypes).map(k => ({
+        key: k,
+        label: shieldTypes[k].label,
+        disabled: context.shieldAllowances.includes(k)
+      }));
+      context.shieldAllowances = Object.keys(shieldTypes).filter(k => context.shieldAllowances.includes(k)).map(k => ({...shieldTypes[k], key: k}));
+      return context;
     }
-
-    async onAddAdvancementRank(event) {
+    //#endregion
+  
+    //#region Actions
+    static async #addAdvancementRank(event) {
       event.preventDefault();
       
       const table = this.item.system.advancementTable ?? []
@@ -120,89 +112,38 @@ export class BreakCallingSheet extends BreakItemSheet {
       this.item.update({"system.advancementTable": table});
     }
 
-    async _onSelectFeature(event) {
+    static async #removeAdvancementRank(event) {
       event.preventDefault();
-      const featureType = event.currentTarget.id;
-
-      function selectFeature(actor, item) {
-        actor.createEmbeddedDocuments("Item", [item.toObject()]);
-      }
-
-      function getItemsList(featureType, actor) {
-        switch (featureType) {
-          case "history":
-            return actor.system.homeland?.system?.histories && actor.system.homeland.system.histories.length > 0 ? actor.system.homeland.system.histories : game.items;
-          default:
-            return game.items;
-        }
-      }
-
-      const buttons = {}
-      const items = getItemsList(featureType, this.actor);
-
-      for (const item of items) {
-        if (item.type === featureType) {
-          buttons[item._id] = {
-            label: item.name,
-            callback: (_) => selectFeature(this.actor, item)
-          }
-        }
-      }
-
-      const content = `
-        <style>
-        #featureSelector .dialog-buttons {
-          flex-direction: column
-        }
-        </style>
-      `
-
-      const options = {
-        id: "featureSelector",
-        resizable: true
-      }
-
-      new Dialog({
-        title: "Feature Selector",
-        content: content,
-        buttons: buttons
-      }, options).render(true);
+      const table = this.item.system.advancementTable;
+      table.pop();
+      this.item.update({"system.advancementTable": table});
     }
 
-    /** @inheritdoc */
-    async getData(options) {
-        const context = await super.getData(options);
-        context.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.item.system.description, {
-            secrets: this.document.isOwner,
-            async: true
-        });
-        context.advancementTable = context.item.system.advancementTable ?? [];
-
-        context.startingAbilities = context.item.system.startingAbilities ?? [];
-        context.hasStartingAbilities = context.startingAbilities.length > 0;
-        context.electiveAbilities = context.item.system.abilities ?? [];
-        context.hasElectiveAbilities = context.electiveAbilities.length > 0;
-
-        context.armorAllowances = (context.item.system.armorAllowances ?? []).concat(context.item.system.shieldAllowances);
-        context.hasArmorAllowances = context.armorAllowances.length > 0;
-        
-        context.meleeAllowances = [];
-        context.missileAllowances = [];
-        const weaponAllowances = context.item.system.weaponAllowances ?? [];
-        for (let a of weaponAllowances) {
-          
-          if (a.system.ranged) {
-            context.missileAllowances.push(a);
-          } else {
-            context.meleeAllowances.push(a);
-          }
-        }
-        context.hasMeleeAllowances = context.meleeAllowances.length > 0;
-        context.hasMissileAllowances = context.missileAllowances.length > 0;
-
-        return context;
+    static async #removeAllowance(event) {
+      event.preventDefault();
+      const type = event.target.dataset.type;
+      const key = event.target.dataset.key;
+      console.log(type);
+      console.log(key);
+      const update = {};
+      switch(type) {
+        case "armor":
+          const newArmorAllowances = this.item.system.armorAllowances.filter(a => a !== key);
+          update["system.armorAllowances"] = newArmorAllowances;
+          break;
+        case "weapon":
+          const newWeaponAllowances = this.item.system.weaponAllowances.filter(a => a !== key);
+          update["system.weaponAllowances"] = newWeaponAllowances;
+          break;
+        case "shield":
+          const newShieldAllowances = this.item.system.shieldAllowances.filter(a => a !== key);
+          update["system.shieldAllowances"] = newShieldAllowances;
+          break;
+      }
+      this.item.update(update);
     }
-
+    //#endregion
+    
     /** @inheritdoc */
     async _onDrop(event) {
         const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
@@ -240,9 +181,35 @@ export class BreakCallingSheet extends BreakItemSheet {
         }
     }
 
-    /** @override */
-    _getSubmitData(updateData) {
-        let formData = super._getSubmitData(updateData);
-        return formData;
+    //#region DocumentV2 submit
+    static async #onSubmit(event, form, formData) {
+      event.preventDefault();
+      const updateData = foundry.utils.expandObject(formData.object);
+      if(updateData.system.advancementTable) {
+        const table = Object.keys(updateData.system.advancementTable).map((k, i) => ({...updateData.system.advancementTable[i], rank: i+1}));
+        updateData.system.advancementTable = table;
+      }
+      console.log(this.document);
+      if(updateData.armorAllowance) {
+        updateData.system.armorAllowances = this.document.system.armorAllowances ?? [];
+        if(!updateData.system.armorAllowances.includes(updateData.armorAllowance))
+          updateData.system.armorAllowances.push(updateData.armorAllowance);
+        delete updateData.armorAllowance;
+      }
+      if(updateData.weaponAllowance) {
+        updateData.system.weaponAllowances = this.document.system.weaponAllowances ?? [];
+        if(!updateData.system.weaponAllowances.includes(updateData.weaponAllowance))
+          updateData.system.weaponAllowances.push(updateData.weaponAllowance);
+        delete updateData.weaponAllowance;
+      }
+      if(updateData.shieldAllowance) {
+        updateData.system.shieldAllowances = this.document.system.shieldAllowances ?? [];
+        if(!updateData.system.shieldAllowances.includes(updateData.shieldAllowance))
+          updateData.system.shieldAllowances.push(updateData.shieldAllowance);
+        delete updateData.shieldAllowance;
+      }
+      console.log(updateData);
+      await this.item.update(updateData);
     }
+    //#endregion
 }

@@ -52,7 +52,12 @@
     "ShieldTypeConfig": "Shield type config",
     "ShieldTypeConfiguration": "Shield type configuration",
     "ShieldTypeConfigHint": "Define bonuses and abilities for each shield type.",
-    "ShieldTypeSettings": "Shield type settings"
+    "ShieldTypeSettings": "Shield type settings",
+    "Sizes": "Sizes",
+    "SizesConfig": "Sizes config",
+    "SizesConfiguration": "Sizes configuration",
+    "SizesConfigHint": "Define bonuses and abilities for each size.",
+    "SizeSettings": "Size settings"
   },
 
   "BREAK": {
@@ -248,6 +253,7 @@
       "ShieldType": "Shield type",
       "MissileAllowances": "Missile Allowances",
       "MissileType": "Missile weapon type",
+      "WeaponAllowances": "Weapon allowances",
 
       "TYPE": {
         "Weapon": "Weapon",
@@ -381,6 +387,7 @@
     "PickOrDrag": "Pick or drag",
     "FeatureSelector": "Feature selector",
     "Hands": "Hands",
-    "FreeHand": "Free hand"
+    "FreeHand": "Free hand",
+    "InventorySlots": "Inventory slots"
   }
 }
