@@ -4,7 +4,51 @@
  */
 const {ItemSheetV2} = foundry.applications.sheets;
 const {HandlebarsApplicationMixin} = foundry.applications.api;
+const { DragDrop } = foundry.applications.ux
 export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
+  #dragDrop
+
+  static DEFAULT_OPTIONS = {
+    dragDrop: [{
+      dragSelector: '[data-drag="true"]',
+      dropSelector: '.drop-zone'
+    }]
+  }
+
+  constructor(options = {}) {
+    super(options)
+    this.#dragDrop = this.#createDragDropHandlers()
+  }
+
+  #createDragDropHandlers() {
+    return this.options.dragDrop.map((d) => {
+      d.permissions = {
+        dragstart: this._canDragStart.bind(this),
+        drop: this._canDragDrop.bind(this)
+      }
+      d.callbacks = {
+        dragover: this._onDragOver.bind(this),
+        drop: this._onDrop.bind(this)
+      }
+      return new DragDrop(d)
+    })
+  }
+
+  _canDragStart(selector) {
+    return this.document.isOwner && this.isEditable
+  }
+
+  _canDragDrop(selector) {
+    return this.document.isOwner && this.isEditable
+  }
+
+  _onDragOver(event) {
+    console.log('over')
+  }
+
+  _onDrop(event) {
+    console.log('drop')
+  }
 
   //#region Actions
   static async onDeleteAbility(e) {

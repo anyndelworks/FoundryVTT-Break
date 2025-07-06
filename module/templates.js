@@ -27,7 +27,6 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/break/templates/items/shared/generic-header.hbs",
     "systems/break/templates/items/shared/item-abilities.hbs",
     "systems/break/templates/items/weapon/weapon-details.hbs",
-    "systems/break/templates/items/shared/weapon-type-details.hbs",
     "systems/break/templates/items/armor/armor-details.hbs",
     "systems/break/templates/items/shield/shield-details.hbs",
     "systems/break/templates/items/calling/advancement-table.hbs",
@@ -36,5 +35,5 @@ export const preloadHandlebarsTemplates = async function() {
   ];
 
   // Load the template parts
-  return loadTemplates(templatePaths);
+  return foundry.applications.handlebars.loadTemplates(templatePaths);
 };

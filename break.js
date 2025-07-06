@@ -22,7 +22,6 @@ import { BreakAccessorySheet } from "./module/items/accessory-sheet.js";
 ////// STATUS
 import { BreakCallingSheet } from "./module/items/calling-sheet.js";
 import { BreakSpeciesSheet } from "./module/items/species-sheet.js";
-import { BreakSizeSheet } from "./module/items/size-sheet.js";
 import { BreakHomelandSheet } from "./module/items/homeland-sheet.js";
 import { BreakHistorySheet } from "./module/items/history-sheet.js";
 import { BreakQuirkSheet } from "./module/items/quirk-sheet.js";
@@ -31,6 +30,8 @@ import { BreakAbilitySheet } from "./module/items/ability-sheet.js";
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
 /* -------------------------------------------- */
+
+const {Actors, Items} = foundry.documents.collections;
 
 /**
  * Init hook.
@@ -449,7 +450,7 @@ Hooks.once("init", async function() {
   Actors.unregisterSheet("core", foundry.applications.sheets.ActorSheetV2);
   Actors.registerSheet("break", BreakActorSheet, {types:['character'], makeDefault: true });
   Actors.registerSheet("break", BreakAdversarySheet, {types:['adversary'], makeDefault: true });
-  Items.unregisterSheet("core", ItemSheet);
+  Items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
 /////// EQUIPMENT
   Items.registerSheet("break", BreakWeaponSheet, {types:['weapon'], makeDefault: true });
   Items.registerSheet("break", BreakArmorSheet, {types:['armor'], makeDefault: true });
@@ -462,7 +463,6 @@ Hooks.once("init", async function() {
   Items.registerSheet("break", BreakInjurySheet, {types:['injury'], makeDefault: true });
   Items.registerSheet("break", BreakCallingSheet, {types:['calling'], makeDefault: true });
   Items.registerSheet("break", BreakSpeciesSheet, {types:['species'], makeDefault: true });
-  Items.registerSheet("break", BreakSizeSheet, {types:['size'], makeDefault: true });
   Items.registerSheet("break", BreakHomelandSheet, {types:['homeland'], makeDefault: true });
   Items.registerSheet("break", BreakHistorySheet, {types:['history'], makeDefault: true });
   Items.registerSheet("break", BreakQuirkSheet, { types: ['quirk'], makeDefault: true });

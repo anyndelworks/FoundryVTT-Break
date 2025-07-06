@@ -137,7 +137,6 @@
       "injury",
       "calling",
       "species",
-      "size",
       "homeland",
       "history",
       "quirk",
@@ -201,17 +200,6 @@
       "size": null,
       "innateAbilities": [],
       "maturativeAbilities": []
-    },
-    "size": {
-      "name": "",
-      "mightModifier": 0,
-      "deftnessModifier": 0,
-      "defenseModifier": 0,
-      "inventory": 0,
-      "meleeRestrictions": [],
-      "armorRestrictions": [],
-      "shieldRestrictions": [],
-      "missileRestrictions": []
     },
     "homeland": {
       "name": "",
