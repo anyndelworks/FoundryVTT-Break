@@ -716,7 +716,6 @@
   font-size: var(--font-size-12);
 }
 #active-effects-panel .effect-item .effect-info .description {
-  background: rgba(0, 0, 0, 0.7);
   max-height: 16em;
   overflow-y: auto;
   padding: 0 0.5em;

@@ -178,7 +178,8 @@
       "templates": ["baseItem"]
     },
     "item": {
-      "templates": ["baseItem"]
+      "templates": ["baseItem"],
+      "type": null
     },
     "calling": {
       "name": "",

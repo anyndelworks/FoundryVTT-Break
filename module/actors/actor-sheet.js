@@ -1,6 +1,5 @@
 import { parseInputDelta } from "../../utils/utils.mjs";
 import { RANK_XP} from "../constants.js";
-import { BreakItem } from "../items/item.js";
 import { FeatureSelectionDialog } from "../dialogs/feature-selection-dialog.js";
 
 const allowedItemTypes = [
@@ -109,19 +108,6 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     })
 
     new foundry.applications.ux.ContextMenu.implementation(html[0], "[data-id]", [], {onOpen: this._onOpenContextMenu.bind(this), jQuery: false});
-
-    /*new foundry.applications.ux.DragDrop.implementation({
-          dragSelector: ".draggable",
-          permissions: {
-            dragstart: this._canDragStart.bind(this),
-            drop: this._canDragDrop.bind(this)
-          },
-          callbacks: {
-            dragstart: this._onDragStart.bind(this),
-            dragover: this._onDragOver.bind(this),
-            drop: this._onDrop.bind(this)
-          }
-    }).bind(this.element);*/
   }
 
   async _prepareContext(options) {
@@ -264,7 +250,8 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
     if(data.type !== "Item") return;
     const draggedItem = await fromUuid(data.uuid);
-
+    if(!allowedItemTypes.includes(draggedItem.type)) return;
+    
     switch(draggedItem.type) {
       case "calling":
       case "species":
@@ -281,15 +268,6 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         this._onEquipItem(item);
     }
     return true;
-  }
-
-  async _onDropItem(event, data) {
-    if ( !this.actor.isOwner ) return false;
-    const item = await Item.implementation.fromDropData(data);
-    if(!allowedItemTypes.includes(item.type)) {return false;}
-    if(this.actor.items.some(i => i._id === item._id)) {return false;}
-
-    return BreakItem.createDocuments([item], {pack: this.actor.pack, parent: this.actor, keepId: true});
   }
   //#endregion
 
@@ -340,11 +318,20 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   static async #onSelectFeature(event) {
     event.preventDefault();
     const featureType = event.target.dataset.type;
-
+    let predefinedList = null;
+    const homeland = this.actor.items.find(i => i.type === "homeland");
+    if(featureType === "history" && homeland) {
+      console.log(homeland);
+      predefinedList = await Promise.all(homeland.system.histories.map(async (id) => await fromUuid(id)));
+      predefinedList.forEach(history => {
+        history.from = homeland.name;
+      });
+    }
     new FeatureSelectionDialog({
       itemType: featureType,
       restricted: true,
-      actor: this.document
+      actor: this.document,
+      predefinedList
     }).render(true);
   }
 

@@ -18,7 +18,6 @@ export class BreakAccessorySheet extends BreakItemSheet {
       resizable: true
     },
     actions: {
-      deleteAbility: this.onDeleteAbility,
       editImage: this.onEditImage,
     }
   }

@@ -19,6 +19,7 @@ import { ActiveEffectsPanel } from "./module/apps/active-effects-list.js";
 import { BreakGiftSheet } from "./module/items/gift-sheet.js";
 import { BreakOutfitSheet } from "./module/items/outfit-sheet.js";
 import { BreakAccessorySheet } from "./module/items/accessory-sheet.js";
+import { BreakGenericItemSheet } from "./module/items/generic-item-sheet.js";
 ////// STATUS
 import { BreakCallingSheet } from "./module/items/calling-sheet.js";
 import { BreakSpeciesSheet } from "./module/items/species-sheet.js";
@@ -456,10 +457,11 @@ Hooks.once("init", async function() {
   Items.registerSheet("break", BreakArmorSheet, {types:['armor'], makeDefault: true });
   Items.registerSheet("break", BreakShieldSheet, { types: ['shield'], makeDefault: true });
 /////// INVENTORY
-  Items.registerSheet("break", BreakGiftSheet, { types: ['gift'], makeDefault: true });
+  Items.registerSheet("break", BreakGenericItemSheet, { types: ['item'], makeDefault: true });
   Items.registerSheet("break", BreakOutfitSheet, { types: ['outfit'], makeDefault: true });
   Items.registerSheet("break", BreakAccessorySheet, { types: ['accessory'], makeDefault: true });
 /////// STATUS
+  Items.registerSheet("break", BreakGiftSheet, { types: ['gift'], makeDefault: true });
   Items.registerSheet("break", BreakInjurySheet, {types:['injury'], makeDefault: true });
   Items.registerSheet("break", BreakCallingSheet, {types:['calling'], makeDefault: true });
   Items.registerSheet("break", BreakSpeciesSheet, {types:['species'], makeDefault: true });

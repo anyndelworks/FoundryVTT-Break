@@ -4,11 +4,13 @@ export class FeatureSelectionDialog extends HandlebarsApplicationMixin(Applicati
   
   #itemType;
   #restricted;
+  #predefinedList;
 
   constructor(...args) {
     super(...args);
     this.#itemType = this.options.itemType ?? "ability";
     this.#restricted = this.options.restricted ?? false;
+    this.#predefinedList = this.options.predefinedList;
     this.actor = this.options.actor;
   }
 
@@ -106,7 +108,12 @@ export class FeatureSelectionDialog extends HandlebarsApplicationMixin(Applicati
       {name: "weapon", i18n: "TYPES.Item.weapon", active: "weapon" === this.#itemType, disabled: this.#restricted && "weapon" !== this.#itemType},
       {name: "weaponType", i18n: "TYPES.Item.weapon-type", active: "weaponType" === this.#itemType, disabled: this.#restricted && "weaponType" !== this.#itemType},
     ];
-    context.itemList = await this._getItemsOfType(context.itemType);
+    if (this.#predefinedList) {
+      console.log(this.#predefinedList)
+      context.itemList = this.#predefinedList;
+    } else {
+      context.itemList = await this._getItemsOfType(context.itemType);
+    }
     return context;
   }
 

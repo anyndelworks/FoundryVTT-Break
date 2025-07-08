@@ -1,10 +1,10 @@
-<article id="active-effects-panel">
+<div id="active-effects-panel">
     {{#each effects as |effect|}}
         <div class="effect-item" data-item-id="{{effect._id}}">
             <div class="effect-info">
                 <h1>
                     {{effect.name}}
-                    <a data-action="send-to-chat" data-tooltip="{{localize "BREAK.SendToChat"}}"><i class="fa-solid fa-fw fa-comment-alt" ></i></a>
+                    <a data-action="linkItem" data-tooltip="{{localize "BREAK.SendToChat"}}"><i class="fa-solid fa-fw fa-comment-alt" ></i></a>
                 </h1>
                 <div class="description">
                     {{{effect.description}}}
@@ -17,4 +17,4 @@
             </div>
         </div>
     {{/each}}
-</article>
+</div>

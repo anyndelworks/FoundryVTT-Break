@@ -7,11 +7,11 @@ const {HandlebarsApplicationMixin} = foundry.applications.api;
 const { DragDrop } = foundry.applications.ux
 export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
   #dragDrop
-
+  allowedItemTypes = [];
   static DEFAULT_OPTIONS = {
     dragDrop: [{
       dragSelector: '[data-drag="true"]',
-      dropSelector: '.drop-zone'
+      dropSelector: ''
     }]
   }
 
@@ -27,11 +27,15 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
         drop: this._canDragDrop.bind(this)
       }
       d.callbacks = {
-        dragover: this._onDragOver.bind(this),
         drop: this._onDrop.bind(this)
       }
       return new DragDrop(d)
     })
+  }
+
+  async _onRender(context, options) {
+    await super._onRender(context, options);
+    this.#dragDrop.forEach((d) => d.bind(this.element))
   }
 
   _canDragStart(selector) {
@@ -42,19 +46,20 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     return this.document.isOwner && this.isEditable
   }
 
-  _onDragOver(event) {
-    console.log('over')
+  async _onDrop(event) {
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
+    if (data.type !== "Item") return;
+    const draggedItem = await fromUuid(data.uuid);
+
+    if (!this.allowedItemTypes.includes(draggedItem.type)) return;
+    this._onDropValidItem(draggedItem);
   }
 
-  _onDrop(event) {
-    console.log('drop')
+  _onDropValidItem(item) {
+    console.log(item);
   }
 
   //#region Actions
-  static async onDeleteAbility(e) {
-    this.item.onDeleteAbility(e);
-  }
-
   static async onEditImage(event, target) {
     const field = target.dataset.field || "img"
     const current = foundry.utils.getProperty(this.document, field)
@@ -67,17 +72,8 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
     fp.render(true)
   }
-  //#endregion
-  /*_getHeaderButtons() {
-    let buttons = super._getHeaderButtons();
-    return [{
-      label: "",
-      class: "header-chat-button",
-      icon: "fas fa-comment",
-      onclick: ev => this._onChatButton(ev)
-    }].concat(buttons);
 
-  }*/
+  //#endregion
 
   _onChatButton(ev) {
     this.object.sendToChat();

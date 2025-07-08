@@ -1,7 +1,12 @@
 import { BreakItemSheet } from "./item-sheet.js";
 
 export class BreakHistorySheet extends BreakItemSheet {
-
+    allowedItemTypes = [
+        "weapon",
+        "shield",
+        "armor",
+        "item"
+    ];
     //#region DocumentV2 initialization and setup
     static DEFAULT_OPTIONS = {
         ...this.DEFAULT_OPTIONS,
@@ -22,8 +27,7 @@ export class BreakHistorySheet extends BreakItemSheet {
             editImage: this.onEditImage,
             addPurview: this.#addPurview,
             deletePurview: this.#deletePurview,
-            deleteGear: this.#deleteStartingGear,
-            drop: this.prototype._onDrop
+            deleteItem: this.#onDeleteAttachedItem
         }
     }
 
@@ -37,7 +41,6 @@ export class BreakHistorySheet extends BreakItemSheet {
     }
 
     async _prepareContext(options) {
-        console.log(this.DEFAULT_OPTIONS)
         const context = await super._prepareContext(options);
         context.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.description, {
             secrets: this.document.isOwner,
@@ -46,7 +49,7 @@ export class BreakHistorySheet extends BreakItemSheet {
         context.name = context.document.system.name;
         context.description = context.document.system.description;
         context.purviews = context.document.system.purviews ?? [];
-        context.startingGear = context.document.system.startingGear ?? [];
+        context.startingGear = await Promise.all(context.document.system.startingGear.map(async (id) => await fromUuid(id))) ?? [];
         return context;
     }
     //#endregion
@@ -64,11 +67,20 @@ export class BreakHistorySheet extends BreakItemSheet {
         this.item.update({"system.purviews": this.item.system.purviews});
     }
 
-    static async #deleteStartingGear(event) {
-        this.document.deleteStartingGear(event);
+    static async #onDeleteAttachedItem(event) {
+        const element = event.target;
+        const id = element.dataset?.id;
+        if(id) {
+            const startingGear = this.item.system.startingGear.filter(uuid => {
+                const split = uuid.split(".");
+                return split[split.length-1] !== id;
+            });
+            this.item.update({"system.startingGear": startingGear});
+        }
     }
     //#endregion
     
+    //#region Events
     async updatePurview(event) {
         const element = event.currentTarget;
         const index = parseInt(element.id.split('-')[1], 10);
@@ -76,27 +88,14 @@ export class BreakHistorySheet extends BreakItemSheet {
         this.item.update({"system.purviews": this.item.system.purviews});
     }
 
-    async _onDrop(event) {
-        console.log(event);
-        const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
-        if (data.type !== "Item") return;
-        const draggedItem = await fromUuid(data.uuid);
-
-        const disallowedItemTypes = [
-            "injury",
-            "calling",
-            "species",
-            "homeland",
-            "history",
-            "quirk",
-            "ability",
-        ]
-        if (disallowedItemTypes.includes(draggedItem.type)) return;
-        
-        const startingGearArray = this.item.system.startingGear ?? [];
-        startingGearArray.push(draggedItem.toObject());
-        this.item.update({"system.startingGear": startingGearArray});
+    _onDropValidItem(item) {
+        const startingGear = this.item.system.startingGear;
+        if(!startingGear.includes(item.uuid)) {
+            startingGear.push(item.uuid);
+            this.item.update({"system.startingGear": startingGear});
+        }
     }
+    //#endregion
 
     //#region DocumentV2 submit
     static async #onSubmit(event, form, formData) {

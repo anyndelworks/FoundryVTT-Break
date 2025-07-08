@@ -16,7 +16,7 @@
                 {{#each startingGear}}
                     <div style="display: flex; margin-bottom: 6px;align-items: center; width: 100%;">
                         <label class="tooltip">{{this.name}}<span class="tooltiptext">{{{this.system.description}}}</span></label>
-                        <button class="delete-gear" data-id="{{this._id}}" style="margin-left: auto; max-width: 32px; margin-right: 8px;"><i class="fas fa-trash" style="margin: 0px;"></i></button>
+                        <button data-action="deleteItem" class="delete-gear" data-id="{{this._id}}" style="margin-left: auto; max-width: 32px; margin-right: 8px;"><i class="fas fa-trash" style="margin: 0px;"></i></button>
                     </div>
                 {{/each}}
             </div>

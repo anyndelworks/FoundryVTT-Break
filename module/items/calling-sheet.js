@@ -18,7 +18,6 @@ export class BreakCallingSheet extends BreakItemSheet {
         resizable: true
       },
       actions: {
-        deleteAbility: this.onDeleteAbility,
         editImage: this.onEditImage,
         addAdvancementRank: this.#addAdvancementRank,
         removeAdvancementRank: this.#removeAdvancementRank,
