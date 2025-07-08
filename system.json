@@ -20,44 +20,6 @@
   ],
   "esmodules": ["break.js"],
   "styles": ["styles/break.css"],
-  "packs": [
-    {
-      "name": "abilities",
-      "label": "Abilities",
-      "system": "break",
-      "path": "packs/abilities",
-      "type": "Item",
-      "private": false,
-      "flags": {}
-    },
-    {
-      "name": "quirks",
-      "label": "Quirks",
-      "system": "break",
-      "path": "packs/quirks",
-      "type": "Item",
-      "private": false,
-      "flags": {}
-    },
-    {
-      "name": "gifts",
-      "label": "Gifts",
-      "system": "break",
-      "path": "packs/gifts",
-      "type": "Item",
-      "private": false,
-      "flags": {}
-    },
-    {
-      "name": "gear",
-      "label": "Gear",
-      "system": "break",
-      "path": "packs/gear",
-      "type": "Item",
-      "private": false,
-      "flags": {}
-    }
-  ],
   "languages": [
     {
       "lang": "en",
