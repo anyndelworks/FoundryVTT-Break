@@ -52,7 +52,6 @@ export function getResultText(result){
 }
 
 function applyContestBonus(base, target, range) {
-    console.log(`Bonus Base ${base} target ${target} with range ${range}`)
     const difference = target-base;
     if(Math.abs(difference) >= range) {
         return Math.sign(difference)*range;
@@ -61,7 +60,6 @@ function applyContestBonus(base, target, range) {
 }
 
 function applyContestPenalty(base, target, range) {
-    console.log(`Penalty Base ${base} target ${target} with range ${range}`)
     const difference = target-base;
     if(base > target || Math.abs(difference) < range) {
         return +range;
@@ -182,11 +180,11 @@ export async function roll(flavor, rollType, targetValue, advantageType, bonusTy
     } else {
         resultText = getResultText(calculateRollResult(targetValue, definitiveRoll.total, definitiveRoll.total + statBonus + bonusTotal + customBonusResult));
     }
-    console.log(this);
+    
     return definitiveRoll.toMessage({
         user: game.user.id,
         speaker: ChatMessage.getSpeaker({ actor: this }),
-        content: await renderTemplate("systems/break/templates/rolls/roll-check.hbs", 
+        content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-check.hbs", 
         {
             rollFormula,
             failedRoll,

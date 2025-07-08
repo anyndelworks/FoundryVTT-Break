@@ -9,40 +9,12 @@ export class BreakItem extends Item {
     super.prepareDerivedData();
   }
 
-  async onDeleteAbility(event) {
-    event.preventDefault();
-    const button = event.currentTarget;
-    const id = button.dataset.id;
-
-    const itemIndex = this.item.system.abilities?.findIndex(i => i._id == id);
-    if(itemIndex >= 0) {
-      this.item.system.abilities.splice(itemIndex, 1);
-      this.item.update({"system.abilities": this.item.system.abilities});
+  async onDeleteAttachedItem(id) {
+    const item = this.items.find(i => i._id == id);
+    if(item) {
+      item.delete();
     }
-  }
-
-  async onDeleteGear(event) {
-    event.preventDefault();
-    const button = event.currentTarget;
-    const id = button.dataset.id;
-
-    const itemIndex = this.item.system.gear?.findIndex(i => i._id == id);
-    if(itemIndex >= 0) {
-      this.item.system.gear.splice(itemIndex, 1);
-      this.item.update({"system.gear": this.item.system.gear});
-    }
-  }
-
-  async onDeleteStartingGear(event) {
-    event.preventDefault();
-    const button = event.currentTarget;
-    const id = button.dataset.id;
-
-    const itemIndex = this.item.system.startingGear?.findIndex(i => i._id == id);
-    if(itemIndex >= 0) {
-      this.item.system.startingGear.splice(itemIndex, 1);
-      this.item.update({"system.startingGear": this.item.system.startingGear});
-    }
+    return this;
   }
 
   mergeAndPruneAbilities(newAbilities) {
@@ -77,11 +49,10 @@ export class BreakItem extends Item {
     itemData.isQuirk = this.type === "quirk";
     itemData.isGift = this.type === "gift";
     itemData.isInjury = this.type === "injury";
-    itemData.isRanged = this.system.weaponType1?.system.ranged || this.system.weaponType2?.system.ranged;
-    itemData.isMelee = (this.system.weaponType1 && !this.system.weaponType1.system.ranged) || (this.system.weaponType2 && !this.system.weaponType2.system.ranged);
+    itemData.isRanged = this.system.ranged;
+    itemData.isMelee = this.system.melee;
     itemData.isGear = this.type != "quirk" && this.type != "ability" && this.type != "calling" && this.type != "gift" && this.type != "injury";
-
-    const html = await renderTemplate("systems/break/templates/chat/item.html", itemData);
+    const html = await foundry.applications.handlebars.renderTemplate("systems/break/templates/chat/item.html", itemData);
     const chatData = {
       user: game.user.id,
       rollMode: game.settings.get("core", "rollMode"),

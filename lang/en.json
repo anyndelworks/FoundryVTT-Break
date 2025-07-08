@@ -1,46 +1,4 @@
 {
-  "SETTINGS": {
-    "SimpleMacroShorthandN": "Shortened Macro Syntax",
-    "SimpleMacroShorthandL": "Enable a shortened macro syntax which allows referencing aptitudes directly, for example @str instead of @aptitudes.str.value. Disable this setting if you need the ability to reference the full aptitude model, for example @aptitudes.str.label.",
-    "SimpleInitFormulaN": "Initiative Formula",
-    "SimpleInitFormulaL": "Enter an initiative formula, such as d20+@dex"
-  },
-
-  "SIMPLE": {
-    "ItemCreate": "Create Item",
-    "ItemEdit": "Edit Item",
-    "ItemDelete": "Delete Item",
-    "ItemNew": "New Item",
-  
-    "NotifyInitFormulaUpdated": "Initiative formula was updated to",
-    "NotifyInitFormulaInvalid": "Initiative formula was invalid",
-    "NotifyGroupDuplicate": "Attribute group already exists.",
-    "NotifyGroupAttrDuplicate": "Attribute group already exists as an aptitude.",
-    "NotifyGroupAlphanumeric": "Attribute group names may not contain spaces or periods.",
-    "NotifyGroupReserved": "Attribute group \"{key}\" is reserved and cannot be used.",
-    "NotifyAttrDuplicate": "Attribute key already exists as a group.",
-    "NotifyAttrInvalid": "Attribute keys may not contain spaces or periods.",
-  
-    "ResourceMin": "Min",
-    "ResourceValue": "Value",
-    "ResourceMax": "Max",
-  
-    "DefineTemplate": "Define as Template",
-    "UnsetTemplate": "Unset Template",
-    "NoTemplate": "No Template",
-  
-    "AttributeKey": "Attribute Key",
-    "AttributeValue": "Value",
-    "AttributeLabel": "Label",
-    "AttributeDtype": "Data Type",
-  
-    "DeleteGroup": "Delete group?",
-    "DeleteGroupContent": "Do you wish to delete this group? This will delete the following group and all aptitudes included in it: ",
-  
-    "Create": "Create",
-    "New": "New"
-  },
-
   "TYPES": {
     "Actor": {
       "gmc": "GMC",
@@ -74,8 +32,32 @@
       "history": "History",
       "quirk": "Quirk",
       "ability": "Ability",
-      "advancement": "Advancement"
+      "advancement": "Advancement",
+      "item": "Item"
     }
+  },
+
+  "CONFIG": {
+    "ArmorTypes": "Armor types",
+    "ArmorTypeConfig": "Armor type config",
+    "ArmorTypeConfiguration": "Armor type configuration",
+    "ArmorTypeConfigHint": "Define bonuses and abilities for each armor type.",
+    "ArmorTypeSettings": "Armor type settings",
+    "WeaponTypes": "Weapon types",
+    "WeaponTypeConfig": "Weapon type config",
+    "WeaponTypeConfiguration": "Weapon type configuration",
+    "WeaponTypeConfigHint": "Define bonuses and abilities for each weapon type.",
+    "WeaponTypeSettings": "Weapon type settings",
+    "ShieldTypes": "Shield types",
+    "ShieldTypeConfig": "Shield type config",
+    "ShieldTypeConfiguration": "Shield type configuration",
+    "ShieldTypeConfigHint": "Define bonuses and abilities for each shield type.",
+    "ShieldTypeSettings": "Shield type settings",
+    "Sizes": "Sizes",
+    "SizesConfig": "Sizes config",
+    "SizesConfiguration": "Sizes configuration",
+    "SizesConfigHint": "Define bonuses and abilities for each size.",
+    "SizeSettings": "Size settings"
   },
 
   "BREAK": {
@@ -238,6 +220,9 @@
       "StartingShort": "Start.",
       "StandardShort": "Stand.",
       "AdvancedShort": "Adv.",
+      "Starting": "Starting",
+      "Standard": "Standard",
+      "Advanced": "Advanced",
       "StartingLong": "Starting Abilities",
       "StandardLong": "Standard Abilities",
       "AdvancedLong": "Advanced Abilities",
@@ -262,9 +247,13 @@
       "MissileRestrictions": "Missile Restrictions",
 
       "MeleeAllowances": "Melee Allowances",
+      "MeleeType": "Melee weapon type",
       "ArmorAllowances": "Armor Allowances",
       "ShieldAllowances": "Shield Allowances",
+      "ShieldType": "Shield type",
       "MissileAllowances": "Missile Allowances",
+      "MissileType": "Missile weapon type",
+      "WeaponAllowances": "Weapon allowances",
 
       "TYPE": {
         "Weapon": "Weapon",
@@ -348,6 +337,7 @@
     "Contest": "Contest",
     "RollType": "Roll type",
     "Attack": "Attack",
+    "Attacks": "Attacks",
     "ActorAttacksActor":"{name} attacks {target}",
     "Slots": "Slots",
     "Details": "Details",
@@ -393,6 +383,11 @@
     "AdvancementTable": "Advancement Table",
     "Modifiers": "Modifiers",
     "Equip": "Equip",
-    "UnEquip": "Unequip"
+    "UnEquip": "Unequip",
+    "PickOrDrag": "Pick or drag",
+    "FeatureSelector": "Feature selector",
+    "Hands": "Hands",
+    "FreeHand": "Free hand",
+    "InventorySlots": "Inventory slots"
   }
 }

@@ -2,113 +2,122 @@ import { BreakItemSheet } from "./item-sheet.js";
 
 export class BreakWeaponSheet extends BreakItemSheet {
 
-  /** @inheritdoc */
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["break", "sheet", "item", "weapon"],
-      template: "systems/break/templates/items/weapon-sheet.hbs",
+  //#region DocumentV2 initialization and setup
+  static DEFAULT_OPTIONS = {
+    tag: "form",
+    classes: ["break", "sheet", "item", "weapon"],
+    position: {
       width: 600,
       height: 480,
-      dragDrop: [{dragSelector: null, dropSelector: null}]
-    });
+    },
+    form: {
+      handler: BreakWeaponSheet.#onSubmit,
+      submitOnChange: true
+    },
+    window: {
+      resizable: true
+    },
+    actions: {
+      editImage: this.onEditImage,
+    }
   }
 
-  /** @inheritdoc */
-  activateListeners(html) {
-    super.activateListeners(html);
-    if ( !this.isEditable ) return;
-    html.find(".delete-ability").on("click", this.item.onDeleteAbility.bind(this));
+  static PARTS = {
+    header: {
+      template: "systems/break/templates/items/shared/item-header.hbs"
+    },
+    body: {
+      template: "systems/break/templates/items/weapon/weapon-sheet.hbs"
+    }
   }
 
-  /** @inheritdoc */
-  async getData(options) {
-    const context = await super.getData(options);
-    context.descriptionHTML = await TextEditor.enrichHTML(context.item.system.description, {
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    context.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.description, {
       secrets: this.document.isOwner,
       async: true
     });
     context.isWeapon = true;
-    context.isRanged = context.item.system.weaponType1?.system.ranged || context.item.system.weaponType2?.system.ranged;
-    context.isMelee = (context.item.system.weaponType1 && !context.item.system.weaponType1.system.ranged) || (context.item.system.weaponType2 && !context.item.system.weaponType2.system.ranged);
-    context.abilities = context.item.system.abilities ?? [];
+    const weaponTypes = foundry.utils.deepClone(game.settings.get("break", "weaponTypes"));
+    context.itemTypes = Object.keys(weaponTypes).map(k => ({
+      key: k,
+      label: weaponTypes[k].label,
+      active1: context.document.system.weaponType1 === k,
+      active2: context.document.system.weaponType2 === k
+    }));
+    const weaponType1Ranged = weaponTypes[context.document.system.weaponType1]?.ranged;
+    const weaponType2Ranged = weaponTypes[context.document.system.weaponType2]?.ranged;
+    context.isRanged = weaponType1Ranged || weaponType2Ranged;
+    context.isMelee = (context.document.system.weaponType1 && !weaponType1Ranged) || (context.document.system.weaponType2 && !weaponType2Ranged);
+    context.abilities = context.document.system.abilities ?? [];
     return context;
-  }  
+  }
+  //#endregion
 
   /** @inheritdoc */
   async _onDrop(event) {
-    const data = TextEditor.getDragEventData(event);
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
     if(data.type !== "Item") return;
     const draggedItem = await fromUuid(data.uuid)
     if(draggedItem.type === "ability" && draggedItem.system.subtype === "weapon") {
       const abilityArray = this.item.system.abilities ?? [];
       abilityArray.push(draggedItem.toObject());
       this.item.update({"system.abilities": abilityArray});
-    } else if(draggedItem.type === "weapon-type") {
-      if(event.target.id === "weaponType1" ){
-        const prunedAbilities = this.item.mergeAndPruneAbilities(draggedItem.system.abilities ?? []);
-        await this.item.update({"system.weaponType1": draggedItem.toObject(), "system.abilities": prunedAbilities});
-        this._onSetWeaponType();
-      } else if(event.target.id === "weaponType2"){
-        const prunedAbilities = this.item.mergeAndPruneAbilities(draggedItem.system.abilities ?? []);
-        await this.item.update({"system.weaponType2": draggedItem.toObject(), "system.abilities": prunedAbilities});
-        this._onSetWeaponType();
-      }
     }
   }
 
-  _onSetWeaponType() {
-    const type1 = this.item.system.weaponType1;
-    const type2 = this.item.system.weaponType2
+  _onSetWeaponType(newMainType, newSecondaryType) {
+    const weaponTypes = foundry.utils.deepClone(game.settings.get("break", "weaponTypes"));
+
     const updates = {};
     let lowerExtraDamage = 0;
     let lowerRangedExtraDamage = 0;
-    let higherAttackBonus = 0;
-    let higherRangedAttackBonus = 0;
     let higherSlots = 0;
     let itemValue = 0;
     let higherRange = 0;
     let lowerLoadingTime = 0;
+    let ranged = false;
+    let melee = false;
 
     const checkValues = (type) => {
       if(type) {
-        if (type.system.ranged) {
-          if (type.system.extraDamage < lowerRangedExtraDamage || lowerRangedExtraDamage == 0)
-            lowerRangedExtraDamage = type.system.extraDamage
-          if (type.system.attackBonus > higherRangedAttackBonus)
-            higherRangedAttackBonus = type.system.attackBonus
-          if (type.system.range > higherRange)
-            higherRange = type.system.range
-          if (type.system.loadingTime < lowerLoadingTime || lowerLoadingTime == 0)
-            lowerLoadingTime = type.system.loadingTime
+        if (type.ranged) {
+          if (type.extraDamage < lowerRangedExtraDamage || lowerRangedExtraDamage == 0)
+            lowerRangedExtraDamage = type.extraDamage
+          if (type.range > higherRange)
+            higherRange = type.range
+          if (type.loadingTime < lowerLoadingTime || lowerLoadingTime == 0)
+            lowerLoadingTime = type.loadingTime
+          ranged = true;
         }
         else {
-          if (type.system.extraDamage < lowerExtraDamage || lowerExtraDamage == 0)
-            lowerExtraDamage = type.system.extraDamage
-          if (type.system.attackBonus > higherAttackBonus)
-            higherAttackBonus = type.system.attackBonus
+          if (type.extraDamage < lowerExtraDamage || lowerExtraDamage == 0)
+            lowerExtraDamage = type.extraDamage
+          melee = true;
         }
-        if(type.system.slots > higherSlots) {
-          higherSlots = type.system.slots;
+        if(type.slots > higherSlots) {
+          higherSlots = type.slots;
         }
-        if(type.system.value) {
-          itemValue += type.system.value.stones;
-          itemValue += type.system.value.coins*10;
-          itemValue += type.system.value.gems*1000;  
+        if(type.value) {
+          itemValue += type.value.stones;
+          itemValue += type.value.coins*10;
+          itemValue += type.value.gems*1000;  
         }
       }
     }
-
-    checkValues(type1);
-    checkValues(type2);    
-    if(type1 && type2)
+    if(newMainType)
+      checkValues(weaponTypes[newMainType]);
+    if(newSecondaryType)
+      checkValues(weaponTypes[newSecondaryType]);    
+    if(newMainType && newSecondaryType)
       itemValue *= 2;
     updates["system.extraDamage"] = lowerExtraDamage;
     updates["system.rangedExtraDamage"] = lowerRangedExtraDamage;
-    updates["system.attackBonus"] = higherAttackBonus;
-    updates["system.rangedAttackBonus"] = higherRangedAttackBonus;
     updates["system.slots"] = higherSlots;
     updates["system.loadingTime"] = lowerLoadingTime;
     updates["system.range"] = higherRange;
+    updates["system.ranged"] = ranged;
+    updates["system.melee"] = melee;
     const gems = Math.floor(itemValue/1000);
     const coins = Math.floor((itemValue-gems*1000)/10);
     const stones = itemValue-(gems*1000)-(coins*10);
@@ -117,8 +126,20 @@ export class BreakWeaponSheet extends BreakItemSheet {
       coins,
       stones
     }
-
-    this.item.update(updates);
+    return updates;
   }
+
+  //#region DocumentV2 submit
+    static async #onSubmit(event, form, formData) {
+      event.preventDefault();
+      let updateData = foundry.utils.expandObject(formData.object);
+
+      if(updateData.system.weaponType1 !== this.item.system.weaponType1 || updateData.system.weaponType2 !== this.item.system.weaponType2) {
+        const updates = this._onSetWeaponType(updateData.system.weaponType1, updateData.system.weaponType2);
+        updateData = {...updateData, ...updates};
+      }
+      await this.item.update(updateData);
+    }
+  //#endregion
 }
   

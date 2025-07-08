@@ -27,21 +27,21 @@
                     {{> "systems/break/templates/actors/adversary/parts/sheet-combat.html"}}
                     {{> "systems/break/templates/actors/adversary/parts/simplified-sheet-aptitudes.html"}}
                 </div>
-                {{> "systems/break/templates/actors/parts/sheet-abilities.html"}}
+                {{> "systems/break/templates/actors/shared/sheet-abilities.html"}}
                 <div class="flexcol" style="row-gap:12px;margin-top: 12px;">
                     <div class="section-header" style="margin-bottom:0px;">{{localize "BREAK.Weapons"}}</div>
                     {{#each weapons}}
-                    {{> "systems/break/templates/actors/parts/sheet-weapon-card.hbs" weapon=this}}
+                    {{> "systems/break/templates/actors/shared/sheet-weapon-card.hbs" weapon=this}}
                     {{/each}}
                 </div>
             </div>
             <div class="tab description" data-group="primary" data-tab="inventory">
                 <div style="display:flex;column-gap:24px;">
                     <div style="width: 100%;">
-                        {{> "systems/break/templates/actors/parts/sheet-equipment.hbs"}}
-                        {{> "systems/break/templates/actors/parts/sheet-bags.hbs"}}
+                        {{> "systems/break/templates/actors/shared/sheet-equipment.hbs"}}
+                        {{> "systems/break/templates/actors/shared/sheet-bags.hbs"}}
                     </div>
-                    {{> "systems/break/templates/actors/parts/sheet-bag-content.hbs"}}
+                    {{> "systems/break/templates/actors/shared/sheet-bag-content.hbs"}}
                 </div>
             </div>
             <div class="tab misc" data-group="primary" data-tab="misc">

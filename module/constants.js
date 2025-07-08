@@ -11,10 +11,22 @@ BREAK.ability_types = {
     armor: "BREAK.GEAR.TYPE.Armor"
 }
 
-BREAK.sizes = {
-    small: "BREAK.SPECIES.SIZE.Small",
-    medium: "BREAK.SPECIES.SIZE.Medium",
-    large: "BREAK.SPECIES.SIZE.Large"
+BREAK.ability_levels = {
+    starting: "BREAK.ABILITIES.Starting",
+    standard: "BREAK.ABILITIES.Standard",
+    advanced: "BREAK.ABILITIES.Advanced"
+}
+
+BREAK.item_types = {
+    wayfinding: "TYPES.Item.wayfinding",
+    illumination: "TYPES.Item.illumination",
+    kit: "TYPES.Item.kit",
+    book: "TYPES.Item.book",
+    consumable: "TYPES.Item.consumable",
+    combustible: "TYPES.Item.combustible",
+    miscellaneous: "TYPES.Item.miscellaneous",
+    curiosity: "TYPES.Item.curiosity",
+    otherworldly: "TYPES.Item.otherworld",
 }
 
 export default BREAK;

@@ -1,41 +1,86 @@
 import { BreakItemSheet } from "./item-sheet.js";
 
 export class BreakHistorySheet extends BreakItemSheet {
-
-    /** @inheritdoc */
-    static get defaultOptions() {
-      return foundry.utils.mergeObject(super.defaultOptions, {
+    allowedItemTypes = [
+        "weapon",
+        "shield",
+        "armor",
+        "item"
+    ];
+    //#region DocumentV2 initialization and setup
+    static DEFAULT_OPTIONS = {
+        ...this.DEFAULT_OPTIONS,
+        tag: "form",
         classes: ["break", "sheet", "history"],
-        template: "systems/break/templates/items/history-sheet.hbs",
-        width: 600,
-        height: 480,
-        dragDrop: [{dragSelector: null, dropSelector: null}]
-      });
+        position: {
+            width: 600,
+            height: 480,
+        },
+        form: {
+            handler: BreakHistorySheet.#onSubmit,
+            submitOnChange: true
+        },
+        window: {
+            resizable: true
+        },
+        actions: {
+            editImage: this.onEditImage,
+            addPurview: this.#addPurview,
+            deletePurview: this.#deletePurview,
+            deleteItem: this.#onDeleteAttachedItem
+        }
     }
+
+    static PARTS = {
+        header: {
+            template: "systems/break/templates/items/shared/generic-header.hbs"
+        },
+        body: {
+            template: "systems/break/templates/items/history/history-sheet.hbs"
+        }
+    }
+
+    async _prepareContext(options) {
+        const context = await super._prepareContext(options);
+        context.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.description, {
+            secrets: this.document.isOwner,
+            async: true
+        });
+        context.name = context.document.system.name;
+        context.description = context.document.system.description;
+        context.purviews = context.document.system.purviews ?? [];
+        context.startingGear = await Promise.all(context.document.system.startingGear.map(async (id) => await fromUuid(id))) ?? [];
+        return context;
+    }
+    //#endregion
   
-    /** @inheritdoc */
-    activateListeners(html) {
-        super.activateListeners(html);
-        if ( !this.isEditable ) return;
-        html.find(".delete-gear").on("click", this.item.onDeleteStartingGear.bind(this));
-        html.find(".delete-purview").on("click", this.deletePurview.bind(this));
-        html.find(".add-purview").on("click", this.addPurview.bind(this));
-
-        html.on('change', '.purview-input', this.updatePurview.bind(this));
-    }
-
-    async deletePurview(event) {
-        event.preventDefault();
-        const index = parseInt(event.currentTarget.id);
-        this.item.system.purviews.splice(index, 1);
-        this.item.update({"system.purviews": this.item.system.purviews});
-    }
-
-    async addPurview(_) {
+    //#region Actions
+    static async #addPurview() {
         this.item.system.purviews.push("");
         this.item.update({"system.purviews": this.item.system.purviews});
     }
 
+    static async #deletePurview(event) {
+        event.preventDefault();
+        const index = parseInt(event.target.id);
+        this.item.system.purviews.splice(index, 1);
+        this.item.update({"system.purviews": this.item.system.purviews});
+    }
+
+    static async #onDeleteAttachedItem(event) {
+        const element = event.target;
+        const id = element.dataset?.id;
+        if(id) {
+            const startingGear = this.item.system.startingGear.filter(uuid => {
+                const split = uuid.split(".");
+                return split[split.length-1] !== id;
+            });
+            this.item.update({"system.startingGear": startingGear});
+        }
+    }
+    //#endregion
+    
+    //#region Events
     async updatePurview(event) {
         const element = event.currentTarget;
         const index = parseInt(element.id.split('-')[1], 10);
@@ -43,49 +88,20 @@ export class BreakHistorySheet extends BreakItemSheet {
         this.item.update({"system.purviews": this.item.system.purviews});
     }
 
-    /** @inheritdoc */
-    async getData(options) {
-        const context = await super.getData(options);
-        context.descriptionHTML = await TextEditor.enrichHTML(context.item.system.description, {
-            secrets: this.document.isOwner,
-            async: true
-        });
-        context.name = context.item.system.name;
-        context.description = context.item.system.description;
-        context.purviews = context.item.system.purviews ?? [];
-        context.startingGear = context.item.system.startingGear ?? [];
-        return context;
+    _onDropValidItem(item) {
+        const startingGear = this.item.system.startingGear;
+        if(!startingGear.includes(item.uuid)) {
+            startingGear.push(item.uuid);
+            this.item.update({"system.startingGear": startingGear});
+        }
     }
+    //#endregion
 
-    /** @inheritdoc */
-    async _onDrop(event) {
-        const data = TextEditor.getDragEventData(event);
-        if (data.type !== "Item") return;
-        const draggedItem = await fromUuid(data.uuid);
-
-        const disallowedItemTypes = [
-            "weapon-type",
-            "armor-type",
-            "shield-type",
-            "injury",
-            "calling",
-            "species",
-            "homeland",
-            "history",
-            "quirk",
-            "ability",
-            "advancement"
-        ]
-        if (disallowedItemTypes.includes(draggedItem.type)) return;
-        
-        const startingGearArray = this.item.system.startingGear ?? [];
-        startingGearArray.push(draggedItem.toObject());
-        this.item.update({"system.startingGear": startingGearArray});
+    //#region DocumentV2 submit
+    static async #onSubmit(event, form, formData) {
+        event.preventDefault();
+        const updateData = foundry.utils.expandObject(formData.object);
+        await this.item.update(updateData);
     }
-
-    /** @override */
-    _getSubmitData(updateData) {
-        let formData = super._getSubmitData(updateData);
-        return formData;
-    }
+    //#endregion
 }

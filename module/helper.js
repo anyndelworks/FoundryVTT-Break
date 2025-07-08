@@ -1,39 +1,6 @@
 
 export class EntitySheetHelper {
 
-  /**
-   * Listen for the roll button on aptitudes.
-   * @param {MouseEvent} event    The originating left click event
-   */
-  static onAttributeRoll(event) {
-    event.preventDefault();
-    const button = event.currentTarget;
-    const label = button.closest(".aptitude").querySelector(".aptitude-label")?.value;
-    const chatLabel = label ?? button.parentElement.querySelector(".aptitude-key").value;
-    const shorthand = game.settings.get("break", "macroShorthand");
-
-    // Use the actor for rollData so that formulas are always in reference to the parent actor.
-    const rollData = this.actor.getRollData();
-    let formula = button.closest(".aptitude").querySelector(".aptitude-value")?.value;
-
-    // If there's a formula, attempt to roll it.
-    if ( formula ) {
-      let replacement = null;
-      if ( formula.includes('@item.') && this.item ) {
-        let itemName = this.item.name.slugify({strict: true}); // Get the machine safe version of the item name.
-        replacement = !!shorthand ? `@items.${itemName}.` : `@items.${itemName}.aptitudes.`;
-        formula = formula.replace('@item.', replacement);
-      }
-
-      // Create the roll and the corresponding message
-      let r = new Roll(formula, rollData);
-      return r.toMessage({
-        user: game.user.id,
-        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-        flavor: `${chatLabel}`
-      });
-    }
-  }
 
   static async createDialog(data={}, options={}) {
 
@@ -56,7 +23,7 @@ export class EntitySheetHelper {
 
     // Render the document creation form
     const template = "templates/sidebar/document-create.html";
-    const html = await renderTemplate(template, {
+    const html = await foundry.applications.handlebars.renderTemplate(template, {
       name: data.name || game.i18n.format("DOCUMENT.New", {type: label}),
       folder: data.folder,
       folders: folders,

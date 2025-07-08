@@ -1,8 +1,0 @@
-<div class="flexcol" style="width: 100%;">
-    <div class="section-header">{{localize "BREAK.Bags"}}</div>
-    <div style="margin-left: 25%;">{{localize "BREAK.Used"}} / {{localize "BREAK.Total"}}</div>
-    <div style="display: flex;align-items:center;column-gap:6px;border-bottom:1px solid grey;">
-        <label style="width:25%;">{{localize "BREAK.Inventory"}}</label>
-        <p><span {{#when usedInventorySlots 'gt' actor.system.slots}}style="color: red;"{{/when}}>{{usedInventorySlots}}</span> / <input name="system.slots" value="{{actor.system.slots}}" placeholder="0" type="number" style="width:32px;text-align:center;" /> {{"BREAK.Slots"}}</p>
-    </div>
-</div>

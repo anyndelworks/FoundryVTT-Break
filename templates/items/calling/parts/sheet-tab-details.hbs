@@ -1,0 +1,85 @@
+<section class="tab description scrollable {{tabs.details.cssClass}}" style="height: 100%;" data-group="primary" data-tab="details">
+    <div style="display: flex; gap: 15px; flex: 0;">
+        <div class="flexcol" style="flex: 1;">
+            <div style="display: flex;">
+                <div class="base-speed" style="flex: 0;">
+                    <div class="section-header" id="baseSpeed">{{localize "BREAK.Speed"}}</div>
+                    <input name="system.baseSpeed" value="{{document.system.baseSpeed}}" placeholder="0" type="number" style="width:32px; text-align:center;margin-left: 6px;"/>
+                </div>
+                <div class="base-defense" style="flex: 0;">
+                    <div class="section-header" id="baseDefense">{{localize "BREAK.Defense"}}</div>
+                    <input name="system.baseDefense" value="{{document.system.baseDefense}}" placeholder="0" type="number" style="width:32px; text-align:center;margin-left: 6px;"/>
+                </div>
+            </div>
+            <!--<div class="starting-ability-drag-slot flexcol" id="startingAbilities" style="flex: 0;">
+                <div class="section-header" id="startingAbilities">{{localize "BREAK.ABILITIES.StartingLong"}}</div>
+                {{#if hasStartingAbilities}}
+                {{#each startingAbilities}}
+                <div id="startingAbilities" style="display: flex; margin-bottom: 6px;align-items: center; width: 100%;">
+                    <label class="tooltip" id="startingAbilities">{{this.name}}<span class="tooltiptext">{{{this.system.description}}}</span></label>
+                    <a class="delete-starting-ability" id="starting-{{@index}}" style="margin-top: auto; margin-bottom: auto; width:10.5px; height: 14px; margin-left: auto;"><i class="fa-regular fa-xmark"></i></a>
+                </div>
+                {{/each}}
+                {{/if}}
+                <button class="select-feature" id="startingAbilities">{{localize 'BREAK.PickOrDrag'}} {{localize 'BREAK.Ability'}}</button>
+
+            </div>
+            <div class="ability-drag-slot flexcol" id="electiveAbilities" style="flex: 0;">
+                <div class="section-header" id="electiveAbilities">{{localize "BREAK.ABILITIES.ElectiveLong"}}</div>
+                {{#if hasElectiveAbilities}}
+                {{#each electiveAbilities}}
+                <div id="electiveAbilities" style="display: flex; margin-bottom: 6px;align-items: center; width: 100%;">
+                    <label class="tooltip" id="electiveAbilities">{{this.name}}<span class="tooltiptext">{{{this.system.description}}}</span></label>
+                    <a class="delete-elective-ability" id="elective-{{@index}}" style="margin-top: auto; margin-bottom: auto; width:10.5px; height: 14px; margin-left: auto;"><i class="fa-regular fa-xmark"></i></a>
+                </div>
+                {{/each}}
+                {{/if}}
+                <button class="select-feature" id="electiveAbilities">{{localize 'BREAK.PickOrDrag'}} {{localize 'BREAK.Ability'}}</button>
+            </div>-->
+        </div>
+        <div class="flexcol" style="flex: 1;">
+            <div class="gear-allowance-drag-slot flexcol" id="gearAllowances" style="flex: 0;">
+                <div class="section-header" id="gearAllowances">{{localize "BREAK.GEAR.ArmorAllowances"}}</div>
+                <select name="armorAllowance" id="type-select" >
+                    <option value="">Pick an item</option>
+                    {{#each armorTypes as |type|}}
+                        <option value="{{type.key}}" {{#if type.disabled}}disabled{{/if}}>{{type.label}}</option>
+                    {{/each}}
+                </select>
+                <div style="display: flex;flex-wrap:wrap;row-gap:8px;margin-top:12px;">
+                    {{#each armorAllowances as |allowance|}}
+                        <label style="width: 33%;max-width:250px;"><i data-action="removeAllowance" data-type="armor" data-key="{{allowance.key}}" class="fa-regular fa-xmark clickable"></i>{{allowance.label}}</label>
+                    {{/each}}
+                </div>
+            </div>
+            <div class="gear-allowance-drag-slot flexcol" id="gearAllowances" style="flex: 0;">
+                <div class="section-header" id="gearAllowances">{{localize "BREAK.GEAR.ShieldAllowances"}}</div>
+                <select name="shieldAllowance" id="type-select" >
+                    <option value="">Pick an item</option>
+                    {{#each shieldTypes as |type|}}
+                        <option value="{{type.key}}" {{#if type.disabled}}disabled{{/if}}>{{type.label}}</option>
+                    {{/each}}
+                </select>
+                <div style="display: flex;flex-wrap:wrap;row-gap:8px;margin-top:12px;">
+                    {{#each shieldAllowances as |allowance|}}
+                        <label style="width: 33%;max-width:250px;"><i data-action="removeAllowance" data-type="shield" data-key="{{allowance.key}}" class="fa-regular fa-xmark clickable"></i>{{allowance.label}}</label>
+                    {{/each}}
+                </div>
+            </div>
+            <div class="gear-allowance-drag-slot flexcol" id="gearAllowances" style="flex: 0;">
+                <div class="section-header" id="gearAllowances">{{localize "BREAK.GEAR.WeaponAllowances"}}</div>
+                <select name="weaponAllowance" id="type-select" >
+                    <option value="">Pick an item</option>
+                    {{#each weaponTypes as |type|}}
+                        <option value="{{type.key}}" {{#if type.disabled}}disabled{{/if}}>{{type.label}}</option>
+                    {{/each}}
+                </select>
+                <div style="display: flex;flex-wrap:wrap;row-gap:8px;margin-top:12px;">
+                    {{#each weaponAllowances as |allowance|}}
+                        <label style="width: 33%;max-width:250px;"><i data-action="removeAllowance" data-type="weapon" data-key="{{allowance.key}}" class="fa-regular fa-xmark clickable"></i>{{allowance.label}}</label>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,24 @@
+<section class="feature-dialog" style="height: 100%;">
+    <div style="display: flex; height: 100%;">
+        <div style="min-width: 180px; width: 25%; border-right: 1px solid; height: 100%; row-gap: 24px;padding-right: 12px;display: flex; flex-direction: column;">
+            <input id="filter" placeholder="Search" style="width: 100%;"/>
+            <select name="itemType" id="type-select" >
+                {{#each options as |option|}}
+                    <option value="{{option.name}}" {{#if option.active}}selected="selected"{{/if}} {{#if option.disabled}}disabled{{/if}}>{{localize option.i18n}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="scrollable" style="display: flex;flex-direction: column;width: 100%;padding-left: 12px;row-gap: 12px;">
+            {{#each itemList as |item|}}
+                <div class="item-entry" style="width: 100%; display: flex; align-items: center; height: 48px;border-bottom: 1px dashed; padding-bottom: 8px;" data-id="{{item._id}}" data-name="{{item.name}}">
+                    <img style="width: 32px;" src="{{item.img}}" title="{{item.name}}" />
+                    <div style="display: flex; flex-direction: column;">
+                        <a style="cursor:pointer;" class="item-link" data-action="linkItem">{{item.name}}</a>
+                        <label style="font-size: 11px;">From {{item.from}}</label>
+                    </div>
+                    <a style="margin-left: auto;" data-action="pickItem"><i class="fas fa-check"></i></a>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</section>

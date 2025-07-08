@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "ES2022",
+    "target": "ES2022",
+    "paths": {
+      "@client/*": ["./FoundryClient/*"],
+      "@common/*": ["./FoundryCommon/*"]
+    },
+  },
+  "exclude": ["node_modules", "**/node_modules/*"],
+  "include": ["break.js", "FoundryClient/client.mjs", "FoundryClient/global.d.mts", "FoundryCommon/primitives/global.d.mts"],
+  "typeAcquisition": {
+    "include": ["jquery"]
+  }
+}

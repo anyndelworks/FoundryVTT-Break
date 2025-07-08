@@ -68,7 +68,8 @@
           "armor": null,
           "outfit": null,
           "accessory": [],
-          "weapon": []
+          "weapon": [],
+          "shield": null
         },
         "size": {
           "value": "medium",
@@ -88,11 +89,6 @@
         "rank": 1,
         "current": 0
       },
-      "calling": null,
-      "species": null,
-      "homeland": null,
-      "history": null,
-      "quirk": null,
       "languages": "",
       "description": "",
       "purviews": "",
@@ -135,36 +131,23 @@
       "weapon",
       "armor",
       "shield",
-      "weapon-type",
-      "armor-type",
-      "shield-type",
       "outfit",
       "accessory",
-      "wayfinding",
-      "illumination",
-      "kit",
-      "book",
-      "consumable",
-      "combustible",
-      "miscellaneous",
-      "curiosity",
-      "otherworld",
       "gift",
       "injury",
       "calling",
       "species",
-      "size",
       "homeland",
       "history",
       "quirk",
       "ability",
-      "advancement"
+      "item"
     ],
     "htmlFields": ["description"],
     "templates": {
       "baseItem": {
         "description":"",
-        "slots": 0,
+        "slots": 1,
         "value": {
           "gems": 0,
           "coins": 0,
@@ -179,46 +162,24 @@
     "armor": {
       "templates": ["baseItem"],
       "defenseBonus": 0,
-      "speedLimit": null,
-      "type": null,
+      "speedLimit": 3,
+      "type": "light",
       "abilities": []
     },
     "shield": {
       "templates": ["baseItem"],
       "defenseBonus": 0,
-      "speedPenalty": null,
-      "type": null,
-      "abilities": []
+      "speedPenalty": 0,
+      "type": "small",
+      "abilities": [],
+      "hands": 1
     },
     "accessory": {
       "templates": ["baseItem"]
     },
-    "wayfinding": {
-      "templates": ["baseItem"]
-    },
-    "illumination": {
-      "templates": ["baseItem"]
-    },
-    "kit": {
-      "templates": ["baseItem"]
-    },
-    "book": {
-      "templates": ["baseItem"]
-    },
-    "consumable": {
-      "templates": ["baseItem"]
-    },
-    "combustible": {
-      "templates": ["baseItem"]
-    },
-    "miscellaneous": {
-      "templates": ["baseItem"]
-    },
-    "curiosity": {
-      "templates": ["baseItem"]
-    },
-    "otherworld": {
-      "templates": ["baseItem"]
+    "item": {
+      "templates": ["baseItem"],
+      "type": null
     },
     "calling": {
       "name": "",
@@ -239,18 +200,7 @@
       "overview": "",
       "size": null,
       "innateAbilities": [],
-      "maturativeAbility": null
-    },
-    "size": {
-      "name": "",
-      "mightModifier": 0,
-      "deftnessModifier": 0,
-      "defenseModifier": 0,
-      "inventory": 0,
-      "meleeRestrictions": [],
-      "armorRestrictions": [],
-      "shieldRestrictions": [],
-      "missileRestrictions": []
+      "maturativeAbilities": []
     },
     "homeland": {
       "name": "",
@@ -270,12 +220,8 @@
     },
     "ability": {
       "subtype": "",
-      "category": "",
-      "alignment": 0,
+      "level": "",
       "description": ""
-    },
-    "advancement": {
-      "table": null
     },
     "weapon": {
       "templates": [ "baseItem" ],
@@ -285,28 +231,12 @@
       "rangedAttackBonus": 0,
       "range": 0,
       "loadingTime": 0,
-      "weaponType1": null,
-      "weaponType2": null,
-      "abilities": []
-    },
-    "weapon-type": {
-      "templates": [ "baseItem" ],
+      "weaponType1": "standard",
+      "weaponType2": "",
+      "abilities": [],
+      "hands": 1,
       "ranged": false,
-      "extraDamage": 0,
-      "attackBonus": 0,
-      "range": 0,
-      "loadingTime": 0,
-      "abilities": []
-    },
-    "armor-type": {
-      "templates": ["baseItem"],
-      "defenseBonus": 0,
-      "speedLimit": null
-    },
-    "shield-type": {
-      "templates": ["baseItem"],
-      "defenseBonus": 0,
-      "speedPenalty": 0
+      "melee": true
     },
     "injury": {
       "description": "",

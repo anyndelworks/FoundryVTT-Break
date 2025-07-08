@@ -1,52 +1,59 @@
 import { BreakItemSheet } from "./item-sheet.js";
 
 export class BreakQuirkSheet extends BreakItemSheet {
-
-  /** @inheritdoc */
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
+  //#region DocumentV2 initialization and setup
+    static DEFAULT_OPTIONS = {
+      ...this.DEFAULT_OPTIONS,
+      tag: "form",
       classes: ["break", "sheet", "quirk"],
-      template: "systems/break/templates/items/quirk-sheet.hbs",
-      width: 580,
-      height: 540,
-    });
+      position: {
+          width: 600,
+          height: 480,
+      },
+      form: {
+          handler: BreakQuirkSheet.#onSubmit,
+          submitOnChange: true
+      },
+      window: {
+          resizable: true
+      },
+      actions: {
+          editImage: this.onEditImage,
+      }
   }
 
-  /* -------------------------------------------- */
+  static PARTS = {
+      header: {
+          template: "systems/break/templates/items/shared/generic-header.hbs"
+      },
+      body: {
+          template: "systems/break/templates/items/quirk/quirk-sheet.hbs"
+      }
+  }
 
-  /** @inheritdoc */
-  async getData(options) {
-    const context = await super.getData(options);
-    context.descriptionHTML = await TextEditor.enrichHTML(context.item.system.description, {
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    context.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.description, {
       secrets: this.document.isOwner,
       async: true
     });
-    context.advantagesHTML = await TextEditor.enrichHTML(context.item.system.advantages, {
+    context.advantagesHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.advantages, {
       secrets: this.document.isOwner,
       async: true
     });
-    context.disadvantagesHTML = await TextEditor.enrichHTML(context.item.system.disadvantages, {
+    context.disadvantagesHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.disadvantages, {
       secrets: this.document.isOwner,
       async: true
     });
     return context;
   }
+  //#endregion
 
-  /* -------------------------------------------- */
-
-  /** @inheritdoc */
-  activateListeners(html) {
-    super.activateListeners(html);
-
-    // Everything below here is only needed if the sheet is editable
-    if ( !this.isEditable ) return;
+  //#region DocumentV2 submit
+  static async #onSubmit(event, form, formData) {
+      event.preventDefault();
+      const updateData = foundry.utils.expandObject(formData.object);
+      await this.item.update(updateData);
   }
-
-  /* -------------------------------------------- */
-
-  /** @override */
-  _getSubmitData(updateData) {
-    let formData = super._getSubmitData(updateData);
-    return formData;
-  }
+  //#endregion
 }

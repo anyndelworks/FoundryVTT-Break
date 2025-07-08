@@ -1,65 +1,80 @@
 import { BreakItemSheet } from "./item-sheet.js";
 
 export class BreakHomelandSheet extends BreakItemSheet {
+  allowedItemTypes = ["history"];
+  //#region DocumentV2 initialization and setup
+  static DEFAULT_OPTIONS = {
+    tag: "form",
+    classes: ["break", "sheet", "homeland"],
+    position: {
+      width: 600,
+      height: 480,
+    },
+    form: {
+      handler: BreakHomelandSheet.#onSubmit,
+      submitOnChange: true
+    },
+    window: {
+      resizable: true
+    },
+    actions: {
+      editImage: this.onEditImage,
+      deleteHistory: this.#onDeleteHistory
+    }
+  }
 
-    /** @inheritdoc */
-    static get defaultOptions() {
-      return foundry.utils.mergeObject(super.defaultOptions, {
-        classes: ["break", "sheet", "homeland"],
-        template: "systems/break/templates/items/homeland-sheet.hbs",
-        width: 600,
-        height: 480,
-        dragDrop: [{dragSelector: null, dropSelector: null}]
+  static PARTS = {
+    header: {
+      template: "systems/break/templates/items/shared/generic-header.hbs"
+    },
+    body: {
+      template: "systems/break/templates/items/homeland/homeland-sheet.hbs"
+    }
+  }
+
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    context.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.description, {
+      secrets: this.document.isOwner,
+      async: true
+    });
+    context.bonusLanguages = context.document.system.bonusLanguages;
+    context.histories = await Promise.all(context.document.system.histories.map(async (id) => await fromUuid(id))) ?? [];
+    return context;
+  }
+  //#endregion
+
+  //#region Actions
+  static async #onDeleteHistory(event) {
+    event.preventDefault();
+    const button = event.target;
+    const id = button.dataset.id;
+
+    if(id) {
+      const histories = this.item.system.histories.filter(uuid => {
+          const split = uuid.split(".");
+          return split[split.length-1] !== id;
       });
+      this.item.update({"system.histories": histories});
     }
-  
-    /** @inheritdoc */
-    activateListeners(html) {
-      super.activateListeners(html);
-      if ( !this.isEditable ) return;
-      html.find(".delete-history").on("click", this.onDeleteHistory.bind(this));
+  }
+  //#endregion
+
+  //#region Events
+  _onDropValidItem(item) {
+    const histories = this.item.system.histories;
+    if(!histories.includes(item.uuid)) {
+        histories.push(item.uuid);
+        this.item.update({"system.histories": histories});
     }
+  }
+  //#endregion
 
-
-    async onDeleteHistory(event) {
-        event.preventDefault();
-        const button = event.currentTarget;
-        const id = button.dataset.id;
-    
-        const itemIndex = this.item.system.histories?.findIndex(i => i._id == id);
-        if(itemIndex >= 0) {
-          this.item.system.histories.splice(itemIndex, 1);
-          this.item.update({"system.histories": this.item.system.histories});
-        }
-      }
-
-    /** @inheritdoc */
-    async getData(options) {
-        const context = await super.getData(options);
-        context.descriptionHTML = await TextEditor.enrichHTML(context.item.system.description, {
-            secrets: this.document.isOwner,
-            async: true
-        });
-        context.bonusLanguages = context.item.system.bonusLanguages;
-        context.histories = context.item.system.histories ?? [];
-        return context;
-    }
-
-    /** @inheritdoc */
-    async _onDrop(event) {
-        const data = TextEditor.getDragEventData(event);
-        if(data.type !== "Item") return;
-        const draggedItem = await fromUuid(data.uuid);
-        if(draggedItem.type === "history") {
-            const historyArray = this.item.system.histories ?? [];
-            historyArray.push(draggedItem.toObject());
-            this.item.update({"system.histories": historyArray});
-        }
-    }
-
-    /** @override */
-    _getSubmitData(updateData) {
-        let formData = super._getSubmitData(updateData);
-        return formData;
-    }
+  //#region DocumentV2 submit
+  static async #onSubmit(event, form, formData) {
+      event.preventDefault();
+      const updateData = foundry.utils.expandObject(formData.object);
+      await this.item.update(updateData);
+  }
+  //#endregion
 }

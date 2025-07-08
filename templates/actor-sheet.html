@@ -18,7 +18,7 @@
                             {{#each quirks}}
                                 <div style="display: flex; margin-bottom: 6px;align-items: center; width: 33%;">
                                     <label>{{this.name}}</label>
-                                    <button class="delete-quirk" data-id="{{this._id}}" style="max-width: 32px;margin-left: auto;"><i class="fas fa-trash" style="margin: 0px;"></i></button>
+                                    <button data-action="deleteItem" data-id="{{this._id}}" style="max-width: 32px;margin-left: auto;"><i class="fas fa-trash" style="margin: 0px;"></i></button>
                                 </div>
                             {{/each}}
                         </div>

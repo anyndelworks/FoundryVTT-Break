@@ -1,50 +1,8 @@
-{
-  "SETTINGS": {
-    "SimpleMacroShorthandN": "Shortened Macro Syntax",
-    "SimpleMacroShorthandL": "Enable a shortened macro syntax which allows referencing aptitudes directly, for example @str instead of @aptitudes.str.value. Disable this setting if you need the ability to reference the full aptitude model, for example @aptitudes.str.label.",
-    "SimpleInitFormulaN": "Initiative Formula",
-    "SimpleInitFormulaL": "Enter an initiative formula, such as d20+@dex"
-  },
-
-  "SIMPLE": {
-    "ItemCreate": "Create Item",
-    "ItemEdit": "Edit Item",
-    "ItemDelete": "Delete Item",
-    "ItemNew": "New Item",
-
-    "NotifyInitFormulaUpdated": "Initiative formula was updated to",
-    "NotifyInitFormulaInvalid": "Initiative formula was invalid",
-    "NotifyGroupDuplicate": "Attribute group already exists.",
-    "NotifyGroupAttrDuplicate": "Attribute group already exists as an aptitude.",
-    "NotifyGroupAlphanumeric": "Attribute group names may not contain spaces or periods.",
-    "NotifyGroupReserved": "Attribute group \"{key}\" is reserved and cannot be used.",
-    "NotifyAttrDuplicate": "Attribute key already exists as a group.",
-    "NotifyAttrInvalid": "Attribute keys may not contain spaces or periods.",
-
-    "ResourceMin": "Min",
-    "ResourceValue": "Value",
-    "ResourceMax": "Max",
-
-    "DefineTemplate": "Define as Template",
-    "UnsetTemplate": "Unset Template",
-    "NoTemplate": "No Template",
-
-    "AttributeKey": "Attribute Key",
-    "AttributeValue": "Value",
-    "AttributeLabel": "Label",
-    "AttributeDtype": "Data Type",
-
-    "DeleteGroup": "Delete group?",
-    "DeleteGroupContent": "Do you wish to delete this group? This will delete the following group and all aptitudes included in it: ",
-
-    "Create": "Create",
-    "New": "New"
-  },
-  
+{  
   "TYPES": {
     "Actor": {
       "gmc": "PMJ",
-      "character": "Personaje",
+      "character": "Personaje (PJ)",
       "adversary": "Adversario"
     },
     "Item": {
@@ -62,27 +20,50 @@
       "book": "Libro",
       "consumable": "Consumible",
       "combustible": "Combustible o químico",
-      "size": "<Size>",
+      "size": "Tamaño",
       "miscellaneous": "Miscelaneo",
       "curiosity": "Curiosidad o artilugio",
       "otherworld": "De otro mundo",
       "gear": "Objeto",
       "gift": "Don",
       "calling": "Vocación",
-      "species": "<Species>",
-      "homeland": "<Homeland>",
-      "history": "<History>",
+      "species": "Especie",
+      "homeland": "Tierra natal",
+      "history": "Historia",
       "quirk": "Peculiaridad",
       "ability": "Habilidad",
-      "advancement": "<Advancement>"
+      "advancement": "Avance",
+      "item": "Objeto"
     }
+  },
+  "CONFIG": {
+    "ArmorTypes": "Tipos de armadura",
+    "ArmorTypeConfig": "Config. tipos de armadura",
+    "ArmorTypeConfiguration": "Configuración de tipos de armadura",
+    "ArmorTypeConfigHint": "Establece bonuses y habilidades para cada tipo de armadura.",
+    "ArmorTypeSettings": "Ajustes de tipos de armadura",
+    "WeaponTypes": "Tipos de arma",
+    "WeaponTypeConfig": "Config. tipos de arma",
+    "WeaponTypeConfiguration": "Configuración de tipos de arma",
+    "WeaponTypeConfigHint": "Establece bonuses y habilidades para cada tipo de arma.",
+    "WeaponTypeSettings": "Ajustes de tipos de arma",
+    "ShieldTypes": "Tipos de escudo",
+    "ShieldTypeConfig": "Config. tipos de escudo",
+    "ShieldTypeConfiguration": "Configuración de tipos de escudo",
+    "ShieldTypeConfigHint": "Establece bonuses y habilidades para cada tipo de escudo.",
+    "ShieldTypeSettings": "Ajustes de tipos de escudo",
+    "Sizes": "Tamaños",
+    "SizesConfig": "Config. tamaños",
+    "SizesConfiguration": "Configuración de tamaños",
+    "SizesConfigHint": "Establece bonuses y habilidades para cada tamaño.",
+    "SizeSettings": "Ajustes de tamaños"
   },
 
   "BREAK": {
-    "Select": "<SELECT>",
+    "Select": "Seleccionar",
 
-    "Adversary": "<ADVERSARY>",
-    "Adversary_Info": "<ADVERSARY_INFO>",
+    "Adversary": "Adversario",
+    "Adversary_Info": "Información del adversario",
     "Aptitude": "Aptitud",
     "Aptitudes": "Aptitudes",
     "AptitudeCheck": "Prueba de {aptitude}",
@@ -103,19 +84,19 @@
 
     "Calling": "Vocación",
     "CALLING": {
-      "Factotum": "<Factotum>",
-      "Sneak": "<Sneak>",
-      "Champion": "<Champion>",
-      "Raider": "<Raider>",
-      "Battle_Princess": "<Battle Princess>",
-      "Murder_Princess": "<Murder Princess>",
-      "Sage": "<Sage>",
-      "Heretic": "<Heretic>"
+      "Factotum": "Factotum",
+      "Sneak": "Furtivo",
+      "Champion": "Campeón",
+      "Raider": "Asaltante",
+      "Battle_Princess": "Princesa de batalla",
+      "Murder_Princess": "Princesa asesina",
+      "Sage": "Sabio",
+      "Heretic": "Hereje"
     },
 
     "Homeland": "Hogar",
     "History": "Historia",
-    "Histories": "<Histories>",
+    "Histories": "Historias",
     "HOMELAND": {
       "Wistful_Dark": "<Wistful Dark>",
       "Twilight_Meridian": "<Twilight Meridian>",
@@ -124,37 +105,37 @@
       "Other_World": "<Other World>",
 
       "HISTORY": {
-        "Outcasts": "<Outcasts>",
-        "Commoners": "<Commoners>",
-        "Elite": "<Elite>",
+        "Outcasts": "Parias",
+        "Commoners": "Plebeyos",
+        "Elite": "Élite",
 
         "WISTFUL_DARK": {
-          "Forsaken_Wanderer": "<Forsaken Wanderer>",
-          "Blight_Raider": "<Blight Raider>",
-          "Shadow_Lands_Nomad": "<Shadow Lands Nomad>",
-          "Murk_Dweller": "<Murk Dweller>",
-          "Nightwall_Yeoman": "<Nightwall Yeoman>",
-          "Starlight_Farmer": "<Starlight Farmer>",
-          "Guild_Agent": "<Guild Agent>",
-          "Town_Guard": "<Town Guard>",
-          "Celebrated_Artist": "<Celebrated Artist>",
-          "Magia_University_Graduate": "<Magia University Graduate>",
-          "Knight_Errant": "<Knight Errant>",
-          "Shard_State_Patrician": "<Shard State Patrician>"
+          "Forsaken_Wanderer": "Vagabundo olvidado",
+          "Blight_Raider": "Asaltante de la peste",
+          "Shadow_Lands_Nomad": "Nómada de las tierras sombrias",
+          "Murk_Dweller": "Habitante de la oscuridad",
+          "Nightwall_Yeoman": "Soldado del muro de la noche",
+          "Starlight_Farmer": "Granjero de la luz de las estrellas",
+          "Guild_Agent": "Agente de la hermandad",
+          "Town_Guard": "Guardia del pueblo",
+          "Celebrated_Artist": "Artista celebre",
+          "Magia_University_Graduate": "Graduado de la universidad Magia",
+          "Knight_Errant": "Caballero errante",
+          "Shard_State_Patrician": "Patricio del estado de la Esquirla"
         },
         "TWILIGHT_MERIDIAN": {
-          "Disgraced_Scion": "<Disgraced Scion>",
-          "Shadow_Sea_Pirate": "<Shadow Sea Pirate>",
-          "Orphaned_Shinobi": "<Orphaned Shinobi>",
+          "Disgraced_Scion": "Vástago en desgracia",
+          "Shadow_Sea_Pirate": "Pirata del Mar Sombrio",
+          "Orphaned_Shinobi": "Shinobi huerfano",
           "Oldtech_Junker": "<Oldtech Junker>",
           "Twilight_Silk_Tailor": "<Twilight Silk Tailor>",
-          "Medicine_Peddler": "<Medicine Peddler>",
-          "Shining_Sea_Fisherman": "<Shining Sea Fisherman>",
-          "Portian_University_Graduate": "<Portian University Graduate>",
-          "Merchant_Scion": "<Merchant Scion>",
-          "Holy_Isle_Samurai": "<Holy Isle Samurai>",
-          "Archive_Researcher": "<Archive Researcher>",
-          "Black_Glove_Cavalier": "<Black Glove Cavalier>"
+          "Medicine_Peddler": "Vendedor de medicina",
+          "Shining_Sea_Fisherman": "Pescador del Mar Brillante",
+          "Portian_University_Graduate": "Graduado de la universidad de Portian",
+          "Merchant_Scion": "Vástago mercante",
+          "Holy_Isle_Samurai": "Samurai de la Isla Sagrada",
+          "Archive_Researcher": "Investigador de los archivos",
+          "Black_Glove_Cavalier": "Caballero del Guante Negro"
         },
         "BLAZING_GARDEN": {
           "Kinless_Vagrant": "<Kinless Vagrant>",
@@ -186,14 +167,14 @@
         },
         "OTHER_WORLD": {
           "Transient": "<Transient>",
-          "NEET": "<NEET>",
+          "NEET": "NINI",
           "Retail_Servce": "<Retail/Servce>",
           "Blue_Collar": "<Blue Collar>",
           "White_Collar": "<White Collar>",
-          "Domestic": "<Domestic>",
+          "Domestic": "Domestico",
           "Military_Law_Enforcement": "<Military/Law Enforcement>",
-          "Education_Faculty": "<Education, Faculty>",
-          "Education_Student": "<Education, Student>",
+          "Education_Faculty": "Educación, facultad",
+          "Education_Student": "Educación, estudiante",
           "Idle_Rich": "<Idle Rich>"
         }
       }
@@ -201,32 +182,32 @@
 
     "Identity": "Identidad",
 
-    "Menace_Type": "<Menace Type>",
+    "Menace_Type": "Tipo de amenaza",
     "MENACE": {
-      "Mook": "<Mook>",
-      "Boss": "<Boss>",
-      "Mega_Boss": "<Mega Boss>",
-      "Colossus": "<Colossus>"
+      "Mook": "Lacayo",
+      "Boss": "Jefe",
+      "Mega_Boss": "Mega jefe",
+      "Colossus": "Coloso"
     },
 
     "Species": "Especie",
-    "Size": "<SIZE>",
+    "Size": "Tamaño",
     "SPECIES": {
-      "Human_Native": "<Human (Native)>",
-      "Human_Dimensional_Stray": "<Human (Dimensional Stray)>",
+      "Human_Native": "Humano (Nativo)",
+      "Human_Dimensional_Stray": "Humano (Extraviado dimensional)",
       "Chib": "Chib",
       "Tenebrate": "Tenebrate",
       "Rai_Neko": "Rai-Neko",
       "Promethean": "Promethean",
       "Gruun": "Gruun",
-      "Goblin": "<Goblin>",
-      "Dwarf": "<Dwarf>",
-      "Elf": "<Elf>",
-      "Bio_Mechanoid": "Bio-Mechanoid",
+      "Goblin": "Goblin",
+      "Dwarf": "Enano",
+      "Elf": "Elfo",
+      "Bio_Mechanoid": "Bio-Mecanoide",
       "SIZE": {
-        "Small": "<Small>",
-        "Medium": "<Medium>",
-        "Large": "<Large>"
+        "Small": "Pequeño",
+        "Medium": "Mediano",
+        "Large": "Grande"
       }
     },
 
@@ -234,15 +215,18 @@
     "Ability": "Habilidad",
     "Abilities": "Habilidades",
     "ABILITIES": {
-      "Innate": "<Innate Abilities>",
-      "Maturative": "<Maturative Ability>",
-      "StartingShort": "<Start.>",
-      "StandardShort": "<Stand.>",
-      "AdvancedShort": "<Adv.>",
-      "StartingLong": "<Starting Abilities>",
-      "StandardLong": "<Standard Abilities>",
-      "AdvancedLong": "<Advanced Abilities>",
-      "ElectiveLong": "<Elective Abilities>"
+      "Innate": "Habilidades innatas",
+      "Maturative": "Habilidades madurativas",
+      "StartingShort": "Ini.",
+      "StandardShort": "Est.",
+      "AdvancedShort": "Av.",
+      "Starting": "Inicial",
+      "Standard": "Estandar",
+      "Advanced": "Avanzada",
+      "StartingLong": "Habilidades iniciales",
+      "StandardLong": "Habilidades estandar",
+      "AdvancedLong": "Habilidades avanzadas",
+      "ElectiveLong": "Habilidades electivas"
     },
 
     "Inventory": "Inventario",
@@ -263,9 +247,13 @@
       "MissileRestrictions": "<Missile Restrictions>",
 
       "MeleeAllowances": "<Melee Allowances>",
+      "MeleeType": "<Melee weapon type>",
       "ArmorAllowances": "<Armor Allowances>",
       "ShieldAllowances": "<Shield Allowances>",
+      "ShieldType": "<Shield type>",
       "MissileAllowances": "<Missile Allowances>",
+      "MissileType": "<Missile weapon type>",
+      "WeaponAllowances": "<Weapon allowances>",
 
       "TYPE": {
         "Ranged": "A distancia",
@@ -287,22 +275,22 @@
     },
 
     "Languages": "Idiomas",
-    "BonusLanguages": "<Bonus Languages>",
+    "BonusLanguages": "Idiomas extra",
     "Description": "Descripción",
     "Purviews": "Competencias",
     "Base": "Base",
     "Name": "Nombre",
     "Trait": "Rasgo",
     "Quirk": "Peculiaridad",
-    "QuirkTable": "<Quirk Table>",
-    "Innate": "<Innate>",
-    "Maturative": "<Maturative>",
-    "RankXp": "Rango & XP",
+    "QuirkTable": "Tabla de peculiaridades",
+    "Innate": "Innata",
+    "Maturative": "Madurativa",
+    "RankXp": "Rango & PX",
     "Allegiance": "Lealtad",
     "Rank": "Rango",
-    "CurrentXp": "XP Actual",
-    "TotalXpNextRank": "XP total para el siguiente rango",
-    "XP": "<XP>",
+    "CurrentXp": "PX Actual",
+    "TotalXpNextRank": "PX total para el siguiente rango",
+    "XP": "PX",
     "DarkAllegiancePoints": "Puntos de lealtad oscura",
     "BrightAllegiancePoints": "Puntos de lealtad luminosa",
     "Dark": "Oscuridad",
@@ -312,17 +300,17 @@
     "BonPen": "BON./PEN.",
     "None": "NINGUNA",
     "AttackBonus": "Bonus de ataque",
-    "Hearts": "<HEARTS>",
+    "Hearts": "Corazones",
     "HeartsTotal": "Corazones totales",
     "HeartsDescription": "Protegiendome de las heridas",
     "AttackBonusDescription": "Añadir a mis tiradas de ataque",
     "CombatValues": "Valores de combate",
-    "Defense": "<DEFENSE>",
+    "Defense": "Defensa",
     "DefenseRating": "Índice de defensa",
     "DefenseRatingDescription": "Supera esto para golpearme",
-    "Speed": "<SPEED>",
+    "Speed": "Velocidad",
     "SpeedRating": "ïndice de velocidad",
-    "SpeedPenalty": "<Speed Penalty>",
+    "SpeedPenalty": "Penalización de velocidad",
     "SLOW": "Lento",
     "AVERAGE": "Normal",
     "FAST": "Rapido",
@@ -348,6 +336,7 @@
     "Contest": "Contienda",
     "RollType": "Tipo de tirada",
     "Attack": "Atacar",
+    "Attacks": "Ataca",
     "ActorAttacksActor":"{name} ataca a {target}",
     "Slots": "Huecos",
     "Details": "Detalles",
@@ -368,7 +357,7 @@
     "Bags": "Bolsas",
     "Total": "Total",
     "Free": "Libre",
-    "Used": "<USED>",
+    "Used": "Usado",
     "RightHand": "Mano derecha",
     "LeftHand": "Mano izquierda",
     "ContextMenuDelete": "Eliminar",
@@ -389,11 +378,16 @@
     "Advantages": "Advantages",
     "Disadvantages": "Disadvantages",
     "Notes": "Notas",
-    "Reskin": "<RESKIN>",
-    "Yield": "<YIELD>",
-    "AdvancementTable": "<Advancement Table>",
-    "Modifiers": "<Modifiers>",
-    "Equip": "<Equip>",
-    "UnEquip": "<UnEquip>"
+    "Reskin": "Reinterpretar",
+    "Yield": "Rendimiento",
+    "AdvancementTable": "Tabla de avance",
+    "Modifiers": "Modificadores",
+    "Equip": "Equipar",
+    "UnEquip": "Desequipar",
+    "PickOrDrag": "Selecciona o arrastra",
+    "FeatureSelector": "Selector de caracteristicas",
+    "Hands": "Manos",
+    "FreeHand": "Mano libre",
+    "InventorySlots": "Huecos de inventario"
   }
 }
