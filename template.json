@@ -71,10 +71,6 @@
           "weapon": [],
           "shield": null
         },
-        "size": {
-          "value": "medium",
-          "label": "BREAK.SPECIES.SIZE.Medium"
-        },
         "allegiance": {
           "dark": 0,
           "bright": 0
@@ -109,6 +105,7 @@
       "menace": "Mook",
       "rank": 1,
       "description": "",
+      "size": null,
       "menace_type": {
         "value": "mook",
         "label": "BREAK.MENACE.Menace_Type"

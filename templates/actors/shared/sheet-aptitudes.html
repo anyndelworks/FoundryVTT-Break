@@ -15,7 +15,7 @@
         <div style="display:flex;">
             <div class="aptitude-value-circle clickable" data-action="rollAptitude">
                 <div class="aptitude-value-inner-circle" data-id="{{key}}">
-                    <p class="aptitude-value">{{sum attr.value attr.bon attr.trait}}</p>
+                    <p class="aptitude-value">{{attr.total}}</p>
                 </div>
             </div>
             <div class="aptitude-bar-container">
@@ -55,17 +55,17 @@
                 </div>
                 <div style="display: flex;">
                     {{#for 0 20 1}}
-                        {{#when this 'lt' (sum attr.value attr.bon attr.trait)}}
+                        {{#when this 'lt' attr.total}}
                         <div class="trait-square-full" style="background-color: {{attr.color}};"></div>
                         {{/when}}
-                        {{#when this 'gt' (sum attr.value attr.bon attr.trait)}}
+                        {{#when this 'gt' attr.total}}
                         <div class="trait-square-empty"></div>
                         {{/when}}
                     {{/for}}
                 </div>
                 <div style="display: flex; align-items: center; margin-left: 8px;">
                     <label class="aptitude-bon-label">{{localize "BREAK.BonPen"}}</label>
-                    <input name="system.aptitudes.{{key}}.bon" type="number" class="aptitude-bon-input" value="{{attr.bon}}" placeholder="{{ localize 'BREAK.None' }}"/>
+                    <span style="margin-top:2px;margin-left: 8px;">{{attr.bon}}</span>
                 </div>
             </div>
         </div>

@@ -3,7 +3,7 @@ import { BreakActor } from "./module/actors/actor.js";
 import { BreakItem } from "./module/items/item.js";
 import { preloadHandlebarsTemplates } from "./module/templates.js";
 import { BreakToken, BreakTokenDocument } from "./module/token.js";
-import { BreakActorSheet } from "./module/actors/actor-sheet.js";
+import { BreakCharacterSheet } from "./module/actors/character-sheet.js";
 import { BreakAdversarySheet } from "./module/actors/adversary-sheet.js";
 import {ArmorTypeSettingsForm} from "./module/system/armor-type-settings.js";
 import {WeaponTypeSettingsForm} from "./module/system/weapon-type-settings.js";
@@ -406,7 +406,8 @@ Hooks.once("init", async function() {
       might: 0,
       insight: 0,
       aura: 0,
-      grit: 0
+      grit: 0,
+      defense: 0
     },
     medium: {
       label: "Medium",
@@ -416,7 +417,8 @@ Hooks.once("init", async function() {
       might: 0,
       insight: 0,
       aura: 0,
-      grit: 0
+      grit: 0,
+      defense: 0
     },
     large: {
       label: "Large",
@@ -426,7 +428,8 @@ Hooks.once("init", async function() {
       might: 0,
       insight: 0,
       aura: 0,
-      grit: 0
+      grit: 0,
+      defense: 0
     }
   }
 
@@ -449,7 +452,7 @@ Hooks.once("init", async function() {
 
   // Register sheet application classes
   Actors.unregisterSheet("core", foundry.applications.sheets.ActorSheetV2);
-  Actors.registerSheet("break", BreakActorSheet, {types:['character'], makeDefault: true });
+  Actors.registerSheet("break", BreakCharacterSheet, {types:['character'], makeDefault: true });
   Actors.registerSheet("break", BreakAdversarySheet, {types:['adversary'], makeDefault: true });
   Items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
 /////// EQUIPMENT

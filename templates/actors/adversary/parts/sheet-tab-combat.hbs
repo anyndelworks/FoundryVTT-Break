@@ -1,0 +1,28 @@
+<section class="tab description scrollable {{tabs.combat.cssClass}}" data-group="primary" data-tab="combat">
+    <header class="adversary-header">
+        <img class="profile-img" src="{{document.img}}" title="{{document.name}}" data-action="editImage" data-field="img" style="width: 120px;"/>
+        <div style="display: flex; flex-direction: column; flex-grow: 1; ">
+            <div class="adversary-header-sub-section">
+                <input name="name" type="text" value="{{document.name}}" placeholder="Name" />
+                <input name="system.menace" type="text" value="{{document.system.menace}}" />
+                <select name="system.size" id="type-select" >
+                    {{#each sizes as |size|}}
+                        <option value="{{size.key}}" {{#if size.active}}selected="selected"{{/if}}>{{size.label}}</option>
+                    {{/each}}
+                </select>
+                <label style="margin: 0 10px 0 5px;">{{localize "BREAK.Rank"}}</label>
+                <input name="system.rank" type="text" value="{{document.system.rank}}" placeholder="0" />
+            </div>
+            <textarea name="system.description" type="text" placeholder="..." style=" height: 100%;" value="{{document.system.description}}">{{document.system.description}}</textarea>
+        </div>
+    </header>
+    {{> "systems/break/templates/actors/shared/sheet-combat.html"}}
+    {{> "systems/break/templates/actors/adversary/parts/simplified-sheet-aptitudes.html"}}
+    {{> "systems/break/templates/actors/shared/sheet-abilities.html"}}
+    <div class="flexcol" style="row-gap:12px;margin-top: 12px;">
+        <div class="section-header" style="margin-bottom:0px;">{{localize "BREAK.Weapons"}}</div>
+        {{#each weapons}}
+        {{> "systems/break/templates/actors/shared/sheet-weapon-card.hbs" weapon=this}}
+        {{/each}}
+    </div>
+</section>

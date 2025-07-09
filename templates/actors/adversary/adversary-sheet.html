@@ -1,62 +1,10 @@
 <form class="flexcol {{cssClass}} sheet" autocomplete="off">
     <section class="sheet-body">
         <div class="flexcol content" style="width: 100%;height:100%;">
-            <div class="tab description" data-group="primary" data-tab="combat">
-                <header class="adversary-header">
-                    <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"  style="width: 120px;"/>
-
-                    <div style="display: flex; flex-direction: column; flex-grow: 1; ">
-                        <div class="adversary-header-sub-section">
-                            <input name="name" type="text" value="{{actor.name}}" placeholder="Name" />
-                            <input name="system.menace" type="text" value="{{actor.system.menace}}" />
-                            {{#select system.size}}
-                            <select name="system.size">
-                                {{#each sizes as |size key|}}
-                                <option value="{{size.name}}" {{#when ../actor.system.size 'eq' size.name}}selected{{/when}}>{{size.name}}</option>
-                                {{/each}}
-                            </select>
-                            {{/select}}                            <label style="margin: 0 10px 0 5px;">{{localize "BREAK.Rank"}}</label>
-                            <input name="system.rank" type="text" value="{{actor.system.rank}}" placeholder="0" />
-                        </div>
-                        <textarea name="system.description" type="text" placeholder="..." style=" height: 100%;" value="{{actor.system.description}}">{{actor.system.description}}</textarea>
-                    </div>
-                    
-
-                </header>
-                <div style="display:flex; column-gap: 24px;">
-                    {{> "systems/break/templates/actors/adversary/parts/sheet-combat.html"}}
-                    {{> "systems/break/templates/actors/adversary/parts/simplified-sheet-aptitudes.html"}}
-                </div>
-                {{> "systems/break/templates/actors/shared/sheet-abilities.html"}}
-                <div class="flexcol" style="row-gap:12px;margin-top: 12px;">
-                    <div class="section-header" style="margin-bottom:0px;">{{localize "BREAK.Weapons"}}</div>
-                    {{#each weapons}}
-                    {{> "systems/break/templates/actors/shared/sheet-weapon-card.hbs" weapon=this}}
-                    {{/each}}
-                </div>
-            </div>
-            <div class="tab description" data-group="primary" data-tab="inventory">
-                <div style="display:flex;column-gap:24px;">
-                    <div style="width: 100%;">
-                        {{> "systems/break/templates/actors/shared/sheet-equipment.hbs"}}
-                        {{> "systems/break/templates/actors/shared/sheet-bags.hbs"}}
-                    </div>
-                    {{> "systems/break/templates/actors/shared/sheet-bag-content.hbs"}}
-                </div>
-            </div>
-            <div class="tab misc" data-group="primary" data-tab="misc">
-                {{> "systems/break/templates/actors/adversary/parts/adversary-misc.hbs"}}
-            </div>
-            <div class="tab notes" data-group="primary" data-tab="notes">
-                <div style="display: flex;height: 100%;">
-                    <div class="flexcol" style="flex: 1;">
-                        <div class="section-header">
-                            {{localize "BREAK.Notes"}}
-                        </div>
-                        {{editor notesHTML target="system.notes" button=true owner=owner editable=editable}}
-                    </div>
-                </div>
-            </div>
+            
+            
+            
+            
         </div>
     </section>
     <nav class="tabs" data-group="primary">

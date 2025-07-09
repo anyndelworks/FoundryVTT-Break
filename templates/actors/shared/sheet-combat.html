@@ -22,9 +22,9 @@
                     </div>
                 </div>
                 <div style="margin-left: 8px;">
-                    <div style="margin-top: 4px;">
+                    <div style="margin-top: 4px;display: flex;">
                         <p class="aptitude-bon-label">{{localize "BREAK.BonPen"}}</p>
-                        <input name="system.attack.bon" type="number" class="aptitude-bon-input" value="{{document.system.attack.bon}}" placeholder="{{ localize 'BREAK.None' }}"/>
+                        <span style="margin-top:2px;margin-left: 8px;">{{document.system.attack.bon}}</span>
                     </div>
                 </div>
             </div>
@@ -62,7 +62,7 @@
                     </div>
                     <div style="margin-top: 4px; display: flex; align-items: center;">
                         <label class="aptitude-bon-label">{{localize "BREAK.BonPen"}}</label>
-                        <input name="system.hearts.bon" type="number" class="aptitude-bon-input" value="{{document.system.hearts.bon}}" placeholder="{{ localize 'BREAK.None' }}"/>
+                        <span style="margin-top:2px;margin-left: 8px;">{{document.system.hearts.bon}}</span>
                         <div style="display: flex; align-items: center; margin-left: auto; column-gap: 12px;">
                             <i class="fas fa-plus clickable" data-amount="1" data-action="modifyHearts"></i>
                             <i class="fas fa-minus clickable" data-amount="-1" data-action="modifyHearts"></i>
@@ -97,7 +97,7 @@
                 <div style="margin-left: 8px;">
                     <div style="margin-top: 4px;">
                         <label class="aptitude-bon-label">{{localize "BREAK.BonPen"}}</label>
-                        <input name="system.defense.bon" type="number" class="aptitude-bon-input" value="{{document.system.defense.bon}}" placeholder="{{ localize 'BREAK.None' }}"/>
+                        <span style="margin-top:2px;margin-left: 8px;">{{document.system.defense.bon}}</span>
                     </div>
                 </div>
             </div>
@@ -132,7 +132,7 @@
                 <label class="aptitude-bon-label">{{localize "BREAK.Base"}}</label>
                 <input name="system.speed.value" type="number" class="aptitude-bon-input" value="{{document.system.speed.value}}" placeholder="{{localize 'BREAK.AVERAGE'}}"/>
                 <label class="aptitude-bon-label" style="margin-left: auto;">{{localize "BREAK.BonPen"}}</label>
-                <input name="system.speed.bon" type="number" class="aptitude-bon-input" value="{{document.system.speed.bon}}" placeholder="{{ localize 'BREAK.None' }}"/>
+                <span style="margin-top:2px;margin-left: 8px;">{{document.system.speed.bon}}</span>
             </div>
         </div>
     </div>

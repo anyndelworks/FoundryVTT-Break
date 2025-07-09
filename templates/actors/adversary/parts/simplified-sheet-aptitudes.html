@@ -1,11 +1,11 @@
 <div class="flexcol" style="flex-grow: 1;">
     <div class="section-header">{{localize "BREAK.Aptitudes"}}</div>
-    {{#each actor.system.aptitudes as |attr key|}}
+    {{#each document.system.aptitudes as |attr key|}}
     <div class="aptitude-container">
         <div style="display:flex;">
             <div class="aptitude-value-circle clickable" data-action="rollAptitude">
                 <div class="aptitude-value-inner-circle" data-id="{{key}}">
-                    <p class="aptitude-value">{{sum attr.value attr.bon attr.trait}}</p>
+                    <p class="aptitude-value">{{attr.total}}</p>
                 </div>
             </div>
             <div class="aptitude-bar-container">
@@ -13,7 +13,7 @@
                     <p class="aptitude-name">{{localize attr.label}}</p>
                     <div style="display: flex; align-items: center; margin-left:auto">
                         <label style="text-transform: uppercase;">{{localize "BREAK.BonPen"}}</label>
-                        <input name="system.aptitudes.{{key}}.bon" type="number" class="aptitude-bon-input" value="{{attr.bon}}" placeholder="{{ localize 'BREAK.None' }}" />
+                        <span style="margin-left: 8px;">{{attr.bon}}</span>
                     </div>
                     <div class="aptitude-base-container" style="margin-left:8px;">
                         <label style="text-transform: uppercase;">{{localize "BREAK.Base"}}</label>
