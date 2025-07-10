@@ -18,7 +18,7 @@
                     <label class="identity-header-label">{{ localize 'BREAK.Calling' }}</label>
                     <div class="input wrapper">
                         {{#if hasCalling}}
-                        <label class="tooltip" id="calling-label">{{calling.name}}<span class="tooltiptext">{{{calling.system.description}}}</span></label>
+                        <a class="tooltip" id="calling-label" data-id="{{calling._id}}" data-action="linkItem">{{calling.name}}<span class="tooltiptext">{{{calling.system.description}}}</span></a>
                         <a class="item-control interface-only" style="margin-left: auto;" data-context-menu data-id="{{calling._id}}">
                             <i class="fas fa-ellipsis-vertical"></i>
                         </a>
@@ -46,7 +46,7 @@
                     <label class="identity-header-label">{{ localize 'BREAK.Species' }}</label>
                     <div class="input wrapper">
                         {{#if hasSpecies}}
-                        <label class="tooltip" id="species-label">{{species.name}}<span class="tooltiptext">{{{species.system.description}}}</span></label>
+                        <a class="tooltip" id="species-label" data-id="{{species._id}}" data-action="linkItem">{{species.name}}<span class="tooltiptext">{{{species.system.description}}}</span></a>
                         <a class="item-control interface-only" style="margin-left: auto;" data-context-menu data-id="{{species._id}}">
                             <i class="fas fa-ellipsis-vertical"></i>
                         </a>
@@ -71,7 +71,7 @@
         <label class="identity-header-label">{{ localize 'BREAK.Homeland' }}</label>
         <div class="input wrapper">
             {{#if hasHomeland}}
-            <label class="tooltip" id="homeland-label">{{homeland.name}}<span class="tooltiptext">{{{homeland.system.description}}}</span></label>
+            <a class="tooltip" id="homeland-label" data-id="{{homeland._id}}" data-action="linkItem">{{homeland.name}}<span class="tooltiptext">{{{homeland.system.description}}}</span></a>
             <a class="item-control interface-only" style="margin-left: auto;" data-context-menu data-id="{{homeland._id}}">
                 <i class="fas fa-ellipsis-vertical"></i>
             </a>
@@ -92,7 +92,7 @@
         <label class="identity-header-label">{{ localize 'BREAK.History' }}</label>
         <div class="input wrapper">
             {{#if hasHistory}}
-            <label class="tooltip" id="history-label">{{history.name}}<span class="tooltiptext">{{{history.system.description}}}</span></label>
+            <a class="tooltip" id="history-label" data-id="{{history._id}}" data-action="linkItem">{{history.name}}<span class="tooltiptext">{{{history.system.description}}}</span></a>
             <a class="item-control interface-only" style="margin-left: auto;" data-context-menu data-id="{{history._id}}">
                 <i class="fas fa-ellipsis-vertical"></i>
             </a>

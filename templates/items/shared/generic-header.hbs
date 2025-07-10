@@ -6,5 +6,16 @@
                 <input name="name" type="text" value="{{document.name}}" placeholder="Name" />
             </h3>
         </div>
+        <div style="display: flex;align-items:center;height:100%;">
+            <div style="flex: 1; display:flex;height:100%;align-items:center;column-gap:12px;">
+                {{#if requiresType}}
+                <select name="system.type" id="type-select" >
+                    {{#each itemTypes as |type|}}
+                        <option value="{{type.key}}" {{#if type.active}}selected="selected"{{/if}}>{{type.label}}</option>
+                    {{/each}}
+                </select>
+                {{/if}}
+            </div>
+        </div>
     </div>
 </section>

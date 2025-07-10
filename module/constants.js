@@ -29,4 +29,12 @@ BREAK.item_types = {
     otherworldly: "TYPES.Item.otherworld",
 }
 
+BREAK.quirk_categories = {
+    spirit: "BREAK.QUIRKS.CATEGORIES.Spirit",
+    physiology: "BREAK.QUIRKS.CATEGORIES.Physiology",
+    fate: "BREAK.QUIRKS.CATEGORIES.Fate",
+    eldritch: "BREAK.QUIRKS.CATEGORIES.Eldritch",
+    robotic: "BREAK.QUIRKS.CATEGORIES.Robotic"
+}
+
 export default BREAK;

@@ -36,7 +36,7 @@ export class ActiveEffectsPanel extends HandlebarsApplicationMixin(ApplicationV2
             };
         }
 
-        const effects = this.actor.appliedEffects;
+        const effects = this.actor.effects;
         return {effects};
     }
 

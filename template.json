@@ -160,7 +160,7 @@
       "templates": ["baseItem"],
       "defenseBonus": 0,
       "speedLimit": 3,
-      "type": "light",
+      "type": "naked",
       "abilities": []
     },
     "shield": {
@@ -197,7 +197,8 @@
       "overview": "",
       "size": null,
       "innateAbilities": [],
-      "maturativeAbilities": []
+      "maturativeAbilities": [],
+      "quirkCategories": []
     },
     "homeland": {
       "name": "",
@@ -213,7 +214,8 @@
     "quirk": {
       "description": "",
       "advantages": "",
-      "disadvantages": ""
+      "disadvantages": "",
+      "type": ""
     },
     "ability": {
       "subtype": "",
@@ -228,7 +230,7 @@
       "rangedAttackBonus": 0,
       "range": 0,
       "loadingTime": 0,
-      "weaponType1": "standard",
+      "weaponType1": "unarmed",
       "weaponType2": "",
       "abilities": [],
       "hands": 1,

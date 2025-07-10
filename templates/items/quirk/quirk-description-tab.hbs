@@ -1,11 +1,11 @@
-<section class="flexcol {{cssClass}} scrollable" autocomplete="off">
-    <div style="display: flex; gap: 15px;">
+<section class="tab description scrollable {{tabs.description.cssClass}}" autocomplete="off" style="height: 100%;" data-group="primary" data-tab="description">
+    <div style="display: flex; gap: 15px;flex: 1;">
         <div class="flexcol" style="flex: 1;">
             <div class="section-header">
                 {{localize "BREAK.Advantages"}}
             </div>
             {{#if editable}}
-            <prose-mirror name="system.advantages" value="{{ document.system.advantages }}"></prose-mirror>
+            <prose-mirror name="system.advantages" value="{{ document.system.advantages }}" style="flex: 1;"></prose-mirror>
             {{else}}
             <div class="editor">
                 <div class="editor-content">{{{ advantagesHTML }}}</div>
@@ -17,7 +17,7 @@
                 {{localize "BREAK.Disadvantages"}}
             </div>
             {{#if editable}}
-            <prose-mirror name="system.disadvantages" value="{{ document.system.disadvantages }}"></prose-mirror>
+            <prose-mirror name="system.disadvantages" value="{{ document.system.disadvantages }}" style="flex: 1;"></prose-mirror>
             {{else}}
             <div class="editor">
                 <div class="editor-content">{{{ disadvantagesHTML }}}</div>
@@ -30,7 +30,7 @@
             {{localize "BREAK.Description"}}
         </div>
         {{#if editable}}
-        <prose-mirror name="system.description" value="{{ document.system.description }}"></prose-mirror>
+        <prose-mirror name="system.description" value="{{ document.system.description }}" style="flex: 1;"></prose-mirror>
         {{else}}
         <div class="editor">
             <div class="editor-content">{{{ descriptionHTML }}}</div>

@@ -14,7 +14,6 @@ const allowedItemTypes = [
 // Status
   "calling",
   "species",
-  "size",
   "homeland",
   "history",
   "quirk",
@@ -119,7 +118,7 @@ export class BreakCharacterSheet extends BreakActorSheet {
 
       context.document.system.aptitudes.might.value = stats.might;
       context.document.system.aptitudes.deftness.value = stats.deftness;
-      context.document.system.aptitudes.grit.value = stats.grit ;
+      context.document.system.aptitudes.grit.value = stats.grit;
       context.document.system.aptitudes.insight.value = stats.insight;
       context.document.system.aptitudes.aura.value = stats.aura;
 
@@ -156,17 +155,19 @@ export class BreakCharacterSheet extends BreakActorSheet {
     const armor = context.document.system.equipment.armor;
     const defense = context.document.system.defense;
     const aptitudes = context.document.system.aptitudes;
-    defense.bon = (size ? +sizes[size].defense : 0) + (armor ? +armor.system.defenseBonus : 0) + (context.speedRating == 2 ? 2 : +context.speedRating >= 3 ? 4 : 0) + (defense.modifiers ?? 0);
+    const shield = context.document.system.equipment.shield;
+
+    defense.bon = (size ? +sizes[size].defense : 0) + (shield ? shield.system.defenseBonus : 0) + (armor ? +armor.system.defenseBonus : 0) + (context.speedRating == 2 ? 2 : +context.speedRating >= 3 ? 4 : 0) + (defense.modifiers ?? 0);
     context.defenseRating = defense.value + defense.bon;
-    aptitudes.might.bon = (size ? +sizes[size].might : 0) + (aptitudes.might.modifiers ?? 0);
+    aptitudes.might.bon = (size ? +sizes[size].might : 0) + (aptitudes.might.modifier ?? 0);
     aptitudes.might.total = aptitudes.might.value + aptitudes.might.bon + aptitudes.might.trait;
-    aptitudes.deftness.bon = (size ? +sizes[size].deftness : 0) + (aptitudes.deftness.modifiers ?? 0);
+    aptitudes.deftness.bon = (size ? +sizes[size].deftness : 0) + (aptitudes.deftness.modifier ?? 0);
     aptitudes.deftness.total = aptitudes.deftness.value + aptitudes.deftness.bon + aptitudes.deftness.trait;
-    aptitudes.grit.bon = (size ? +sizes[size].grit : 0) + (aptitudes.grit.modifiers ?? 0);
+    aptitudes.grit.bon = (size ? +sizes[size].grit : 0) + (aptitudes.grit.modifier ?? 0);
     aptitudes.grit.total = aptitudes.grit.value + aptitudes.grit.bon + aptitudes.grit.trait;
-    aptitudes.insight.bon = (size ? +sizes[size].insight : 0) + (aptitudes.insight.modifiers ?? 0);
+    aptitudes.insight.bon = (size ? +sizes[size].insight : 0) + (aptitudes.insight.modifier ?? 0);
     aptitudes.insight.total = aptitudes.insight.value + aptitudes.insight.bon + aptitudes.insight.trait;
-    aptitudes.aura.bon = (size ? +sizes[size].aura : 0) + (aptitudes.aura.modifiers ?? 0);
+    aptitudes.aura.bon = (size ? +sizes[size].aura : 0) + (aptitudes.aura.modifier ?? 0);
     aptitudes.aura.total = aptitudes.aura.value + aptitudes.aura.bon + aptitudes.aura.trait;
     return context;
   }
@@ -203,19 +204,23 @@ export class BreakCharacterSheet extends BreakActorSheet {
     event.preventDefault();
     const featureType = event.target.dataset.type;
     let predefinedList = null;
+    let filters = [];
     const homeland = this.actor.items.find(i => i.type === "homeland");
+    const species = this.actor.items.find(i => i.type === "species");
     if(featureType === "history" && homeland) {
-      console.log(homeland);
       predefinedList = await Promise.all(homeland.system.histories.map(async (id) => await fromUuid(id)));
       predefinedList.forEach(history => {
         history.from = homeland.name;
       });
+    } else if(featureType === "quirk" && species && species.system.quirkCategories) {
+      filters = [i => species.system.quirkCategories.includes(i.system.type ?? "")];
     }
     new FeatureSelectionDialog({
       itemType: featureType,
       restricted: true,
       actor: this.document,
-      predefinedList
+      predefinedList,
+      filters
     }).render(true);
   }
 

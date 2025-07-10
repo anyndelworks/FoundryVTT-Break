@@ -82,6 +82,17 @@
       "AuraDesc": "Persuadir, inspirar, aterrorizar"
     },
 
+    "QUIRKS": {
+      "QuirkCategories": "Categorias de peculiaridades",
+      "CATEGORIES": {
+        "Spirit": "Espiritual",
+        "Physiology": "Fisiologica",
+        "Fate": "Destinada",
+        "Eldritch": "Sobrenatural",
+        "Robotic": "Robotica"
+      }
+    },
+
     "Calling": "Vocación",
     "CALLING": {
       "Factotum": "Factotum",

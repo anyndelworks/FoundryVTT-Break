@@ -1,5 +1,5 @@
-<section class="flexcol {{cssClass}} scrollable" autocomplete="off">
-    <div style="display:flex;column-gap: 24px;">
+<section class="flexcol {{cssClass}} scrollable" autocomplete="off" style="height: 100%;">
+    <div style="display:flex;column-gap: 24px;flex: 1;">
         <div class="flexcol" style="flex: 0.75;">
             <div class="size-drag-slot" id="size" style="flex: 0;">
                 <div class="section-header">{{localize "BREAK.Size"}}</div>
@@ -9,29 +9,19 @@
                     {{/each}}
                 </select>
             </div>
-            <div class="innate-ability-drag-slot" id="innateAbilities" style="flex: 0;">
-                <div class="section-header" id="innateAbilities">{{localize "BREAK.ABILITIES.Innate"}}</div>
-                {{#if hasInnateAbilities}}
-                {{#each innateAbilities}}
-                <div id="innateAbilities" style="display: flex; margin-bottom: 6px;align-items: center; width: 100%;">
-                    <label class="tooltip" id="innateAbilities">{{this.name}}<span class="tooltiptext">{{{this.system.description}}}</span></label>
-                    <button class="delete-innate-ability" id="innate-{{@index}}" style="margin-left: auto; max-width: 32px; margin-right: 8px;"><i class="fas fa-trash" style="margin: 0px;"></i></button>
+            <div class="flexcol" style="flex: 0;">
+                <div class="section-header">{{localize "BREAK.QUIRKS.QuirkCategories"}}</div>
+                <select name="quirkCategory" id="type-select" >
+                    <option value="">Pick an item</option>
+                    {{#each quirkCategoryList as |type|}}
+                        <option value="{{type.key}}" {{#if type.disabled}}disabled{{/if}}>{{type.label}}</option>
+                    {{/each}}
+                </select>
+                <div style="display: flex;flex-wrap:wrap;row-gap:8px;margin-top:12px;">
+                    {{#each quirkCategories as |category|}}
+                        <label style="width: 33%;max-width:250px;"><i data-action="removeQuirkCategory" data-key="{{category.key}}" class="fa-regular fa-xmark clickable"></i>{{category.label}}</label>
+                    {{/each}}
                 </div>
-                {{/each}}
-                {{else}}
-                <label id="innateAbilities">Drag an ability...</label>
-                {{/if}}
-            </div>
-            <div class="maturative-ability-drag-slot" id="maturativeAbility" style="flex: 0;">
-                <div class="section-header" id="maturativeAbility">{{localize "BREAK.ABILITIES.Maturative"}}</div>
-                {{#if maturativeAbility}}
-                <div style="display: flex; margin-bottom: 6px;align-items: center; width: 100%;">
-                    <label class="tooltip" id="maturativeAbility">{{maturativeAbility.name}}<span class="tooltiptext">{{{maturativeAbility.system.description}}}</span></label>
-                    <button class="delete-maturative-ability" id="maturative" style="margin-left: auto; max-width: 32px; margin-right: 8px;"><i class="fas fa-trash" style="margin: 0px;"></i></button>
-                </div>
-                {{else}}
-                <label id="maturativeAbility">Drag an ability...</label>
-                {{/if}}
             </div>
         </div>
         <div class="flexcol" style="flex: 1;">
@@ -39,7 +29,7 @@
                 {{localize "BREAK.Description"}}
             </div>
             {{#if editable}}
-            <prose-mirror name="system.description" value="{{ document.system.description }}"></prose-mirror>
+            <prose-mirror name="system.description" value="{{ document.system.description }}" style="flex: 1;"></prose-mirror>
             {{else}}
             <div class="editor">
                 <div class="editor-content">{{{ descriptionHTML }}}</div>

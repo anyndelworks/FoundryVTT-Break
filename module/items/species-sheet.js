@@ -1,4 +1,5 @@
 import { BreakItemSheet } from "./item-sheet.js";
+import BREAK from "../constants.js";
 
 export class BreakSpeciesSheet extends BreakItemSheet {
   //#region DocumentV2 initialization and setup
@@ -20,7 +21,8 @@ export class BreakSpeciesSheet extends BreakItemSheet {
       actions: {
         editImage: this.onEditImage,
         deleteInnateAbility: this.#onDeleteInnateAbility,
-        deleteMaturativeAbility: this.#onDeleteMaturativeAbility
+        deleteMaturativeAbility: this.#onDeleteMaturativeAbility,
+        removeQuirkCategory: this.#onRemoveQuirkCategory
       }
   }
 
@@ -50,6 +52,14 @@ export class BreakSpeciesSheet extends BreakItemSheet {
         label: sizes[k].label,
         active: context.document.system.size === k
       }));
+
+      context.quirkCategories = context.document.system.quirkCategories ?? [];
+      context.quirkCategoryList = Object.keys(BREAK.quirk_categories).map(k => ({
+        key: k,
+        label: game.i18n.localize(BREAK.quirk_categories[k]),
+        disabled: context.quirkCategories.includes(k)
+      }));
+      context.quirkCategories = context.quirkCategoryList.filter(qc => qc.disabled);
       return context;
   }
   //#endregion
@@ -65,6 +75,15 @@ export class BreakSpeciesSheet extends BreakItemSheet {
   static async #onDeleteMaturativeAbility(event) {
     event.preventDefault();
     this.item.update({"system.maturativeAbility": null});
+  }
+
+  static async #onRemoveQuirkCategory(event) {
+    event.preventDefault();
+    const key = event.target.dataset.key;
+    const update = {};
+    const newQuirkCategories = this.item.system.quirkCategories.filter(a => a !== key);
+    update["system.quirkCategories"] = newQuirkCategories;
+    this.item.update(update);
   }
   //#endregion
   
@@ -88,6 +107,12 @@ export class BreakSpeciesSheet extends BreakItemSheet {
   static async #onSubmit(event, form, formData) {
       event.preventDefault();
       const updateData = foundry.utils.expandObject(formData.object);
+      if(updateData.quirkCategory) {
+        updateData.system.quirkCategories = this.document.system.quirkCategories ?? [];
+        if(!updateData.system.quirkCategories.includes(updateData.quirkCategory))
+          updateData.system.quirkCategories.push(updateData.quirkCategory);
+        delete updateData.quirkCategory;
+      }
       await this.item.update(updateData);
   }
   //#endregion

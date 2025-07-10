@@ -63,7 +63,9 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     });
 
 
-    let maxHearts = context.document.system.hearts.max + context.document.system.hearts.bon;
+    const hearts = context.document.system.hearts;
+    hearts.bon = (hearts.modifier ?? 0);
+    let maxHearts = hearts.max + hearts.bon;
     context.document.system.hearts.value = Math.min(context.document.system.hearts.value, maxHearts);
 
     context.weapons = context.document.items.filter(i => i.type === "weapon");
@@ -81,19 +83,22 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       }
     });
 
-    const attack = context.document.system.attack;
-    const speed = context.document.system.speed;
 
     const armor = context.document.system.equipment.armor;
     const shield = context.document.system.equipment.shield;
+    const speed = context.document.system.speed;
+    const attack = context.document.system.attack;
 
+    attack.bon = (attack.modifier ?? 0);
     context.attackBonus = attack.value + attack.bon;
-    const rawSpeed = speed.value + speed.bon - (shield ? shield.speedPenalty : 0);
+    
+    speed.bon = (speed.modifier ?? 0) - (shield ? shield.system.speedPenalty : 0);
+    const rawSpeed = speed.value + speed.bon;
     // Max speed is 3 (Very Fast), or if armor is worn then the armor's speed limit if it's less
     const maxSpeed = Math.min(((armor && armor.system.speedLimit) ? +armor.system.speedLimit : 3), 3);
     context.speedRating = Math.min(rawSpeed, maxSpeed);
 
-    context.hands = 2;
+    context.hands = 2 + (context.document.system.hands?.modifier ?? 0);
     const equipment = context.document.system.equipment;
     const weaponHands = equipment.weapon.reduce((a, w) => a+(w.hands ?? 1), 0);
     this.freeHands = context.hands - weaponHands - (equipment.shield?.system.hands ?? 0);
@@ -153,7 +158,7 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
   static async #onRollAptitude(event) {
     event.preventDefault();
-    const button = event.target;
+    const button = event.target.closest("[data-id]");
     const aptitudeId = button.dataset.id;
     this.actor.rollAptitude(aptitudeId)
   }

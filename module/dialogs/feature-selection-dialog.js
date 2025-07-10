@@ -5,12 +5,14 @@ export class FeatureSelectionDialog extends HandlebarsApplicationMixin(Applicati
   #itemType;
   #restricted;
   #predefinedList;
+  #filters;
 
   constructor(...args) {
     super(...args);
     this.#itemType = this.options.itemType ?? "ability";
     this.#restricted = this.options.restricted ?? false;
     this.#predefinedList = this.options.predefinedList;
+    this.#filters = this.options.filters ?? [];
     this.actor = this.options.actor;
   }
 
@@ -114,6 +116,9 @@ export class FeatureSelectionDialog extends HandlebarsApplicationMixin(Applicati
     } else {
       context.itemList = await this._getItemsOfType(context.itemType);
     }
+    this.#filters.forEach(f => {
+      context.itemList = context.itemList.filter(f);
+    });
     return context;
   }
 
