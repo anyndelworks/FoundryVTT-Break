@@ -1,10 +1,5 @@
-/**
- * Extend the base TokenDocument to support resource type aptitudes.
- * @extends {TokenDocument}
- */
 export class BreakTokenDocument extends TokenDocument {
 
-  /** @inheritdoc */
   getBarAttribute(barName, {alternative}={}) {
     const data = super.getBarAttribute(barName, {alternative});
     const attr = alternative || this[barName]?.aptitude;
@@ -31,14 +26,6 @@ export class BreakTokenDocument extends TokenDocument {
 
 }
 
-
-/* -------------------------------------------- */
-
-
-/**
- * Extend the base Token class to implement additional system-specific logic.
- * @extends {Token}
- */
 export class BreakToken extends Token {
   _drawBar(number, bar, data) {
     if ( "min" in data ) {

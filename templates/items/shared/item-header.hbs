@@ -13,19 +13,19 @@
         <div style="display: flex;align-items:center;height:100%;">
             <div style="flex: 1; display:flex;height:100%;align-items:center;column-gap:12px;">
                 {{#if requiresType}}
-                <select name="system.type" id="type-select" >
+                <select name="system.type" id="type-select" style="max-width: 160px;">
                     {{#each itemTypes as |type|}}
                         <option value="{{type.key}}" {{#if type.active}}selected="selected"{{/if}}>{{type.label}}</option>
                     {{/each}}
                 </select>
                 {{/if}}
                 {{#if isWeapon}}
-                <select name="system.weaponType1" id="type-select" >
+                <select name="system.weaponType1" id="type-select" style="max-width: 160px;">
                     {{#each itemTypes as |type|}}
                         <option value="{{type.key}}" {{#if type.active1}}selected="selected"{{/if}}>{{type.label}}</option>
                     {{/each}}
                 </select>
-                <select name="system.weaponType2" id="type-select" >
+                <select name="system.weaponType2" id="type-select" style="max-width: 160px;">
                     <option value="">{{localize "BREAK.None"}}</option>
                     {{#each itemTypes as |type|}}
                         <option value="{{type.key}}" {{#if type.active2}}selected="selected"{{/if}}>{{type.label}}</option>
@@ -33,12 +33,12 @@
                 </select>
                 {{/if}}
             </div>
-            <div style="display: flex;align-items:center; flex: 1;justify-content:flex-end;">
+            <div style="display: flex;align-items:center; justify-content:flex-end;">
                 <i class="fas fa-gem"></i>
                 <input name="system.value.gems" value="{{document.system.value.gems}}" placeholder="0" class="money-input" type="number"/>
                 <i class="fas fa-coins"></i>
                 <input name="system.value.coins" value="{{document.system.value.coins}}" placeholder="0" class="money-input" type="number"/>
-                <i class="fas fa-coin-vertical"></i>
+                <i class="fas fa-cubes-stacked"></i>
                 <input name="system.value.stones" value="{{document.system.value.stones}}" placeholder="0" class="money-input" type="number"/>
             </div>
         </div>

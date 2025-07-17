@@ -1,4 +1,4 @@
-<section class="flexcol {{cssClass}} scrollable" autocomplete="off">
+<section class="flexcol {{cssClass}} scrollable" style="height: 100%;" autocomplete="off">
     <select name="system.subtype" style="flex: 0;">
         <option value=""></option>
         {{#each abilityTypes as |type|}}
@@ -18,7 +18,7 @@
             {{localize "BREAK.Description"}}
         </div>
         {{#if editable}}
-        <prose-mirror name="system.description" value="{{ document.system.description }}"></prose-mirror>
+        <prose-mirror name="system.description" value="{{ document.system.description }}" style="flex:1;"></prose-mirror>
         {{else}}
         <div class="editor">
             <div class="editor-content">{{{ descriptionHTML }}}</div>

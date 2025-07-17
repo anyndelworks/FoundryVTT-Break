@@ -1,0 +1,40 @@
+<section class="tab description scrollable {{tabs.properties.cssClass}}" data-group="primary" data-tab="properties" style="height: 100%;">
+    <div style="display: flex; height: 100%: width:100%">
+        <div style="flex: 1;">
+            {{#if isMelee}}
+                <p style="flex: 0;font-weight:600;font-size:14px;">{{localize "BREAK.GEAR.MeleeProperties"}}</p>
+                <div style="display:flex; align-items: center;flex: 0;">
+                    <label>{{localize "BREAK.GEAR.ExtraDamage"}}</label>
+                    <input name="system.extraDamage" value="{{document.system.extraDamage}}" placeholder="0" type="number" style="width:32px; text-align:center;margin-left: 6px;"/>
+                </div>
+                <div style="display:flex; align-items: center;flex: 0;">
+                    <label>{{localize "BREAK.AttackBonus"}}</label>
+                    <input name="system.attackBonus" value="{{document.system.attackBonus}}" placeholder="0" type="number" style="width:32px; text-align:center;margin-left: 6px;" />
+                </div>
+            {{/if}}
+        </div>
+        <div style="flex: 1;">
+            {{#if isRanged}}
+                <p style="flex: 0;font-weight:600;font-size:14px;">{{localize "BREAK.GEAR.RangedProperties"}}</p>
+                <div style="display:flex; align-items: center;flex: 0;">
+                    <label>{{localize "BREAK.GEAR.TYPE.Ranged"}} {{localize "BREAK.GEAR.ExtraDamage"}}</label>
+                    <input name="system.rangedExtraDamage" value="{{document.system.rangedExtraDamage}}" placeholder="0" type="number" style="width:32px; text-align:center;margin-left: 6px;"/>
+                </div>
+                <div style="display:flex; align-items: center;flex: 0;">
+                    <label>{{localize "BREAK.GEAR.TYPE.Ranged"}} {{localize "BREAK.AttackBonus"}}</label>
+                    <input name="system.rangedAttackBonus" value="{{document.system.rangedAttackBonus}}" placeholder="0" type="number" style="width:32px; text-align:center;margin-left: 6px;"/>
+                </div>
+                <div style="display:flex; align-items: center;flex: 0;">
+                    <label>{{localize "BREAK.Range"}}</label>
+                    <input name="system.range" value="{{document.system.range}}" placeholder="0" type="number" style="width:32px; text-align:center;margin-left: 6px;"/>
+                    <label style="margin-left: 6px;">{{localize "BREAK.Areas"}}</label>
+                </div>
+                <div style="display:flex; align-items: center;flex: 0;">
+                    <label>{{localize "BREAK.LoadingTime"}}</label>
+                    <input name="system.loadingTime" value="{{document.system.loadingTime}}" placeholder="0" type="number" style="width:32px; text-align:center;margin-left: 6px;"/>
+                    <label style="margin-left: 6px;">{{localize "BREAK.Action"}}</label>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+</section>

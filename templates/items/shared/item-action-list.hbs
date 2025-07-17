@@ -1,0 +1,28 @@
+<div class="flexcol" style="flex: 1;">
+    <div class="section-header">
+        {{localize "BREAK.Actions"}}
+        <div style="display:flex;width:100%;justify-content:flex-end;margin-right:12px;">
+            <a data-action="addAction"><i class="fa-regular fa-plus"></i></a>
+        </div>
+    </div>
+    <div style="flex 1; display: flex; flex-direction:column;">
+        {{#each actions as |action|}}
+            <div style="margin-bottom: 6px;align-items: center;display:flex;border-bottom: 1px dashed; height:48px;" data-id="{{action.id}}" data-type="action">
+                <input name="actions.{{action.id}}.name" type="text" value="{{action.name}}" placeholder="Name" />
+                <select name="actions.{{action.id}}.rollType">
+                    {{#each @root.rollTypes as |type|}}
+                        <option value="{{type.key}}" {{#when action.rollType 'eq' type.key}}selected="selected"{{/when}}>{{localize type.label}}</option>
+                    {{/each}}
+                </select>
+                <select name="actions.{{action.id}}.cost">
+                    {{#each @root.actionCosts as |cost|}}
+                        <option value="{{cost.key}}" {{#when action.cost 'eq' cost.key}}selected="selected"{{/when}}>{{localize cost.label}}</option>
+                    {{/each}}
+                </select>
+                <a class="item-control interface-only" style="margin-left: auto;" data-context-menu data-action="openActionContext">
+                    <i class="fas fa-ellipsis-vertical"></i>
+                </a>
+            </div>
+        {{/each}}
+    </div>
+</div>

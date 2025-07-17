@@ -57,6 +57,10 @@ export class BreakActor extends Actor {
   async unequipItem(id, type)
   {
     const updates = {};
+    const item = this.items.get(id);
+    item?.effects?.forEach(effect => {
+      effect.update({disabled: true});
+    });
     if (Array.isArray(this.system.equipment[type])) {
       var itemIndex = this.system.equipment[type].findIndex((element) => element._id == id);
       if (itemIndex != -1)

@@ -356,6 +356,7 @@
     "Add": "Add",
     "Weapons": "Weapons",
     "Action": "Action",
+    "Actions": "Actions",
     "LoadingTime": "Loading time",
     "ExtraAttackRollResult": "Extra damage!",
     "Hit": "Hit!",
@@ -399,6 +400,8 @@
     "FeatureSelector": "Feature selector",
     "Hands": "Hands",
     "FreeHand": "Free hand",
-    "InventorySlots": "Inventory slots"
+    "InventorySlots": "Inventory slots",
+    "Under": "Under",
+    "Over": "Over"
   }
 }

@@ -356,6 +356,7 @@
     "Weapon": "Arma",
     "Weapons": "Armas",
     "Action": "Acción",
+    "Actions": "Acciones",
     "LoadingTime": "Tiempo de recarga",
     "ExtraAttackRollResult": "¡Daño extra!",
     "Hit": "¡Golpe!",
@@ -399,6 +400,8 @@
     "FeatureSelector": "Selector de caracteristicas",
     "Hands": "Manos",
     "FreeHand": "Mano libre",
-    "InventorySlots": "Huecos de inventario"
+    "InventorySlots": "Huecos de inventario",
+    "Under": "Por debajo",
+    "Over": "Por encima"
   }
 }

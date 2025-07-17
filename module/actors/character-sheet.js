@@ -103,7 +103,7 @@ export class BreakCharacterSheet extends BreakActorSheet {
     context.hasSpecies = context.species != null;
 
     const sizes = this.getSizes();
-    const size = context.hasSpecies ? context.species.system.size : null;
+    const size = context.document.system.size?.modifier ?? (context.hasSpecies ? context.species.system.size : null);
     if(size) {
       context.inventorySlots = sizes[size].inventorySize;
     }
@@ -157,7 +157,7 @@ export class BreakCharacterSheet extends BreakActorSheet {
     const aptitudes = context.document.system.aptitudes;
     const shield = context.document.system.equipment.shield;
 
-    defense.bon = (size ? +sizes[size].defense : 0) + (shield ? shield.system.defenseBonus : 0) + (armor ? +armor.system.defenseBonus : 0) + (context.speedRating == 2 ? 2 : +context.speedRating >= 3 ? 4 : 0) + (defense.modifiers ?? 0);
+    defense.bon = (size ? +sizes[size].defense : 0) + (shield ? shield.system.defenseBonus : 0) + (armor ? +armor.system.defenseBonus : 0) + (context.speedRating == 2 ? 2 : +context.speedRating >= 3 ? 4 : 0) + (defense.modifier ?? 0);
     context.defenseRating = defense.value + defense.bon;
     aptitudes.might.bon = (size ? +sizes[size].might : 0) + (aptitudes.might.modifier ?? 0);
     aptitudes.might.total = aptitudes.might.value + aptitudes.might.bon + aptitudes.might.trait;
@@ -181,21 +181,25 @@ export class BreakCharacterSheet extends BreakActorSheet {
     if(!allowedItemTypes.includes(draggedItem.type)) return;
     
     switch(draggedItem.type) {
+      case "weapon":
+      case "armor":
+      case "outfit":
+      case "accessory":
+      case "shield":
+        await super._onDrop(event);
+        const newItem = this.actor.items.contents.at(-1);
+        newItem.effects?.forEach(effect => {
+          effect.update({disabled: true});
+        });
+        return;
       case "calling":
       case "species":
       case "homeland":
       case "history":
-      return super._onDrop(event);
       default:
-        const t = event.target.closest(".equipment-drag-slot")
-        if(!event.target.closest(".equipment-drag-slot")) return super._onDrop(event);
-        const dragData = event.dataTransfer.getData("application/json");
-        if ( !dragData ) return super._onDrop(event);
-        const id = JSON.parse(dragData).id;
-        const item = this.actor.items.find(i => i._id == id);
-        this._onEquipItem(item);
+        await super._onDrop(event);
+        return;
     }
-    return true;
   }
   //#endregion
 

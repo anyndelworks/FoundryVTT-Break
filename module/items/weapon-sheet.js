@@ -19,6 +19,8 @@ export class BreakWeaponSheet extends BreakItemSheet {
     },
     actions: {
       editImage: this.onEditImage,
+      addEffect: this.onAddEffect,
+      addAction: this.onAddAction
     }
   }
 
@@ -26,8 +28,24 @@ export class BreakWeaponSheet extends BreakItemSheet {
     header: {
       template: "systems/break/templates/items/shared/item-header.hbs"
     },
-    body: {
-      template: "systems/break/templates/items/weapon/weapon-sheet.hbs"
+    tabs: {
+      template: "systems/break/templates/shared/sheet-tabs.hbs",
+    },
+    description: {
+      template: "systems/break/templates/items/weapon/weapon-description-tab.hbs"
+    },
+    properties: {
+      template: "systems/break/templates/items/weapon/weapon-properties-tab.hbs"
+    },
+    effects: {
+      template: "systems/break/templates/items/weapon/weapon-effects-tab.hbs"
+    }
+  }
+
+  static TABS = {
+    primary: {
+      initial: "description",
+      tabs: [{id: "description", icon: "fas fa-scroll"}, {id: "properties", icon: "fas fa-sword"}, {id: "effects", icon: "fas fa-sparkles"}],
     }
   }
 
@@ -132,7 +150,7 @@ export class BreakWeaponSheet extends BreakItemSheet {
   //#region DocumentV2 submit
     static async #onSubmit(event, form, formData) {
       event.preventDefault();
-      let updateData = foundry.utils.expandObject(formData.object);
+      let updateData = this.getSubmitData(formData);
 
       if(updateData.system.weaponType1 !== this.item.system.weaponType1 || updateData.system.weaponType2 !== this.item.system.weaponType2) {
         const updates = this._onSetWeaponType(updateData.system.weaponType1, updateData.system.weaponType2);

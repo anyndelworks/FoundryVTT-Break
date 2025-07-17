@@ -227,6 +227,9 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
 
   async _onEquipItem(item) {
+    item?.effects?.forEach(effect => {
+      effect.update({disabled: false});
+    });
     switch(item.type){
       case "armor":
         this.actor.update({"system.equipment.armor": {...item, _id: item._id}});

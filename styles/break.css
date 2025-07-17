@@ -131,6 +131,30 @@
   --text-primary: black;
   --text-secondary: white;
 }
+.break.sheet.calling .profile-img {
+  border-radius: 50%;
+  border: 2px solid #AA3D9E;
+  width: 100px;
+  height: 100px;
+}
+.break.sheet.ability .profile-img {
+  border-radius: 50%;
+  border: 2px solid #AA3D9E;
+  width: 100px;
+  height: 100px;
+}
+.break.sheet.species .profile-img {
+  border-radius: 50%;
+  border: 2px solid #0084C7;
+  width: 100px;
+  height: 100px;
+}
+.break.sheet.quirk .profile-img {
+  border-radius: 50%;
+  border: 2px solid #98CF59;
+  width: 100px;
+  height: 100px;
+}
 .break.sheet {
   /* Tooltip container */
   /* Tooltip text */

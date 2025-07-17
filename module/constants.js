@@ -37,4 +37,34 @@ BREAK.quirk_categories = {
     robotic: "BREAK.QUIRKS.CATEGORIES.Robotic"
 }
 
+BREAK.roll_types = {
+    none: {
+        label: "BREAK.None",
+        key: "none"
+    },
+    over: {
+        label: "BREAK.Over",
+        key: "over"
+    },
+    unver: {
+        label: "BREAK.Under",
+        key: "under"
+    },
+    contest: {
+        label: "BREAK.Contest",
+        key: "contest"
+    }
+}
+
+BREAK.action_costs = {
+    free: {
+        key: "free",
+        label: "BREAK.Free"
+    },
+    action: {
+        key: "action",
+        label: "BREAK.Action"
+    }
+}
+
 export default BREAK;

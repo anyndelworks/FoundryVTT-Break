@@ -1,6 +1,7 @@
 import { BreakItemSheet } from "./item-sheet.js";
 
 export class BreakCallingSheet extends BreakItemSheet {
+    #focusedInput;
 
     //#region DocumentV2 initialization and setup
     static DEFAULT_OPTIONS = {
@@ -89,6 +90,24 @@ export class BreakCallingSheet extends BreakItemSheet {
       }));
       context.shieldAllowances = Object.keys(shieldTypes).filter(k => context.shieldAllowances.includes(k)).map(k => ({...shieldTypes[k], key: k}));
       return context;
+    }
+
+    async _onRender(context, options) {
+      await super._onRender(context, options);
+      const html = $(this.element);
+  
+      // Everything below here is only needed if the sheet is editable
+      if ( !this.isEditable ) return;
+  
+      html.find("input.advancement-input").each((i, a) =>{
+        a.addEventListener("focus", event => {
+          event.preventDefault();
+          event.stopPropagation();
+          this.#focusedInput = event.target;
+          event.target.select();
+        });
+      });
+      console.log(this.#focusedInput);
     }
     //#endregion
   
@@ -184,9 +203,13 @@ export class BreakCallingSheet extends BreakItemSheet {
     static async #onSubmit(event, form, formData) {
       event.preventDefault();
       const updateData = foundry.utils.expandObject(formData.object);
+      let render = true;
       if(updateData.system.advancementTable) {
         const table = Object.keys(updateData.system.advancementTable).map((k, i) => ({...updateData.system.advancementTable[i], rank: i+1}));
-        updateData.system.advancementTable = table;
+        if(JSON.stringify(table) !== JSON.stringify(this.document.system.advancementTable)) {
+          updateData.system.advancementTable = table;
+          render = false;
+        }
       }
       console.log(this.document);
       if(updateData.armorAllowance) {
@@ -208,7 +231,7 @@ export class BreakCallingSheet extends BreakItemSheet {
         delete updateData.shieldAllowance;
       }
       console.log(updateData);
-      await this.item.update(updateData);
+      await this.item.update(updateData, {render});
     }
     //#endregion
 }
