@@ -5,16 +5,32 @@
             <h3 class="charname">
                 <input name="name" type="text" value="{{document.name}}" placeholder="Name" />
             </h3>
+            {{#if isAbility}}
+                <div style="display: flex; align-items: center;">
+                    <input type="checkbox" name="system.magic" {{checked isMagic}} />
+                    <label>{{localize "BREAK.ABILITIES.Magic"}}</label>
+                </div>
+            {{/if}}
         </div>
-        <div style="display: flex;align-items:center;height:100%;">
+        <div style="display: flex;align-items:center;height:100%;column-gap:12px;">
             <div style="flex: 1; display:flex;height:100%;align-items:center;column-gap:12px;">
                 {{#if requiresType}}
-                <select name="system.type" id="type-select" >
-                    {{#each itemTypes as |type|}}
-                        <option value="{{type.key}}" {{#if type.active}}selected="selected"{{/if}}>{{type.label}}</option>
+                    <select name="system.type" id="type-select" >
+                        {{#each itemTypes as |type|}}
+                            <option value="{{type.key}}" {{#if type.active}}selected="selected"{{/if}}>{{type.label}}</option>
+                        {{/each}}
+                    </select>
+                {{/if}}
+            </div>
+            <div style="flex: 1; display:flex;height:100%;align-items:center;column-gap:12px;">
+            {{#if requiresSubtype}}
+                <select name="system.subtype" style="flex: 1;">
+                    <option value=""></option>
+                    {{#each itemSubtypes as |type|}}
+                    <option value="{{type.key}}" {{#if type.active}}selected="selected"{{/if}}>{{type.label}}</option>
                     {{/each}}
                 </select>
-                {{/if}}
+            {{/if}}
             </div>
         </div>
     </div>

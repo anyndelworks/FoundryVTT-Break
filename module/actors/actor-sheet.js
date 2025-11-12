@@ -1,4 +1,5 @@
 import { parseInputDelta } from "../../utils/utils.mjs";
+import BREAK from "../constants.js";
 
 const allowedItemTypes = [
 // Equipment
@@ -42,6 +43,7 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       linkItem: this.#onLinkItem,
       addCustomItem: this.#onAddCustomItem,
       adjustItemQuantity: this.#onAdjustItemQuantity,
+      useAction: this.#onUseAction
     }
   }
 
@@ -69,7 +71,7 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     context.document.system.hearts.value = Math.min(context.document.system.hearts.value, maxHearts);
 
     context.weapons = context.document.items.filter(i => i.type === "weapon");
-    context.weapons = context.weapons.map(w => {
+    context.weapons = context.document.system.equipment.weapon.map(w => {
       return {
         id: w._id,
         name: w.name,
@@ -83,6 +85,21 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       }
     });
 
+    context.actions = [];
+    context.document.items.forEach(i => {
+      if(i.system.actions) {
+        i.system.actions.forEach(action => {
+          context.actions.push({
+            itemId: i._id,
+            itemName: i.name,
+            ...action,
+            rollTypeName: game.i18n.localize(BREAK.roll_types[action.rollType].label),
+            actionCostName: game.i18n.localize(BREAK.action_costs[action.cost].label)
+          });
+        });
+      }
+    });
+    console.log(context.actions);
 
     const armor = context.document.system.equipment.armor;
     const shield = context.document.system.equipment.shield;
@@ -212,6 +229,13 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     value += type === "increase" ? 1 : -1;
     input.value = Math.min(Math.max(value, min), max);
     input.dispatchEvent(new Event("change"));
+  }
+
+  static #onUseAction(event) {
+    event.preventDefault();
+    const button = event.target;
+    const {itemId, actionId} = button.dataset;
+    this.actor.useAction(itemId, actionId);
   }
 
   //#endregion

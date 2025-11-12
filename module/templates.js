@@ -15,6 +15,7 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/break/templates/actors/shared/sheet-xp.html",
     "systems/break/templates/actors/shared/sheet-allegiance.html",
     "systems/break/templates/actors/shared/sheet-weapon-card.hbs",
+    "systems/break/templates/actors/shared/sheet-action-card.hbs",
     "systems/break/templates/actors/shared/sheet-equipment.hbs",
     "systems/break/templates/actors/shared/sheet-bag-content.hbs",
     "systems/break/templates/actors/shared/sheet-bags.hbs",

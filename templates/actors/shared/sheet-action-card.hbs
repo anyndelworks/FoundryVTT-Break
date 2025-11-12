@@ -1,0 +1,22 @@
+<div style="display:flex;align-items:center;border-bottom: 1px solid grey;padding-bottom:6px;column-gap:12px;">
+    <div class="weapon-card-column weapon-name" style="align-items: center;">
+        <label style="font-size:16px;font-weight:700;">{{action.name}}</label>
+        <label style="font-size:12px;">{{action.itemName}}</label>
+    </div>
+    <div class="weapon-card-column">
+        <div style="display:flex;">
+            <label>{{localize "BREAK.RollType"}}</label>
+            <label style="margin-left: auto;">{{{action.rollTypeName}}}</label>
+        </div>
+    </div>
+    <div class="weapon-card-column">
+        <div style="display:flex;">
+            <label>{{localize "BREAK.ActionCost"}}</label>
+            <label style="margin-left: auto;">{{{action.actionCostName}}}</label>
+        </div>
+    </div>
+    <div style="margin-left: auto;display:flex;column-gap:18px;padding-right:12px;">
+        <i class="fas fa-dice clickable" data-item-id="{{action.itemId}}" data-action-id="{{action.id}}"
+            style="font-size:24px;" data-action="useAction"></i>
+    </div>
+</div>

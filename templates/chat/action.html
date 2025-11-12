@@ -1,0 +1,17 @@
+<div class="break chat-item">
+    <div class="border">
+
+        <div class="chat-item-header">
+            <div class="chat-item-header-infos">
+                <p>{{user}} uses</p>
+                <!-- Name -->
+                <h4 class="item-name">{{name}}</h2>
+            </div>
+        </div>
+        <!-- Description -->
+        {{#if description}}
+        <h5 class="title-section">{{localize "BREAK.Description"}}:</h3>
+        {{{description}}}
+        {{/if}}
+    </div>
+</div>

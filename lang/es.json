@@ -33,7 +33,9 @@
       "quirk": "Peculiaridad",
       "ability": "Habilidad",
       "advancement": "Avance",
-      "item": "Objeto"
+      "item": "Objeto",
+      "material": "Material",
+      "additive": "Aditivo"
     }
   },
   "CONFIG": {
@@ -237,7 +239,8 @@
       "StartingLong": "Habilidades iniciales",
       "StandardLong": "Habilidades estandar",
       "AdvancedLong": "Habilidades avanzadas",
-      "ElectiveLong": "Habilidades electivas"
+      "ElectiveLong": "Habilidades electivas",
+      "Magic": "Magica"
     },
 
     "Inventory": "Inventario",
@@ -288,6 +291,7 @@
     "Languages": "Idiomas",
     "BonusLanguages": "Idiomas extra",
     "Description": "Descripción",
+    "Rules": "Reglas",
     "Purviews": "Competencias",
     "Base": "Base",
     "Name": "Nombre",

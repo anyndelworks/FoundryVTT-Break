@@ -1,5 +1,7 @@
 import { AdvantageTypes, RollBonuses, RollType, calculateRollResult, getResultText, roll } from "../../utils/dice.js";
+import BREAK from "../constants.js";
 import { EntitySheetHelper } from "../helper.js";
+import Action from "../system/action.js";
 
 /**
  * Extend the base Actor document to support aptitudes and groups with a custom template creation dialog.
@@ -131,6 +133,23 @@ export class BreakActor extends Actor {
       await this.update(updates)
     }
     return this
+  }
+
+  async useAction(itemId, actionId) {
+    const item = this.items.find(i => i._id == itemId);
+    const action = item.system.actions.find(a => a.id === actionId);
+    console.log(action);
+    switch(action.rollType){
+      case BREAK.roll_types.none.key:
+        Action.sendToChat(action, this.name);
+        break;
+      case BREAK.roll_types.contest.key:
+        break;
+      case BREAK.roll_types.over.key:
+        break;
+      case BREAK.roll_types.check.key:
+        break;
+    }
   }
 
   /** @inheritdoc */

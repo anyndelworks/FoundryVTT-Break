@@ -40,7 +40,7 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     return context;
   }
 
-  async _onRender(context, options) {
+   async _onRender(context, options) {
     await super._onRender(context, options);
     this.#dragDrop.forEach((d) => d.bind(this.element))
     const html = $(this.element);
@@ -56,7 +56,7 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
       });
     });
 
-    new foundry.applications.ux.ContextMenu.implementation(html[0], "[data-id]", [], {onOpen: this._onOpenContextMenu.bind(this), jQuery: false});
+    new foundry.applications.ux.ContextMenu(document.body, "[data-id]", [], {onOpen: this._onOpenContextMenu.bind(this), jQuery: false, fixed: true});
 
   }
 
@@ -75,7 +75,7 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
     if (!this.allowedItemTypes.includes(draggedItem.type)) return;
     this._onDropValidItem(draggedItem);
-  }
+  } b
 
   _onDropValidItem(item) {
     console.log(item);
@@ -187,14 +187,16 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     const updateData = foundry.utils.expandObject(formData.object);
     console.log(updateData);
     if(updateData.actions && this.document.system.actions) {
+      updateData.system.actions = [];
       Object.keys(updateData.actions).forEach(k => {
-        const existingAction = this.document.system.actions.find(a => a.id === k);
-        if(existingAction) {
-          updateData.system.actions[k] = foundry.utils.mergeObject(existingAction, updateData.actions[k]);
+        const existingAction = this.document.system.actions.findIndex(a => a.id === k);
+        if(existingAction > -1) {
+          updateData.system.actions[existingAction] = foundry.utils.mergeObject(this.document.system.actions[existingAction], updateData.actions[k]);
         } else {
-          updateData.system.actions[k] = updateData.actions[k];
+          updateData.system.actions.push(updateData.actions[k]);
         }
       });
+      delete updateData.actions;
     }
     return updateData;
   }

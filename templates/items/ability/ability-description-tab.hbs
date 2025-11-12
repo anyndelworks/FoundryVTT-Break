@@ -1,0 +1,27 @@
+<section class="tab description scrollable flexcol {{tabs.description.cssClass}}" data-group="primary" data-tab="description" style="height: 100%;">
+    <div class="flexcol" style="flex: 1;">
+        <div class="flexrow">
+            <div class="section-header">
+                {{localize "BREAK.Description"}}
+            </div>
+            <div class="section-header">
+                {{localize "BREAK.Rules"}}
+            </div>
+        </div>
+        
+        <div class="flexrow" style="column-gap:12px;flex:1;">
+            {{#if editable}}
+            <prose-mirror name="system.description" value="{{ document.system.description }}"></prose-mirror>
+            <prose-mirror name="system.rules" value="{{ document.system.rules }}"></prose-mirror>
+            {{else}}
+            <div class="editor">
+                <div class="editor-content">{{{ descriptionHTML }}}</div>
+            </div>
+            <div class="editor">
+                <div class="editor-content">{{{ rulesHTML }}}</div>
+            </div>
+            {{/if}}
+        </div>
+        
+    </div>
+</section>

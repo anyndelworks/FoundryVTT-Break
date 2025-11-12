@@ -21,16 +21,30 @@ export class BreakAbilitySheet extends BreakItemSheet {
       },
       actions: {
           editImage: this.onEditImage,
+          addAction: this.onAddAction
       }
   }
 
   static PARTS = {
       header: {
-          template: "systems/break/templates/items/shared/generic-header.hbs"
+        template: "systems/break/templates/items/shared/generic-header.hbs"
       },
-      body: {
-          template: "systems/break/templates/items/ability/ability-sheet.hbs"
+      tabs: {
+        template: "systems/break/templates/shared/sheet-tabs.hbs",
+      },
+      description: {
+        template: "systems/break/templates/items/ability/ability-description-tab.hbs"
+      },
+      effects: {
+        template: "systems/break/templates/items/ability/ability-effects-tab.hbs"
       }
+  }
+
+  static TABS = {
+    primary: {
+      initial: "description",
+      tabs: [{id: "description", icon: "fas fa-scroll"}, {id: "effects", icon: "fas fa-sparkles"}],
+    }
   }
 
   async _prepareContext(options) {
@@ -39,25 +53,35 @@ export class BreakAbilitySheet extends BreakItemSheet {
       secrets: this.document.isOwner,
       async: true
     });
-    context.abilityTypes = Object.keys(BREAK.ability_types).map(k => ({
+    context.rulesHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.rules, {
+      secrets: this.document.isOwner,
+      async: true
+    });
+    console.log(context.document)
+    context.requiresType = true;
+    context.itemTypes = Object.keys(BREAK.ability_types).map(k => ({
       key: k,
       label: game.i18n.localize(BREAK.ability_types[k]),
-      active: context.document.system.subtype === k
+      active: context.document.system.type === k
     }));
-    context.abilityLevels = Object.keys(BREAK.ability_levels).map(k => ({
+    context.requiresSubtype = context.document.system.type === 'calling';
+    context.itemSubtypes = Object.keys(BREAK.ability_levels).map(k => ({
       key: k,
       label: game.i18n.localize(BREAK.ability_levels[k]),
-      active: context.document.system.level === k
+      active: context.document.system.subtype === k
     }));
-    console.log(context);
+    context.isMagic = context.document.system.magic ?? false;
+    context.isAbility = true;
+    console.log(context.isMagic);
     return context;
   }
   //#endregion
 
   //#region DocumentV2 submit
   static async #onSubmit(event, form, formData) {
+    console.log(formData);
       event.preventDefault();
-      const updateData = foundry.utils.expandObject(formData.object);
+      const updateData = this.getSubmitData(formData)
       await this.item.update(updateData);
   }
   //#endregion

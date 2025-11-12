@@ -63,7 +63,6 @@
             "color":"rgb(108, 60, 148) !important"
           }
         },
-        "abilities": [],
         "equipment": {
           "armor": null,
           "outfit": null,
@@ -138,7 +137,9 @@
       "history",
       "quirk",
       "ability",
-      "item"
+      "item",
+      "material",
+      "additive"
     ],
     "htmlFields": ["description"],
     "templates": {
@@ -218,9 +219,12 @@
       "type": ""
     },
     "ability": {
-      "subtype": "",
+      "type": "",
       "level": "",
-      "description": ""
+      "description": "",
+      "rules": "",
+      "actions": [],
+      "magic": false
     },
     "weapon": {
       "templates": [ "baseItem" ],
@@ -235,7 +239,8 @@
       "abilities": [],
       "hands": 1,
       "ranged": false,
-      "melee": true
+      "melee": true,
+      "actions": []
     },
     "injury": {
       "description": "",
@@ -243,6 +248,12 @@
         "value": 1,
         "permanent": false
       }
+    },
+    "material": {
+      "templates": ["baseItem"]
+    },
+    "additive": {
+      "templates": ["baseItem"]
     }
   }
 }

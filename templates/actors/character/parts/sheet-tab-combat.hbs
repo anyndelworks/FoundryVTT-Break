@@ -19,9 +19,12 @@
         {{> "systems/break/templates/actors/shared/sheet-xp.html"}}
     </div>
     <div class="flexcol" style="row-gap:12px;margin-top: 12px;">
-        <div class="section-header" style="margin-bottom:0px;">{{localize "BREAK.Weapons"}}</div>
+        <div class="section-header" style="margin-bottom:0px;">{{localize "BREAK.Actions"}}</div>
         {{#each weapons}}
         {{> "systems/break/templates/actors/shared/sheet-weapon-card.hbs" weapon=this}}
+        {{/each}}
+        {{#each actions}}
+        {{> "systems/break/templates/actors/shared/sheet-action-card.hbs" action=this}}
         {{/each}}
     </div>
 </section>

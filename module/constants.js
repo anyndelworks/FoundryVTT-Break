@@ -27,6 +27,8 @@ BREAK.item_types = {
     miscellaneous: "TYPES.Item.miscellaneous",
     curiosity: "TYPES.Item.curiosity",
     otherworldly: "TYPES.Item.otherworld",
+    material: "TYPES.Item.material",
+    additive: "TYPES.Item.additive"
 }
 
 BREAK.quirk_categories = {
@@ -43,12 +45,12 @@ BREAK.roll_types = {
         key: "none"
     },
     over: {
-        label: "BREAK.Over",
-        key: "over"
+        label: "BREAK.Attack",
+        key: "attack"
     },
-    unver: {
-        label: "BREAK.Under",
-        key: "under"
+    check: {
+        label: "BREAK.Check",
+        key: "check"
     },
     contest: {
         label: "BREAK.Contest",

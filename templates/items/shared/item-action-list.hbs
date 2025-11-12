@@ -19,7 +19,7 @@
                         <option value="{{cost.key}}" {{#when action.cost 'eq' cost.key}}selected="selected"{{/when}}>{{localize cost.label}}</option>
                     {{/each}}
                 </select>
-                <a class="item-control interface-only" style="margin-left: auto;" data-context-menu data-action="openActionContext">
+                <a class="item-control interface-only" style="margin-left: auto;" data-context-menu data-id="{{action.id}}" data-type="action">
                     <i class="fas fa-ellipsis-vertical"></i>
                 </a>
             </div>

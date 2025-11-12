@@ -33,7 +33,9 @@
       "quirk": "Quirk",
       "ability": "Ability",
       "advancement": "Advancement",
-      "item": "Item"
+      "item": "Item",
+      "material": "Material",
+      "additive": "Additive"
     }
   },
 
@@ -237,7 +239,8 @@
       "StartingLong": "Starting Abilities",
       "StandardLong": "Standard Abilities",
       "AdvancedLong": "Advanced Abilities",
-      "ElectiveLong": "Elective Abilities"
+      "ElectiveLong": "Elective Abilities",
+      "Magic": "Magic"
     },
 
     "Inventory": "Inventory",
@@ -289,6 +292,7 @@
     "Languages": "Languages",
     "BonusLanguages": "Bonus Languages",
     "Description": "Description",
+    "Rules": "Rules",
     "Purviews": "Purviews",
     "Base": "Base",
     "Name": "Name",
@@ -357,6 +361,7 @@
     "Weapons": "Weapons",
     "Action": "Action",
     "Actions": "Actions",
+    "ActionCost": "Action cost",
     "LoadingTime": "Loading time",
     "ExtraAttackRollResult": "Extra damage!",
     "Hit": "Hit!",
