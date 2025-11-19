@@ -20,7 +20,7 @@
         <div style="display:flex;flex: 0;" {{#if item.equippable}}class="bag-item"{{/if}} data-id="{{item._id}}" data-type="{{item.type}}" data-equippable="{{item.equippable}}">
             <div style="text-align: center;width:40%;">
                 <a style="font-size: 16px;font-weight: 700;cursor:pointer;" class="item-link" data-action="linkItem">{{item.name}}</a>
-                <p style="font-size: 12px;">{{localize (concat 'TYPES.Item.' item.type)}}</p>
+                <p style="font-size: 12px;">{{item.system.typeLabel}} {{localize (concat 'TYPES.Item.' item.type)}}</p>
             </div>
             <div style="display:flex; align-items:center;flex-grow:1;">
                 <label>{{localize "BREAK.Quantity"}}</label>

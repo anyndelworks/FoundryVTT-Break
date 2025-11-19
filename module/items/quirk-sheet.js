@@ -9,7 +9,7 @@ export class BreakQuirkSheet extends BreakItemSheet {
       classes: ["break", "sheet", "quirk"],
       position: {
           width: 600,
-          height: 480,
+          height: 550,
       },
       form: {
           handler: BreakQuirkSheet.#onSubmit,

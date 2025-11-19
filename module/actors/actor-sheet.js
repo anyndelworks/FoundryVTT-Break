@@ -57,34 +57,40 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     html.find("input.item-quantity").on("change", this._onChangeItemInput.bind(this));
   }
 
-  async _prepareContext(options) {
-    const context = await super._prepareContext(options);
-    context.notesHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.notes, {
-      secrets: this.document.isOwner,
-      async: true
-    });
-
+  refreshTotals(context) {
+    const equipment = context.document.system.equipment;
+    const shield = equipment.shield;
+    const armor = equipment.armor;
 
     const hearts = context.document.system.hearts;
     hearts.bon = (hearts.modifier ?? 0);
-    let maxHearts = hearts.max + hearts.bon;
-    context.document.system.hearts.value = Math.min(context.document.system.hearts.value, maxHearts);
+    hearts.total = hearts.max + hearts.bon;
 
-    context.weapons = context.document.items.filter(i => i.type === "weapon");
-    context.weapons = context.document.system.equipment.weapon.map(w => {
-      return {
-        id: w._id,
-        name: w.name,
-        type: (w.system.weaponType1?.name ?? "") + " " + (w.system.weaponType2?.name ?? ""),
-        isRanged: w.system.ranged,
-        isMelee: w.system.melee,
-        rangedExtraDamage: w.system.rangedExtraDamage,
-        extraDamage: w.system.extraDamage,
-        rangedAttackBonus: w.system.rangedAttackBonus,
-        attackBonus: w.system.attackBonus
-      }
-    });
+    const attack = context.document.system.attack;
+    attack.bon = (attack.modifier ?? 0);
+    attack.total = attack.value + attack.bon;
 
+    const speed = context.document.system.speed;
+    speed.bon = (speed.modifier ?? 0) - (shield ? shield.system.speedPenalty : 0);
+    // Max speed is 3 (Very Fast), or if armor is worn then the armor's speed limit if it's less
+    const maxSpeed = Math.min(((armor && armor.system.speedLimit) ? +armor.system.speedLimit : 3), 3);
+    const rawSpeed = speed.value + speed.bon;
+    speed.total = Math.min(rawSpeed, maxSpeed);
+
+    //Temp fix
+    if(!context.document.system.hands) {
+      context.document.system.hands = {
+        value: 2,
+        bon: 0,
+        total: 2
+      };
+    }
+    const hands = context.document.system.hands
+    hands.bon = (hands.modifier ?? 0);
+    hands.total = hands.value + hands.bon;
+  }
+
+  prepareActions(context) {
     context.actions = [];
     context.document.items.forEach(i => {
       if(i.system.actions) {
@@ -99,33 +105,58 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         });
       }
     });
-    console.log(context.actions);
+  }
 
-    const armor = context.document.system.equipment.armor;
-    const shield = context.document.system.equipment.shield;
-    const speed = context.document.system.speed;
-    const attack = context.document.system.attack;
+  prepareWeapons(context) {
+    const weaponTypes = foundry.utils.deepClone(game.settings.get("break", "weaponTypes"));
+    context.weapons = context.document.items.filter(i => i.type === "weapon");
+    context.weapons = context.document.system.equipment.weapon.map(w => {
+      return {
+        id: w._id,
+        name: w.name,
+        type: (w.system.weaponType1 ? weaponTypes[w.system.weaponType1].label : "") + " " + (w.system.weaponType2 ? weaponTypes[w.system.weaponType2].label : ""),
+        isRanged: w.system.ranged,
+        isMelee: w.system.melee,
+        rangedExtraDamage: w.system.rangedExtraDamage,
+        extraDamage: w.system.extraDamage,
+        rangedAttackBonus: w.system.rangedAttackBonus,
+        attackBonus: w.system.attackBonus
+      }
+    });
+  }
 
-    attack.bon = (attack.modifier ?? 0);
-    context.attackBonus = attack.value + attack.bon;
-    
-    speed.bon = (speed.modifier ?? 0) - (shield ? shield.system.speedPenalty : 0);
-    const rawSpeed = speed.value + speed.bon;
-    // Max speed is 3 (Very Fast), or if armor is worn then the armor's speed limit if it's less
-    const maxSpeed = Math.min(((armor && armor.system.speedLimit) ? +armor.system.speedLimit : 3), 3);
-    context.speedRating = Math.min(rawSpeed, maxSpeed);
-
-    context.hands = 2 + (context.document.system.hands?.modifier ?? 0);
+  prepareInventory(context) {
     const equipment = context.document.system.equipment;
-    const weaponHands = equipment.weapon.reduce((a, w) => a+(w.hands ?? 1), 0);
-    this.freeHands = context.hands - weaponHands - (equipment.shield?.system.hands ?? 0);
-    context.freeHands = this.freeHands;
     const equippedItemIds = [equipment.armor?._id, equipment.outfit?._id, equipment.shield?._id, ...equipment.weapon.map(i => i._id), ...equipment.accessory.map(i => i._id)];
     context.bagContent = context.document.items.filter(i => !["ability", "quirk", "gift", "calling", "history", "homeland", "species"].includes(i.type)
       && !equippedItemIds.includes(i._id) && i.bag == this.selectedBag).map(i => ({ ...i, _id: i._id, equippable: ["armor", "weapon", "outfit", "accessory", "shield"].includes(i.type) }));
     const precision = 2;
     const factor = Math.pow(10, precision);
     context.usedInventorySlots = Math.round(context.bagContent.reduce((ac, cv) => ac + cv.system.slots * cv.system.quantity, 0) * factor) / factor;
+  }
+
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    const equipment = context.document.system.equipment;
+    context.notesHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.notes, {
+      secrets: this.document.isOwner,
+      async: true
+    });
+    
+    this.refreshTotals(context);
+
+    context.document.system.hearts.value = Math.min(context.document.system.hearts.value, context.document.system.hearts.total);
+    context.attackBonus = context.document.system.attack.total;
+    context.speedRating = context.document.system.speed.total;
+    const weaponHands = equipment.weapon.reduce((a, w) => a+(w.hands ?? 1), 0);
+    this.freeHands = context.document.system.hands.value - weaponHands - (equipment.shield?.system.hands ?? 0);
+    context.hands = context.document.system.hands.total;
+    context.freeHands = this.freeHands;
+
+    this.prepareWeapons(context);
+    this.prepareActions(context);
+    this.prepareInventory(context);
+
     return context;
   }
   //#endregion

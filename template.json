@@ -6,26 +6,36 @@
       "baseActor": {
         "attack": {
           "value": 0,
-          "bon": 0
+          "bon": 0,
+          "total": 0
         },
         "defense": {
           "value": 0,
-          "bon": 0
+          "bon": 0,
+          "total": 0
         },
         "speed": {
           "value": 1,
-          "bon": 0
+          "bon": 0,
+          "total": 1
         },
         "hearts": {
-          "value": null,
-          "max": null,
-          "bon": 0
+          "value": 0,
+          "max": 0,
+          "bon": 0,
+          "total": 0
+        },
+        "hands": {
+          "value": 2,
+          "bon": 0,
+          "total": 2
         },
         "aptitudes": {
           "might": {
             "value": 10,
             "bon": 0,
             "trait": 0,
+            "total": 10,
             "description": "BREAK.APTITUDE.MightDesc",
             "label": "BREAK.APTITUDE.Might",
             "color": "rgb(238, 61, 52) !important"
@@ -34,6 +44,7 @@
             "value": 10,
             "bon": 0,
             "trait": 0,
+            "total": 10,
             "description": "BREAK.APTITUDE.DeftnessDesc",
             "label": "BREAK.APTITUDE.Deftness",
             "color":"rgb(244, 127, 38) !important;"
@@ -42,6 +53,7 @@
             "value": 10,
             "bon": 0,
             "trait": 0,
+            "total": 10,
             "description": "BREAK.APTITUDE.GritDesc",
             "label": "BREAK.APTITUDE.Grit",
             "color":"rgb(93, 186, 72) !important"
@@ -50,6 +62,7 @@
             "value": 10,
             "bon": 0,
             "trait": 0,
+            "total": 10,
             "description": "BREAK.APTITUDE.InsightDesc",
             "label": "BREAK.APTITUDE.Insight",
             "color":"rgb(23, 126, 194) !important"
@@ -58,6 +71,7 @@
             "value": 10,
             "bon": 0,
             "trait": 0,
+            "total": 10,
             "description": "BREAK.APTITUDE.AuraDesc",
             "label": "BREAK.APTITUDE.Aura",
             "color":"rgb(108, 60, 148) !important"

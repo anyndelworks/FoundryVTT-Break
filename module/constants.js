@@ -41,10 +41,10 @@ BREAK.quirk_categories = {
 
 BREAK.roll_types = {
     none: {
-        label: "BREAK.None",
+        label: "BREAK.NoRoll",
         key: "none"
     },
-    over: {
+    attack: {
         label: "BREAK.Attack",
         key: "attack"
     },
@@ -66,6 +66,29 @@ BREAK.action_costs = {
     action: {
         key: "action",
         label: "BREAK.Action"
+    }
+}
+
+BREAK.aptitudes = {
+    might: {
+        key: "might",
+        label: "BREAK.APTITUDE.Might"
+    },
+    deftness: {
+        key: "deftness",
+        label: "BREAK.APTITUDE.Deftness"
+    },
+    grit: {
+        key: "grit",
+        label: "BREAK.APTITUDE.Grit"
+    },
+    insight: {
+        key: "insight",
+        label: "BREAK.APTITUDE.Insight"
+    },
+    aura: {
+        key: "aura",
+        label: "BREAK.APTITUDE.Aura"
     }
 }
 

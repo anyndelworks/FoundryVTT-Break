@@ -1,11 +1,14 @@
-<div class="section-header" style="margin-top:12px;">
-    {{localize "BREAK.Abilities"}}
-</div>
-<div class="ability-list" style="display: flex; flex-wrap: wrap;flex-grow: 0;">
-    {{#each abilities}}
-        <div style="display: flex; margin-bottom: 6px;align-items: center; width: 100%;">
-            <label data-tooltip="{{this.system.description}}">{{this.name}}</label>
-            <button class="delete-ability" data-action="deleteAbility" data-id="{{this._id}}" style="margin-left: auto; max-width: 32px; margin-right: 8px;"><i class="fas fa-trash" style="margin: 0px;"></i></button>
-        </div>
-    {{/each}}
+<div class="flexcol" style="margin-top: 12px;">
+    <div class="section-header">{{localize "BREAK.Abilities"}}</div>
+    <div class="ability-list" style="display: flex; flex-wrap: wrap;">
+        {{#each abilities}}
+            <div style="display: flex; margin-bottom: 6px;align-items: center; width: 25%;" data-type="ability" data-id="{{this.uuid}}">
+                <a data-tooltip="{{this.system.description}}" >{{this.name}}</a>
+                <a class="item-control interface-only" style="margin-left: 6px;" data-context-menu>
+                    <i class="fas fa-ellipsis-vertical"></i>
+                </a>
+            </div>
+        {{/each}}
+        <button class="select-feature" data-type="ability" data-action="selectFeature" style="height: inherit;">{{localize 'BREAK.PickOrDrag'}} {{localize 'BREAK.Ability'}}</i></button>
+    </div>
 </div>

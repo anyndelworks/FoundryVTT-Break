@@ -401,11 +401,14 @@
     "Equip": "Equipar",
     "UnEquip": "Desequipar",
     "PickOrDrag": "Selecciona o arrastra",
+    "Pick": "Selecciona",
     "FeatureSelector": "Selector de caracteristicas",
     "Hands": "Manos",
     "FreeHand": "Mano libre",
     "InventorySlots": "Huecos de inventario",
     "Under": "Por debajo",
-    "Over": "Por encima"
+    "Over": "Por encima",
+    "NoRoll": "Sin tirada",
+    "Requires": "Requiere"
   }
 }

@@ -354,7 +354,7 @@ Hooks.once("init", async function() {
         stones: 0
       }
     },
-    light: {
+    standard: {
       label: "Standard",
       defense: 0,
       slots: 1,

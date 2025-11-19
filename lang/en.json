@@ -402,11 +402,14 @@
     "Equip": "Equip",
     "UnEquip": "Unequip",
     "PickOrDrag": "Pick or drag",
+    "Pick": "Pick",
     "FeatureSelector": "Feature selector",
     "Hands": "Hands",
     "FreeHand": "Free hand",
     "InventorySlots": "Inventory slots",
     "Under": "Under",
-    "Over": "Over"
+    "Over": "Over",
+    "NoRoll": "No roll",
+    "Requires": "Requires"
   }
 }

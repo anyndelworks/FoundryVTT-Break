@@ -20,8 +20,10 @@ export class BreakAbilitySheet extends BreakItemSheet {
           resizable: true
       },
       actions: {
-          editImage: this.onEditImage,
-          addAction: this.onAddAction
+        editImage: this.onEditImage,
+        addAction: this.onAddAction,
+        addEffect: this.onAddEffect,
+        displayAction: this.onDisplayAction
       }
   }
 

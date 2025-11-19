@@ -1,6 +1,5 @@
-import { AdvantageTypes, RollBonuses, RollType, calculateRollResult, getResultText, roll } from "../../utils/dice.js";
+import { RollBonuses, RollType, roll } from "../../utils/dice.js";
 import BREAK from "../constants.js";
-import { EntitySheetHelper } from "../helper.js";
 import Action from "../system/action.js";
 
 /**
@@ -145,7 +144,7 @@ export class BreakActor extends Actor {
         break;
       case BREAK.roll_types.contest.key:
         break;
-      case BREAK.roll_types.over.key:
+      case BREAK.roll_types.attack.key:
         break;
       case BREAK.roll_types.check.key:
         break;

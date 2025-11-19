@@ -1,6 +1,6 @@
 
 export class EntitySheetHelper {
-
+  
 
   static async createDialog(data={}, options={}) {
 

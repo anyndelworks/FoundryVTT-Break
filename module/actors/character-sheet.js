@@ -113,7 +113,7 @@ export class BreakCharacterSheet extends BreakActorSheet {
     context.calling = context.document.items.find(i => i.type === "calling");
     context.hasCalling = context.calling != null;
     
-    if (context.hasCalling && context.calling.system.advancementTable?.length > 0) {
+    if (context.hasCalling && context.calling.system.advancementTable && Object.keys(context.calling.system.advancementTable).length > 0) {
       const stats = context.calling.system.advancementTable[context.rank - 1];
 
       context.document.system.aptitudes.might.value = stats.might;
@@ -196,6 +196,7 @@ export class BreakCharacterSheet extends BreakActorSheet {
       case "species":
       case "homeland":
       case "history":
+      case "ability":
       default:
         await super._onDrop(event);
         return;
@@ -218,11 +219,13 @@ export class BreakCharacterSheet extends BreakActorSheet {
       });
     } else if(featureType === "quirk" && species && species.system.quirkCategories) {
       filters = [i => species.system.quirkCategories.includes(i.system.type ?? "")];
+    } else if(featureType === "ability") {
+      filters = [a => a.system.type === "calling" || a.system.type === "species"];
     }
     new FeatureSelectionDialog({
       itemType: featureType,
       restricted: true,
-      actor: this.document,
+      document: this.document,
       predefinedList,
       filters
     }).render(true);

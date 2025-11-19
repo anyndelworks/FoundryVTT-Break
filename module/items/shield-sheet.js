@@ -87,6 +87,7 @@ export class BreakShieldSheet extends BreakItemSheet {
       ) {
         updateData.system.value = shieldTypes[newType].value;
       }
+      updateData.system.typeLabel = shieldTypes[newType].label;
     }
     await this.item.update(updateData);
   }

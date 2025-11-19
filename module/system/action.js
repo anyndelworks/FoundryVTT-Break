@@ -5,6 +5,8 @@ export default class Action {
     name;
     rollType;
     cost;
+    description;
+    aptitude;
 
     constructor(name) {
         this.id = crypto.randomUUID();
@@ -14,8 +16,14 @@ export default class Action {
     }
 
     static async sendToChat(action, character) {
-        action.user = character;
-        const html = await foundry.applications.handlebars.renderTemplate("systems/break/templates/chat/action.html", action);
+        const data = {...action};
+        data.user = character;
+        data.requiresRoll = action.rollType !== BREAK.roll_types.none.key;
+        data.rollTypeLabel = BREAK.roll_types[action.rollType].label;
+        data.costLabel = BREAK.action_costs[action.cost].label;
+        if(action.aptitude)
+            data.aptitudeLabel = BREAK.aptitudes[action.aptitude].label;
+        const html = await foundry.applications.handlebars.renderTemplate("systems/break/templates/chat/action.html", data);
         const chatData = {
             user: game.user.id,
             rollMode: game.settings.get("core", "rollMode"),

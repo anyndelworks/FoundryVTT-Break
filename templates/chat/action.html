@@ -3,14 +3,18 @@
 
         <div class="chat-item-header">
             <div class="chat-item-header-infos">
-                <p>{{user}} uses</p>
+                {{#if user}}<p>{{user}} uses</p>{{/if}}
                 <!-- Name -->
-                <h4 class="item-name">{{name}}</h2>
+                <h5 class="item-name">{{name}}</h5>
             </div>
         </div>
+        {{#if requiresRoll}}
+        <p>{{localize "BREAK.Requires"}} {{localize rollTypeLabel}} {{#if aptitudeLabel}}({{localize aptitudeLabel}}){{/if}}</p>
+        {{/if}}
+        <p>{{localize costLabel}}</p>
         <!-- Description -->
         {{#if description}}
-        <h5 class="title-section">{{localize "BREAK.Description"}}:</h3>
+        <h6 class="title-section">{{localize "BREAK.Description"}}:</h6>
         {{{description}}}
         {{/if}}
     </div>

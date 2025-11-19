@@ -32,7 +32,8 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/break/templates/items/shield/shield-details.hbs",
     "systems/break/templates/items/calling/advancement-table.hbs",
     "systems/break/templates/actors/shared/sheet-equipment-card.hbs",
-    "systems/break/templates/system/active-effects-panel.hbs"
+    "systems/break/templates/system/active-effects-panel.hbs",
+    "systems/break/templates/system/action-sheet.hbs"
   ];
 
   // Load the template parts

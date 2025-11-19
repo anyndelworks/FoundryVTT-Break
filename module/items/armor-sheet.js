@@ -79,14 +79,13 @@ export class BreakArmorSheet extends BreakItemSheet {
       if(this.item.system.speedLimit === armorTypes[currentType].speedLimit) {
         updateData.system.speedLimit = armorTypes[newType].speedLimit;
       }
-      console.log(this.item.system.value);
-      console.log(armorTypes[currentType].value)
       if(this.item.system.value.gems === armorTypes[currentType].value.gems
         && this.item.system.value.coins === armorTypes[currentType].value.coins
         && this.item.system.value.stones === armorTypes[currentType].value.stones
       ) {
         updateData.system.value = armorTypes[newType].value;
       }
+      updateData.system.typeLabel = armorTypes[newType].label;
     }
     await this.item.update(updateData);
   }

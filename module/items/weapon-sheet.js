@@ -1,14 +1,15 @@
 import { BreakItemSheet } from "./item-sheet.js";
+import { FeatureSelectionDialog } from "../dialogs/feature-selection-dialog.js";
 
 export class BreakWeaponSheet extends BreakItemSheet {
-
+  allowedItemTypes = ["ability"];
   //#region DocumentV2 initialization and setup
   static DEFAULT_OPTIONS = {
     tag: "form",
     classes: ["break", "sheet", "item", "weapon"],
     position: {
       width: 600,
-      height: 480,
+      height: 520,
     },
     form: {
       handler: BreakWeaponSheet.#onSubmit,
@@ -20,7 +21,9 @@ export class BreakWeaponSheet extends BreakItemSheet {
     actions: {
       editImage: this.onEditImage,
       addEffect: this.onAddEffect,
-      addAction: this.onAddAction
+      addAction: this.onAddAction,
+      displayAction: this.onDisplayAction,
+      selectFeature: this.onSelectFeature
     }
   }
 
@@ -49,8 +52,17 @@ export class BreakWeaponSheet extends BreakItemSheet {
     }
   }
 
+  async #getAbilities(context) {
+    context.abilities = []
+    for(let id of this.document.system.abilities) {
+      const ability = await fromUuid(id);
+      context.abilities.push(ability);
+    }
+  }
+
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
+    console.log(context.document)
     context.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.description, {
       secrets: this.document.isOwner,
       async: true
@@ -67,22 +79,10 @@ export class BreakWeaponSheet extends BreakItemSheet {
     const weaponType2Ranged = weaponTypes[context.document.system.weaponType2]?.ranged;
     context.isRanged = weaponType1Ranged || weaponType2Ranged;
     context.isMelee = (context.document.system.weaponType1 && !weaponType1Ranged) || (context.document.system.weaponType2 && !weaponType2Ranged);
-    context.abilities = context.document.system.abilities ?? [];
+    await this.#getAbilities(context);
     return context;
   }
   //#endregion
-
-  /** @inheritdoc */
-  async _onDrop(event) {
-    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
-    if(data.type !== "Item") return;
-    const draggedItem = await fromUuid(data.uuid)
-    if(draggedItem.type === "ability" && draggedItem.system.subtype === "weapon") {
-      const abilityArray = this.item.system.abilities ?? [];
-      abilityArray.push(draggedItem.toObject());
-      this.item.update({"system.abilities": abilityArray});
-    }
-  }
 
   _onSetWeaponType(newMainType, newSecondaryType) {
     const weaponTypes = foundry.utils.deepClone(game.settings.get("break", "weaponTypes"));
@@ -144,8 +144,61 @@ export class BreakWeaponSheet extends BreakItemSheet {
       coins,
       stones
     }
+    updates["system.typeLabel"] = `${newMainType ? weaponTypes[newMainType].label : ""} ${newSecondaryType ? weaponTypes[newSecondaryType].label : ""}`
     return updates;
   }
+
+  async _onSendAbilityToChat(element) {
+    const id = element.dataset.id;
+    const ability = await fromUuid(id);
+    if(ability)
+      ability.sendToChat();
+  }
+
+  async _onDeleteAbility(element) {
+    const id = element.dataset.id;
+    let abilities = this.document.system.abilities ?? [];
+    abilities = abilities.filter(a => a !== id);
+    this.document.update({"system.abilities": abilities});
+  }
+
+  //#region Actions
+  static async onSelectFeature(event) {
+    event.preventDefault();
+    const featureType = event.target.dataset.type;
+    let predefinedList = null;
+    let filters = [];
+    let callback = (item) => {};
+    switch(featureType){
+      case "ability":
+        filters.push(a => a.system.type === "weapon" && !this.document.system.abilities.includes(a.uuid));
+        callback = (ability) => {
+          const abilities = this.document.system.abilities ?? [];
+          abilities.push(ability.uuid);
+          this.document.update({"system.abilities": abilities});
+        }
+        break;
+    }
+    new FeatureSelectionDialog({
+      itemType: featureType,
+      restricted: true,
+      document: this.document,
+      predefinedList,
+      filters,
+      callback
+    }).render(true);
+  }
+  //#endregion
+
+  //#region Events
+  _onDropValidItem(item) {
+    const abilities = this.item.system.abilities ?? [];
+    if(!abilities.includes(item.uuid)) {
+        abilities.push(item.uuid);
+        this.item.update({"system.abilities": abilities});
+    }
+  }
+  //#endregion
 
   //#region DocumentV2 submit
     static async #onSubmit(event, form, formData) {

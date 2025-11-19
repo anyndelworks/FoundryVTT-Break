@@ -1,5 +1,6 @@
 import Action from "../system/action.js";
 import BREAK from "../constants.js";
+import ActionFormDialog from "../dialogs/action-form-dialog.js"
 
 const {ItemSheetV2} = foundry.applications.sheets;
 const {HandlebarsApplicationMixin} = foundry.applications.api;
@@ -35,6 +36,11 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
     context.actions = this.document.system.actions ?? [];
+    context.actions = context.actions.map(a => ({
+      ...a,
+      rollTypeLabel: BREAK.roll_types[a.rollType].label,
+      actionCostLabel: BREAK.action_costs[a.cost].label
+    }));
     context.actionCosts = BREAK.action_costs;
     context.rollTypes = BREAK.roll_types;
     return context;
@@ -56,7 +62,7 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
       });
     });
 
-    new foundry.applications.ux.ContextMenu(document.body, "[data-id]", [], {onOpen: this._onOpenContextMenu.bind(this), jQuery: false, fixed: true});
+    new foundry.applications.ux.ContextMenu(this.element, "[data-id]", [], {onOpen: this._onOpenContextMenu.bind(this), jQuery: false, fixed: true});
 
   }
 
@@ -75,7 +81,7 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
     if (!this.allowedItemTypes.includes(draggedItem.type)) return;
     this._onDropValidItem(draggedItem);
-  } b
+  }
 
   _onDropValidItem(item) {
     console.log(item);
@@ -106,6 +112,14 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     actions.push(new Action("New action"));
     this.document.update({"system.actions": actions});
   }
+
+  static async onDisplayAction(event) {
+    event.preventDefault();
+    const id = event.target.dataset.id;
+    const action = this.document.system.actions.find(a => a.id === id);
+    console.log(action);
+    new ActionFormDialog(this.item, action.id).render(true);
+  }
   //#endregion
 
   _onOpenContextMenu(element) {
@@ -119,16 +133,19 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
       case "action":
         ui.context.menuItems = this.#getActionContextOptions();
         break;
+      case "ability":
+        ui.context.menuItems = this.#getAbilityContextOptions();
+        break;
     }
   }
 
   #getActionContextOptions() {
     const options = [
       {
-        name: "BREAK.ContextMenuEdit",
-        icon: "<i class='fas fa-edit fa-fw'></i>",
+        name: "BREAK.SendToChat",
+        icon: "<i class='fa-solid fa-fw fa-comment-alt'></i>",
         condition: () => this.document.isOwner,
-        callback: li => this._onDisplayEffect(li)
+        callback: li => this._onSendActionToChat(li)
       },
       {
         name: "BREAK.ContextMenuDelete",
@@ -137,7 +154,24 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
         callback: li => this._onDeleteAction(li)
       }
     ];
+    return options;
+  }
 
+  #getAbilityContextOptions() {
+    const options = [
+      {
+        name: "BREAK.SendToChat",
+        icon: "<i class='fa-solid fa-fw fa-comment-alt'></i>",
+        condition: () => this.document.isOwner,
+        callback: li => this._onSendAbilityToChat(li)
+      },
+      {
+        name: "BREAK.ContextMenuDelete",
+        icon: "<i class='fas fa-trash fa-fw'></i>",
+        condition: () => this.document.isOwner,
+        callback: li => this._onDeleteAbility(li)
+      }
+    ];
     return options;
   }
 
@@ -179,13 +213,20 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     effect.sheet.render(true);
   }
 
+  async _onSendActionToChat(element) {
+    const id = element.dataset.id;
+    const actions = this.document.system.actions ?? [];
+    const action = actions.find(a => a.id === id);
+    if(action)
+      Action.sendToChat(action);
+  }
+
   _onChatButton(ev) {
     this.object.sendToChat();
   }
 
   getSubmitData(formData) {
     const updateData = foundry.utils.expandObject(formData.object);
-    console.log(updateData);
     if(updateData.actions && this.document.system.actions) {
       updateData.system.actions = [];
       Object.keys(updateData.actions).forEach(k => {

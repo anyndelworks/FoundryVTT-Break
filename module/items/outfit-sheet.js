@@ -32,7 +32,6 @@ export class BreakOutfitSheet extends BreakItemSheet {
   }
 
   async _prepareContext(options) {
-    console.log('test')
     const context = await super._prepareContext(options);
     context.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.description, {
       secrets: this.document.isOwner,

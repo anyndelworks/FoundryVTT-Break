@@ -15,3 +15,16 @@ export function parseInputDelta(input, target) {
     input.value = value;
     return value;
 }
+
+export async function findItemById(id){
+  let item = game.items.get(id);
+  if (item) return item;
+  
+  for (const pack of game.packs) {
+    if (pack.documentName !== "Item") continue;
+    const entry = await pack.getDocument(id);
+    if (entry) return entry;
+  }
+
+  return null;
+}

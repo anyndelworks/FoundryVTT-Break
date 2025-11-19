@@ -8,17 +8,9 @@
     <div style="flex 1; display: flex; flex-direction:column;">
         {{#each actions as |action|}}
             <div style="margin-bottom: 6px;align-items: center;display:flex;border-bottom: 1px dashed; height:48px;" data-id="{{action.id}}" data-type="action">
-                <input name="actions.{{action.id}}.name" type="text" value="{{action.name}}" placeholder="Name" />
-                <select name="actions.{{action.id}}.rollType">
-                    {{#each @root.rollTypes as |type|}}
-                        <option value="{{type.key}}" {{#when action.rollType 'eq' type.key}}selected="selected"{{/when}}>{{localize type.label}}</option>
-                    {{/each}}
-                </select>
-                <select name="actions.{{action.id}}.cost">
-                    {{#each @root.actionCosts as |cost|}}
-                        <option value="{{cost.key}}" {{#when action.cost 'eq' cost.key}}selected="selected"{{/when}}>{{localize cost.label}}</option>
-                    {{/each}}
-                </select>
+                <a style="cursor: pointer;flex: 1;" class="item-link" data-id="{{action.id}}" data-action="displayAction">{{action.name}}</a>
+                <span style="flex: 1">{{localize action.rollTypeLabel}}</span>
+                <span style="flex: 1">{{localize action.actionCostLabel}}</span>
                 <a class="item-control interface-only" style="margin-left: auto;" data-context-menu data-id="{{action.id}}" data-type="action">
                     <i class="fas fa-ellipsis-vertical"></i>
                 </a>

@@ -13,7 +13,8 @@ export class FeatureSelectionDialog extends HandlebarsApplicationMixin(Applicati
     this.#restricted = this.options.restricted ?? false;
     this.#predefinedList = this.options.predefinedList;
     this.#filters = this.options.filters ?? [];
-    this.actor = this.options.actor;
+    this.document = this.options.document;
+    this.callback = this.options.callback;
   }
 
   /** @inheritDoc */
@@ -142,7 +143,6 @@ export class FeatureSelectionDialog extends HandlebarsApplicationMixin(Applicati
 
   static async #onPickItem(event) {
     event.preventDefault();
-    console.log(this.actor);
     const button = event.target.closest("[data-id]");
     const id = button.dataset.id;
     let item = game.items.find(i => i._id === id);
@@ -156,7 +156,12 @@ export class FeatureSelectionDialog extends HandlebarsApplicationMixin(Applicati
         }
       }
     }
-    await this.actor.createEmbeddedDocuments("Item", [item]);
+
+    if(this.document.documentName === "Actor") {
+      await this.document.createEmbeddedDocuments("Item", [item]);
+    } else if(this.document.documentName === "Item") {
+      this.callback(item);
+    }
     this.close();
   }
 
