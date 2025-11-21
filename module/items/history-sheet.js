@@ -69,7 +69,6 @@ export class BreakHistorySheet extends BreakItemSheet {
         context.description = context.document.system.description;
         context.purviews = context.document.system.purviews ?? [];
         context.startingGear = await Promise.all(context.document.system.startingGear.map(async (item) => await fromUuid(item.uuid))) ?? [];
-        console.log(context);
         return context;
     }
 

@@ -1,3 +1,4 @@
+import { FeatureSelectionDialog } from "../dialogs/feature-selection-dialog.js";
 import { BreakItemSheet } from "./item-sheet.js";
 
 export class BreakHomelandSheet extends BreakItemSheet {
@@ -19,7 +20,8 @@ export class BreakHomelandSheet extends BreakItemSheet {
     },
     actions: {
       editImage: this.onEditImage,
-      deleteHistory: this.#onDeleteHistory
+      deleteHistory: this.#onDeleteHistory,
+      selectFeature: this.onSelectFeature
     }
   }
 
@@ -42,6 +44,14 @@ export class BreakHomelandSheet extends BreakItemSheet {
     context.histories = await Promise.all(context.document.system.histories.map(async (id) => await fromUuid(id))) ?? [];
     return context;
   }
+
+  async _onAddHistory(uuid) {
+    const histories = [...this.item.system.histories];
+    if(!histories.includes(uuid)) {
+        histories.push(uuid);
+        this.item.update({"system.histories": histories});
+    }
+  }
   //#endregion
 
   //#region Actions
@@ -58,15 +68,23 @@ export class BreakHomelandSheet extends BreakItemSheet {
       this.item.update({"system.histories": histories});
     }
   }
+  static onSelectFeature(event) {
+    event.preventDefault();
+    const featureType = event.target.dataset.type;
+    new FeatureSelectionDialog({
+        allowedTypes: this.allowedItemTypes,
+        itemType: featureType,
+        document: this.document,
+        predefinedList: null,
+        filters: [(i) => !this.item.system.histories.includes(i.uuid)],
+        callback: picks => this._onAddHistory(picks[0].uuid)
+    }).render(true);
+  }
   //#endregion
 
   //#region Events
   _onDropValidItem(item) {
-    const histories = this.item.system.histories;
-    if(!histories.includes(item.uuid)) {
-        histories.push(item.uuid);
-        this.item.update({"system.histories": histories});
-    }
+    this._onAddHistory(item.uuid);
   }
   //#endregion
 
