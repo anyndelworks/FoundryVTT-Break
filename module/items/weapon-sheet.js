@@ -168,20 +168,19 @@ export class BreakWeaponSheet extends BreakItemSheet {
     const featureType = event.target.dataset.type;
     let predefinedList = null;
     let filters = [];
-    let callback = (item) => {};
+    let callback = () => {};
     switch(featureType){
       case "ability":
         filters.push(a => a.system.type === "weapon" && !this.document.system.abilities.includes(a.uuid));
-        callback = (ability) => {
+        callback = (picks) => {
           const abilities = this.document.system.abilities ?? [];
-          abilities.push(ability.uuid);
+          abilities.push(picks[0].uuid);
           this.document.update({"system.abilities": abilities});
         }
         break;
     }
     new FeatureSelectionDialog({
       itemType: featureType,
-      restricted: true,
       document: this.document,
       predefinedList,
       filters,

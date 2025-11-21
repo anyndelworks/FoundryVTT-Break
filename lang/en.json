@@ -410,6 +410,8 @@
     "Under": "Under",
     "Over": "Over",
     "NoRoll": "No roll",
-    "Requires": "Requires"
+    "Requires": "Requires",
+    "PickOneItem": "Pick 1 item",
+    "PickManyItems": "Pick {number} items"
   }
 }

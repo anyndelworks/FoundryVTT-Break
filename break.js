@@ -515,7 +515,7 @@ Hooks.once("init", async function() {
       '%': (l,r) => (l % r) === 0                        // {{/when}}
     }
     let result = operators[operator](operand_1,operand_2);
-    if(result) return options.fn(this); 
+    if(result) return options.fn(options.data.root);
     return options.inverse(this);       
   });
 
@@ -549,6 +549,13 @@ Hooks.once('canvasInit', (canvas) => {
       }
     }
   });
+});
+
+Hooks.on("createItem", (item) => {
+  const parent = item.parent;
+  if (!(parent instanceof Actor)) return;
+  if (item.documentName !== "Item") return;
+  parent.onEmbedItem(item);
 });
 
 //Fix issue where if you use Enter key in a input it trigger a click on the next button

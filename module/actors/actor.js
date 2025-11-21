@@ -1,6 +1,7 @@
 import { RollBonuses, RollType, roll } from "../../utils/dice.js";
 import BREAK from "../constants.js";
 import Action from "../system/action.js";
+import { FeatureSelectionDialog } from "../dialogs/feature-selection-dialog.js";
 
 /**
  * Extend the base Actor document to support aptitudes and groups with a custom template creation dialog.
@@ -147,6 +148,34 @@ export class BreakActor extends Actor {
       case BREAK.roll_types.attack.key:
         break;
       case BREAK.roll_types.check.key:
+        break;
+    }
+  }
+
+  onEmbedItem(item) {
+    switch(this.type) {
+      case "character":
+        this.onEmbedItemCharacter(item);
+        break;
+    }
+  }
+
+  async onEmbedItemCharacter(item) {
+    switch(item.type) {
+      case "history":
+        console.log(item);
+        const picks = item.system.gearPicks ?? 0;
+        const startingGear = item.system.startingGear ?? [];
+        if (!picks || !startingGear.length) return;
+        const gearItems = await Promise.all(startingGear.map(i => fromUuid(i.uuid)));
+        gearItems.forEach(g => {g.from = item.name});
+        new FeatureSelectionDialog({
+          itemType: "item",
+          picks,
+          document: this,
+          predefinedList: gearItems,
+          filters: []
+        }).render(true);
         break;
     }
   }

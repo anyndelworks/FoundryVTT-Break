@@ -224,7 +224,6 @@ export class BreakCharacterSheet extends BreakActorSheet {
     }
     new FeatureSelectionDialog({
       itemType: featureType,
-      restricted: true,
       document: this.document,
       predefinedList,
       filters

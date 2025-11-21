@@ -7,16 +7,28 @@
                     <option value="{{option.name}}" {{#if option.active}}selected="selected"{{/if}} {{#if option.disabled}}disabled{{/if}}>{{localize option.i18n}}</option>
                 {{/each}}
             </select>
+            {{#if (eq remainingPicks 1)}}
+                {{#when picks 'gt' 1}}
+                    {{localize "BREAK.PickOneItem"}}
+                {{/when}}
+            {{else}}
+                {{localize "BREAK.PickManyItems" number=remainingPicks}}
+            {{/if}}
         </div>
         <div class="scrollable" style="display: flex;flex-direction: column;width: 100%;padding-left: 12px;row-gap: 12px;">
             {{#each itemList as |item|}}
-                <div class="item-entry" style="width: 100%; display: flex; align-items: center; height: 48px;border-bottom: 1px dashed; padding-bottom: 8px;" data-id="{{item._id}}" data-name="{{item.name}}">
-                    <img style="width: 32px;" src="{{item.img}}" title="{{item.name}}" />
+                <div class="item-entry" style="width: 100%; display: flex; align-items: center; height: 48px;border-bottom: 1px dashed; padding-bottom: 8px;" data-id="{{item.uuid}}" data-name="{{item.name}}">
+                    <img style="width: 32px;height: 32px;object-fit: contain;" src="{{item.img}}" title="{{item.name}}" />
                     <div style="display: flex; flex-direction: column;">
                         <a style="cursor:pointer;" class="item-link" data-action="linkItem">{{item.name}}</a>
                         <label style="font-size: 11px;">From {{item.from}}</label>
                     </div>
-                    <a style="margin-left: auto;" data-action="pickItem"><i class="fas fa-check"></i></a>
+                    {{#if item.picked}}
+                        <a style="margin-left: auto;" data-action="unpickItem"><i class="fas fa-minus"></i></a>
+                    {{/if}}
+                    {{#unless item.picked}}
+                        <a style="margin-left: auto;" data-action="pickItem"><i class="fas fa-check"></i></a>
+                    {{/unless}}
                 </div>
             {{/each}}
         </div>

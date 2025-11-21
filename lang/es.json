@@ -409,6 +409,8 @@
     "Under": "Por debajo",
     "Over": "Por encima",
     "NoRoll": "Sin tirada",
-    "Requires": "Requiere"
+    "Requires": "Requiere",
+    "PickOneItem": "Pick 1 item",
+    "PickManyItems": "Pick {number} items"
   }
 }

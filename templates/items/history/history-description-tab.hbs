@@ -1,0 +1,28 @@
+<section class="tab description flexcol {{tabs.description.cssClass}} scrollable" data-group="primary" data-tab="description" autocomplete="off" style="height: 100%;">
+    <div style="display:flex;column-gap: 24px;flex: 1;">
+        <div class="flexcol" style="flex: 0.75;">
+            <div class="section-header" data-drag="true">{{localize "BREAK.Purviews"}}</div>
+            <div class="purview-list" style="display: flex; flex-wrap: wrap;flex-grow: 0;">
+                {{#each purviews}}
+                    <div style="display: flex; margin-bottom: 6px;align-items: center; width: 100%;">
+                        <input name="system.purviews.{{@index}}" type="text" style="margin-right: 6px" value="{{this}}" id="purview-{{@index}}" placeholder="Purview..." class="purview-input" />
+                        <button data-action="deletePurview" data-index="{{@index}}" style="margin-left: auto; max-width: 32px; margin-right: 8px;"><i class="fas fa-trash" style="margin: 0px;"></i></button>
+                    </div>
+                {{/each}}
+                <button data-action="addPurview" style="margin-left: auto; max-width: 32px; margin-right: auto;"><i class="fa-solid fa-plus" style="margin: 0px;"></i></button>
+            </div>
+        </div>
+        <div class="flexcol" style="flex: 1;">
+            <div class="section-header">
+                {{localize "BREAK.Description"}}
+            </div>
+            {{#if editable}}
+            <prose-mirror name="system.description" value="{{ document.system.description }}"></prose-mirror>
+            {{else}}
+            <div class="editor">
+                <div class="editor-content">{{{ descriptionHTML }}}</div>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+</section>

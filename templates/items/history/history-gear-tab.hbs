@@ -1,0 +1,16 @@
+<section class="tab gear flexcol {{tabs.gear.cssClass}} scrollable" data-group="primary" data-tab="gear" autocomplete="off" style="height: 100%;">
+    <div class="form-group" style="display: flex;align-items:center;column-gap:8px;margin-top:12px;">
+        <label>{{localize "BREAK.Pick"}}</label>
+        <input type="text" name="system.gearPicks" style="width: 36px;" value="{{document.system.gearPicks}}">
+    </div>
+    <div class="section-header">{{localize "BREAK.GEAR.StartingGear"}}</div>
+    <div class="starting-gear-list drop-zone" style="display: flex; flex-wrap: wrap;flex-grow: 0;min-height:42px;">
+        {{#each startingGear}}
+            <div style="display: flex; margin-bottom: 6px;align-items: center; width: 100%;">
+                <label data-tooltip="{{this.system.description}}">{{this.name}}</label>
+                <button data-action="deleteItem" class="delete-gear" data-id="{{this.uuid}}" style="margin-left: auto; max-width: 32px; margin-right: 8px;"><i class="fas fa-trash" style="margin: 0px;"></i></button>
+            </div>
+        {{/each}}
+        <button class="select-feature" data-type="item" data-action="selectFeature" style="height: inherit;">{{localize 'BREAK.PickOrDrag'}} {{localize 'TYPES.Item.item'}}</i></button>
+    </div>
+</section>

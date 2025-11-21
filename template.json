@@ -224,6 +224,7 @@
       "name": "",
       "description": "",
       "purviews": [],
+      "gearPicks": 2,
       "startingGear": []
     },
     "quirk": {
