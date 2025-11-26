@@ -108,7 +108,7 @@ export class BreakActor extends Actor {
     let flavor = game.i18n.format("BREAK.Attacks");
     new Dialog({
       title: "Roll attack",
-      content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-dialog.hbs",{bonuses: RollBonuses}),
+      content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-dialog.hbs",{bonuses: RollBonuses, aptitude: false, limited: true}),
       buttons: {
         roll: {
           label: game.i18n.localize("BREAK.Roll"),
@@ -141,16 +141,47 @@ export class BreakActor extends Actor {
   async useAction(itemId, actionId) {
     const item = this.items.find(i => i._id == itemId);
     const action = item.system.actions.find(a => a.id === actionId);
+    const aptitude = action.aptitude ? this.system.aptitudes[action.aptitude] : null;
+    const checkTargetValue = +aptitude?.value + +aptitude?.bon + +aptitude?.trait;
     console.log(action);
     Action.sendToChat(action, this.name);
     switch(action.rollType){
       case BREAK.roll_types.none.key:
         break;
       case BREAK.roll_types.contest.key:
+        new Dialog({
+          title: action.name,
+          content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-dialog.hbs",{bonuses: RollBonuses, aptitude: true, limited: true, defaultContest: true}),
+          buttons: {
+            roll: {
+              label: game.i18n.localize("BREAK.Roll"),
+              callback: async (html) => {
+                const form = html[0].querySelector("form");
+                const flavor = `${action.name} ${game.i18n.format("BREAK.AptitudeContest", {aptitude:  game.i18n.localize(aptitude.label)})}`;
+                return roll(flavor, form.rollType.value, checkTargetValue, form.edge.value, form.bonus.value, form.customBonus.value);
+              }
+            }
+          }
+        }).render(true);
         break;
       case BREAK.roll_types.attack.key:
+        this.rollAttack(0, 0, action.name);
         break;
       case BREAK.roll_types.check.key:
+        new Dialog({
+          title: action.name,
+          content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-dialog.hbs",{bonuses: RollBonuses, aptitude: true, limited: true, defaultCheck: true}),
+          buttons: {
+            roll: {
+              label: game.i18n.localize("BREAK.Roll"),
+              callback: async (html) => {
+                const form = html[0].querySelector("form");
+                const flavor = `${action.name} ${game.i18n.format("BREAK.AptitudeCheck", {aptitude:  game.i18n.localize(aptitude.label)})}`;
+                return roll(flavor, form.rollType.value, checkTargetValue, form.edge.value, form.bonus.value, form.customBonus.value);
+              }
+            }
+          }
+        }).render(true);
         break;
     }
   }
@@ -164,9 +195,10 @@ export class BreakActor extends Actor {
   }
 
   async onEmbedItemCharacter(item) {
+    let abilityUuids;
+    let abilities;
     switch(item.type) {
       case "history":
-        console.log(item);
         const purviews = item.system.purviews ?? [];
         this.update({"system.purviews": [...this.system.purviews, ...purviews]});
         const picks = item.system.gearPicks ?? 0;
@@ -183,10 +215,16 @@ export class BreakActor extends Actor {
         }).render(true);
         break;
       case "species":
-        const abilityUuids = (item.system.abilities ?? []);
-        const abilities = await Promise.all(abilityUuids.map(uuid => fromUuid(uuid)));
+        abilityUuids = (item.system.abilities ?? []);
+        abilities = await Promise.all(abilityUuids.map(uuid => fromUuid(uuid)));
         const innateAbilities = abilities.filter(a => a?.system.subtype === "innate");
         this.createEmbeddedDocuments("Item", innateAbilities);
+        break;
+      case "calling":
+        const abilityUuids = (item.system.abilities ?? []);
+        const abilities = await Promise.all(abilityUuids.map(uuid => fromUuid(uuid)));
+        const startingAbiligites = abilities.filter(a => a?.system.subtype === "starting");
+        this.createEmbeddedDocuments("Item", startingAbiligites);
         break;
     }
   }

@@ -4,11 +4,11 @@
             <label style="font-weight: bold;">{{localize "BREAK.RollType"}}</label>
             <div>
                 <label>{{localize "BREAK.Check"}}</label>
-                <input name="rollType" type="radio" value="0" checked/>
+                <input name="rollType" type="radio" value="0" {{#if defaultCheck}}checked{{/if}} {{#if limited}}disabled{{/if}}/>
             </div>
             <div style="margin-top:6px;">
                 <label>{{localize "BREAK.Contest"}}</label>
-                <input name="rollType" type="radio" value="1"/>
+                <input name="rollType" type="radio" value="1" {{#if defaultContest}}checked{{/if}} {{#if limited}}disabled{{/if}}/>
             </div>
         </div>
     {{/if}}

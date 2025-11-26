@@ -1,6 +1,6 @@
 <div class="dice-roll break roll-check">
     <div class="dice-result">
-        <div class="dice-formula">{{#if failedRoll}}<s>{{failedRoll.total}}</s>{{/if}} {{rollFormula}}</div>
+        <div class="dice-formula">{{#if failedRoll}}<s>{{failedRoll.total}}</s>{{/if}} {{rollFormula}} {{#if isCheck}}{{localize "BREAK.VS"}} {{targetValue}}{{/if}}</div>
         <div class="dice-tooltip"></div>
         {{tooltip}}
         <h4 class="dice-total" data-action-result="{{rollTotal}}">

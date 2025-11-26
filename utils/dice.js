@@ -170,11 +170,11 @@ export async function roll(flavor, rollType, targetValue, advantageType, bonusTy
         if(targetValue >= 0) {
             if(rollResult >= targetValue) {
                 resultText = game.i18n.format("BREAK.Hit");
-                if(extraDamage >= 0 && rollResult > extraDamage) {
-                    resultText += "\n" + game.i18n.format("BREAK.ExtraAttackRollResult")
-                }
             } else {
                 resultText = game.i18n.format("BREAK.Miss");
+            }
+            if(extraDamage >= 0 && rollResult > extraDamage) {
+                resultText += "\n" + game.i18n.format("BREAK.ExtraAttackRollResult")
             }
         }
     } else {
@@ -186,6 +186,8 @@ export async function roll(flavor, rollType, targetValue, advantageType, bonusTy
         speaker: ChatMessage.getSpeaker({ actor: this }),
         content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-check.hbs", 
         {
+            isCheck: rollType === RollType.CHECK || rollType === RollType.CONTEST,
+            targetValue,
             rollFormula,
             failedRoll,
             rollTotal: definitiveRoll.total + statBonus + bonusTotal + customBonusResult,
