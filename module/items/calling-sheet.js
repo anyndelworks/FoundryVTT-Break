@@ -1,15 +1,14 @@
+import { FeatureSelectionDialog } from "../dialogs/feature-selection-dialog.js";
 import { BreakItemSheet } from "./item-sheet.js";
 
 export class BreakCallingSheet extends BreakItemSheet {
-    #focusedInput;
-
     //#region DocumentV2 initialization and setup
     static DEFAULT_OPTIONS = {
       tag: "form",
       classes: ["break", "sheet", "calling"],
       position: {
         width: 600,
-        height: 480,
+        height: 650,
       },
       form: {
         handler: BreakCallingSheet.#onSubmit,
@@ -22,7 +21,8 @@ export class BreakCallingSheet extends BreakItemSheet {
         editImage: this.onEditImage,
         addAdvancementRank: this.#addAdvancementRank,
         removeAdvancementRank: this.#removeAdvancementRank,
-        removeAllowance: this.#removeAllowance
+        removeAllowance: this.#removeAllowance,
+        selectFeature: this.onSelectFeature
       }
     }
 
@@ -89,6 +89,11 @@ export class BreakCallingSheet extends BreakItemSheet {
         disabled: context.shieldAllowances.includes(k)
       }));
       context.shieldAllowances = Object.keys(shieldTypes).filter(k => context.shieldAllowances.includes(k)).map(k => ({...shieldTypes[k], key: k}));
+
+      const abilityList = await Promise.all((context.document.system.abilities ?? []).map(async uuid => (await fromUuid(uuid))));
+      context.startingAbilities = abilityList.filter(a => a?.system.subtype === "starting");
+      context.advancedAbilities = abilityList.filter(a => a?.system.subtype === "advanced");
+      context.standardAbilities = abilityList.filter(a => a?.system.subtype === "standard");
       return context;
     }
 
@@ -96,18 +101,22 @@ export class BreakCallingSheet extends BreakItemSheet {
       await super._onRender(context, options);
       const html = $(this.element);
   
-      // Everything below here is only needed if the sheet is editable
       if ( !this.isEditable ) return;
   
       html.find("input.advancement-input").each((i, a) =>{
         a.addEventListener("focus", event => {
           event.preventDefault();
           event.stopPropagation();
-          this.#focusedInput = event.target;
           event.target.select();
         });
       });
-      console.log(this.#focusedInput);
+    }
+
+    async _onDeleteAbility(element) {
+      const id = element.dataset.id;
+      let abilities = this.document.system.abilities ?? [];
+      abilities = abilities.filter(a => a !== id);
+      this.document.update({"system.abilities": abilities});
     }
     //#endregion
   
@@ -141,8 +150,6 @@ export class BreakCallingSheet extends BreakItemSheet {
       event.preventDefault();
       const type = event.target.dataset.type;
       const key = event.target.dataset.key;
-      console.log(type);
-      console.log(key);
       const update = {};
       switch(type) {
         case "armor":
@@ -160,6 +167,31 @@ export class BreakCallingSheet extends BreakItemSheet {
       }
       this.item.update(update);
     }
+
+    static async onSelectFeature(event) {
+      event.preventDefault();
+      const featureType = event.target.dataset.type;
+      let predefinedList = null;
+      let filters = [];
+      let callback = () => {};
+      switch(featureType){
+        case "ability":
+          filters.push(a => a.system.type === "calling" && !this.document.system.abilities.includes(a.uuid));
+          callback = (picks) => {
+            const abilities = [...this.document.system.abilities];
+            abilities.push(picks[0].uuid);
+            this.document.update({"system.abilities": abilities});
+          }
+          break;
+      }
+      new FeatureSelectionDialog({
+        itemType: featureType,
+        document: this.document,
+        predefinedList,
+        filters,
+        callback
+      }).render(true);
+    }
     //#endregion
     
     /** @inheritdoc */
@@ -169,14 +201,11 @@ export class BreakCallingSheet extends BreakItemSheet {
         const draggedItem = await fromUuid(data.uuid);
 
         if(draggedItem.type === "ability") {
-          if(event.target.id === "startingAbilities") {
-            const sa = this.item.system.startingAbilities ?? [];
-            sa.push(draggedItem.toObject());
-            this.item.update({"system.startingAbilities": sa});
-          } else if (event.target.id === "electiveAbilities") {
-            const sa = this.item.system.abilities ?? [];
-            sa.push(draggedItem.toObject());
-            this.item.update({"system.abilities": sa});
+          const abilities = [...this.document.system.abilities];
+          const ability = draggedItem;
+          if(!abilities.includes(ability.uuid)) {
+            abilities.push(ability.uuid);
+            this.document.update({"system.abilities": abilities});
           }
         } else if(draggedItem.type === "weapon-type") {
           const wpns = this.item.system.weaponAllowances ?? [];

@@ -173,7 +173,7 @@ export class BreakWeaponSheet extends BreakItemSheet {
       case "ability":
         filters.push(a => a.system.type === "weapon" && !this.document.system.abilities.includes(a.uuid));
         callback = (picks) => {
-          const abilities = this.document.system.abilities ?? [];
+          const abilities = [...this.document.system.abilities];
           abilities.push(picks[0].uuid);
           this.document.update({"system.abilities": abilities});
         }

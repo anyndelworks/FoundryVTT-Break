@@ -57,39 +57,6 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     html.find("input.item-quantity").on("change", this._onChangeItemInput.bind(this));
   }
 
-  refreshTotals(context) {
-    const equipment = context.document.system.equipment;
-    const shield = equipment.shield;
-    const armor = equipment.armor;
-
-    const hearts = context.document.system.hearts;
-    hearts.bon = (hearts.modifier ?? 0);
-    hearts.total = hearts.max + hearts.bon;
-
-    const attack = context.document.system.attack;
-    attack.bon = (attack.modifier ?? 0);
-    attack.total = attack.value + attack.bon;
-
-    const speed = context.document.system.speed;
-    speed.bon = (speed.modifier ?? 0) - (shield ? shield.system.speedPenalty : 0);
-    // Max speed is 3 (Very Fast), or if armor is worn then the armor's speed limit if it's less
-    const maxSpeed = Math.min(((armor && armor.system.speedLimit) ? +armor.system.speedLimit : 3), 3);
-    const rawSpeed = speed.value + speed.bon;
-    speed.total = Math.min(rawSpeed, maxSpeed);
-
-    //Temp fix
-    if(!context.document.system.hands) {
-      context.document.system.hands = {
-        value: 2,
-        bon: 0,
-        total: 2
-      };
-    }
-    const hands = context.document.system.hands
-    hands.bon = (hands.modifier ?? 0);
-    hands.total = hands.value + hands.bon;
-  }
-
   prepareActions(context) {
     context.actions = [];
     context.document.items.forEach(i => {
@@ -143,9 +110,6 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       async: true
     });
     
-    this.refreshTotals(context);
-
-    context.document.system.hearts.value = Math.min(context.document.system.hearts.value, context.document.system.hearts.total);
     context.attackBonus = context.document.system.attack.total;
     context.speedRating = context.document.system.speed.total;
     const weaponHands = equipment.weapon.reduce((a, w) => a+(w.hands ?? 1), 0);
@@ -324,21 +288,4 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   getSizes() {
     return foundry.utils.deepClone(game.settings.get("break", "sizes"));
   }
-  //#region DocumentV2 submit
-  _getSubmitData(updateData = {}) {
-    const formData = new FormDataExtended(this.form).object;
-    return foundry.utils.expandObject(formData);
-  }
-
-  async _updateObject(event, formData) {
-    const updateData = foundry.utils.expandObject(formData);
-    await this.actor.update(updateData);
-  }
-
-  async _onSubmit(event) {
-    event.preventDefault();
-    const updateData = this._getSubmitData();
-    await this.actor.update(updateData);
-  }
-  //#endregion
 }

@@ -194,6 +194,15 @@
   font-weight: 700;
   padding: 5px;
 }
+.break.sheet .list-item {
+  display: flex;
+  margin-bottom: 6px;
+  align-items: center;
+  box-sizing: content-box;
+  border: 1px solid;
+  padding: 4px;
+  column-gap: 6px;
+}
 .break.sheet .input.root {
   display: inline-flex;
   flex-direction: column;
@@ -641,6 +650,8 @@
 .break.sheet.adversary .adversary-misc-section .adversary-misc-sub-section {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-height: 225px;
 }
 .break.sheet.adversary .aptitude-bon-input {
   margin-top: 0;

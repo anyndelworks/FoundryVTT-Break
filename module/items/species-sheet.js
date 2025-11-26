@@ -1,5 +1,6 @@
 import { BreakItemSheet } from "./item-sheet.js";
 import BREAK from "../constants.js";
+import { FeatureSelectionDialog } from "../dialogs/feature-selection-dialog.js";
 
 export class BreakSpeciesSheet extends BreakItemSheet {
   //#region DocumentV2 initialization and setup
@@ -22,45 +23,71 @@ export class BreakSpeciesSheet extends BreakItemSheet {
         editImage: this.onEditImage,
         deleteInnateAbility: this.#onDeleteInnateAbility,
         deleteMaturativeAbility: this.#onDeleteMaturativeAbility,
-        removeQuirkCategory: this.#onRemoveQuirkCategory
+        removeQuirkCategory: this.#onRemoveQuirkCategory,
+        selectFeature: this.onSelectFeature
       }
   }
 
   static PARTS = {
-      header: {
-          template: "systems/break/templates/items/shared/generic-header.hbs"
-      },
-      body: {
-          template: "systems/break/templates/items/species/species-sheet.hbs"
-      }
+    header: {
+        template: "systems/break/templates/items/shared/generic-header.hbs"
+    },
+    tabs: {
+      template: "systems/break/templates/shared/sheet-tabs.hbs",
+    },
+    description: {
+      template: "systems/break/templates/items/species/species-description-tab.hbs"
+    },
+    properties: {
+      template: "systems/break/templates/items/species/species-properties-tab.hbs"
+    },
   }
 
+  static TABS = {
+    primary: {
+      initial: "description",
+      tabs: [{id: "description", icon: "fas fa-scroll"}, {id: "properties", icon: "fas fa-sparkles"}],
+    }
+  }
+
+
   async _prepareContext(options) {
-      const context = await super._prepareContext(options);
-      context.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.description, {
-          secrets: this.document.isOwner,
-          async: true
-      });
+    const context = await super._prepareContext(options);
+    context.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.description, {
+        secrets: this.document.isOwner,
+        async: true
+    });
 
-      context.innateAbilities = this.item.system.innateAbilities ?? [];
-      context.hasInnateAbilities = context.innateAbilities.length > 0;
-      context.maturativeAbility = this.item.system.maturativeAbility;
+    context.innateAbilities = this.item.system.innateAbilities ?? [];
+    context.hasInnateAbilities = context.innateAbilities.length > 0;
+    context.maturativeAbility = this.item.system.maturativeAbility;
 
-      const sizes = foundry.utils.deepClone(game.settings.get("break", "sizes"));
-      context.sizes = Object.keys(sizes).map(k => ({
-        key: k,
-        label: sizes[k].label,
-        active: context.document.system.size === k
-      }));
+    const sizes = foundry.utils.deepClone(game.settings.get("break", "sizes"));
+    context.sizes = Object.keys(sizes).map(k => ({
+      key: k,
+      label: sizes[k].label,
+      active: context.document.system.size === k
+    }));
 
-      context.quirkCategories = context.document.system.quirkCategories ?? [];
-      context.quirkCategoryList = Object.keys(BREAK.quirk_categories).map(k => ({
-        key: k,
-        label: game.i18n.localize(BREAK.quirk_categories[k]),
-        disabled: context.quirkCategories.includes(k)
-      }));
-      context.quirkCategories = context.quirkCategoryList.filter(qc => qc.disabled);
-      return context;
+    context.quirkCategories = context.document.system.quirkCategories ?? [];
+    context.quirkCategoryList = Object.keys(BREAK.quirk_categories).map(k => ({
+      key: k,
+      label: game.i18n.localize(BREAK.quirk_categories[k]),
+      disabled: context.quirkCategories.includes(k)
+    }));
+    context.quirkCategories = context.quirkCategoryList.filter(qc => qc.disabled);
+
+    const abilityList = await Promise.all((context.document.system.abilities ?? []).map(async uuid => (await fromUuid(uuid))));
+    context.innateAbilities = abilityList.filter(a => a?.system.subtype === "innate");
+    context.maturativeAbilities = abilityList.filter(a => a?.system.subtype === "maturative");
+    return context;
+  }
+
+  async _onDeleteAbility(element) {
+    const id = element.dataset.id;
+    let abilities = this.document.system.abilities ?? [];
+    abilities = abilities.filter(a => a !== id);
+    this.document.update({"system.abilities": abilities});
   }
   //#endregion
 
@@ -85,6 +112,31 @@ export class BreakSpeciesSheet extends BreakItemSheet {
     update["system.quirkCategories"] = newQuirkCategories;
     this.item.update(update);
   }
+
+  static async onSelectFeature(event) {
+    event.preventDefault();
+    const featureType = event.target.dataset.type;
+    let predefinedList = null;
+    let filters = [];
+    let callback = () => {};
+    switch(featureType){
+      case "ability":
+        filters.push(a => a.system.type === "species" && !this.document.system.abilities?.includes(a.uuid));
+        callback = (picks) => {
+          const abilities = [...this.document.system.abilities ?? []];
+          abilities.push(picks[0].uuid);
+          this.document.update({"system.abilities": abilities});
+        }
+        break;
+    }
+    new FeatureSelectionDialog({
+      itemType: featureType,
+      document: this.document,
+      predefinedList,
+      filters,
+      callback
+    }).render(true);
+  }
   //#endregion
   
   async _onDrop(event) {
@@ -93,13 +145,9 @@ export class BreakSpeciesSheet extends BreakItemSheet {
     const draggedItem = await fromUuid(data.uuid);
 
     if(draggedItem.type === "ability") {
-      if(event.target.id === "innateAbilities") {
-        const ia = this.item.system.innateAbilities ?? [];
-        ia.push(draggedItem.toObject());
-        this.item.update({"system.innateAbilities": ia});
-      } else if (event.target.id === "maturativeAbility") {
-        this.item.update({"system.maturativeAbility": draggedItem.toObject()})
-      }
+      const abilities = [...this.document.system.abilities];
+      abilities.push(data.uuid);
+      this.document.update({"system.abilities": abilities});
     }
   }
 

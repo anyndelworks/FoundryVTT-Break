@@ -1,47 +1,101 @@
 <div class="adversary-misc-section">
     <div class="adversary-misc-sub-section">
         <label>{{localize "BREAK.Habitat"}}</label>
-        <textarea rows="6" cols="40" name="system.misc.habitat" type="text" placeholder="...">{{{document.system.misc.habitat}}}</textarea>
+        {{#if editable}}
+        <prose-mirror name="system.misc.habitat" value="{{ document.system.misc.habitat }}"></prose-mirror>
+        {{else}}
+        <div class="editor">
+            <div class="editor-content">{{{ habitatHTML }}}</div>
+        </div>
+        {{/if}}
     </div>
     <div class="adversary-misc-sub-section">
         <label>{{localize "BREAK.Gear"}}</label>
-        <textarea rows="6" cols="40" name="system.misc.gearInfo" type="text" placeholder="...">{{{document.system.misc.gearInfo}}}</textarea>
+        {{#if editable}}
+        <prose-mirror name="system.misc.gearInfo" value="{{ document.system.misc.gearInfo }}"></prose-mirror>
+        {{else}}
+        <div class="editor">
+            <div class="editor-content">{{{ gearInfoHTML }}}</div>
+        </div>
+        {{/if}}
     </div>
 </div>
 <div class="adversary-misc-section">
     <div class="adversary-misc-sub-section">
         <label>{{localize "BREAK.Communication"}}</label>
-        <textarea rows="6" cols="40" name="system.misc.communication" type="text" placeholder="...">{{{document.system.misc.communication}}}</textarea>
+        {{#if editable}}
+        <prose-mirror name="system.misc.communication" value="{{ document.system.misc.communication }}"></prose-mirror>
+        {{else}}
+        <div class="editor">
+            <div class="editor-content">{{{ communicationHTML }}}</div>
+        </div>
+        {{/if}}
     </div>
 
     <div class="adversary-misc-sub-section">
         <label>{{localize "BREAK.Tactics"}}</label>
-        <textarea rows="6" cols="40" name="system.misc.tactics" type="text" placeholder="...">{{{document.system.misc.tactics}}}</textarea>
+        {{#if editable}}
+        <prose-mirror name="system.misc.tactics" value="{{ document.system.misc.tactics }}"></prose-mirror>
+        {{else}}
+        <div class="editor">
+            <div class="editor-content">{{{ tacticsHTML }}}</div>
+        </div>
+        {{/if}}
     </div>
 </div>
 <div class="adversary-misc-section">
     <div class="adversary-misc-sub-section">
         <label>{{localize "BREAK.Indicators"}}</label>
-        <textarea rows="6" cols="40" name="system.misc.indicators" type="text" placeholder="...">{{{document.system.misc.indicators}}}</textarea>
+        {{#if editable}}
+        <prose-mirror name="system.misc.indicators" value="{{ document.system.misc.indicators }}"></prose-mirror>
+        {{else}}
+        <div class="editor">
+            <div class="editor-content">{{{ indicatorsHTML }}}</div>
+        </div>
+        {{/if}}
     </div>
     <div class="adversary-misc-sub-section">
         <label>{{localize "BREAK.RolePlayingNote"}}</label>
-        <textarea rows="6" cols="40" name="system.misc.rpNote" type="text" placeholder="...">{{{document.system.misc.rpNote}}}</textarea>
+        {{#if editable}}
+        <prose-mirror name="system.misc.rpNote" value="{{ document.system.misc.rpNote }}"></prose-mirror>
+        {{else}}
+        <div class="editor">
+            <div class="editor-content">{{{ rpNoteHTML }}}</div>
+        </div>
+        {{/if}}
     </div>
 </div>
 <div class="adversary-misc-section">
     <div class="adversary-misc-sub-section">
         <label>{{localize "BREAK.Customization"}}</label>
-        <textarea rows="6" cols="40" name="system.misc.customization" type="text" placeholder="...">{{{document.system.misc.customization}}}</textarea>
+        {{#if editable}}
+        <prose-mirror name="system.misc.customization" value="{{ document.system.misc.customization }}"></prose-mirror>
+        {{else}}
+        <div class="editor">
+            <div class="editor-content">{{{ customizationHTML }}}</div>
+        </div>
+        {{/if}}
     </div>
     <div class="adversary-misc-sub-section">
         <label>{{localize "BREAK.Reskin"}}</label>
-        <textarea rows="6" cols="40" name="system.misc.reskin" type="text" placeholder="...">{{{document.system.misc.reskin}}}</textarea>
+        {{#if editable}}
+        <prose-mirror name="system.misc.reskin" value="{{ document.system.misc.reskin }}"></prose-mirror>
+        {{else}}
+        <div class="editor">
+            <div class="editor-content">{{{ reskinHTML }}}</div>
+        </div>
+        {{/if}}
     </div>
 </div>
 <div class="adversary-misc-section">
     <div class="adversary-misc-sub-section">
         <label>{{localize "BREAK.Yield"}}</label>
-        <textarea rows="10" cols="86" name="system.misc.yield" type="text" placeholder="...">{{{document.system.misc.yield}}}</textarea>
+        {{#if editable}}
+        <prose-mirror name="system.misc.yield" value="{{ document.system.misc.yield }}"></prose-mirror>
+        {{else}}
+        <div class="editor">
+            <div class="editor-content">{{{ yieldHTML }}}</div>
+        </div>
+        {{/if}}
     </div>
 </div>

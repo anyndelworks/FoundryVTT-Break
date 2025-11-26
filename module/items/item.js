@@ -49,6 +49,7 @@ export class BreakItem extends Item {
     itemData.isQuirk = this.type === "quirk";
     itemData.isGift = this.type === "gift";
     itemData.isInjury = this.type === "injury";
+    itemData.isAilment = this.type === "ailment";
     itemData.isRanged = this.system.ranged;
     itemData.isMelee = this.system.melee;
     itemData.isGear = this.type != "quirk" && this.type != "ability" && this.type != "calling" && this.type != "gift" && this.type != "injury";

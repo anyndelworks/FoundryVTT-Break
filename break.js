@@ -15,6 +15,7 @@ import { BreakArmorSheet } from "./module/items/armor-sheet.js";
 import { BreakShieldSheet } from "./module/items/shield-sheet.js";
 ////// INVENTORY
 import { BreakInjurySheet } from "./module/items/injury-sheet.js";
+import { BreakAilmentSheet } from "./module/items/ailment-sheet.js";
 import { ActiveEffectsPanel } from "./module/apps/active-effects-list.js";
 import { BreakGiftSheet } from "./module/items/gift-sheet.js";
 import { BreakOutfitSheet } from "./module/items/outfit-sheet.js";
@@ -27,6 +28,26 @@ import { BreakHomelandSheet } from "./module/items/homeland-sheet.js";
 import { BreakHistorySheet } from "./module/items/history-sheet.js";
 import { BreakQuirkSheet } from "./module/items/quirk-sheet.js";
 import { BreakAbilitySheet } from "./module/items/ability-sheet.js";
+////// MODELS
+import { BreakCharacterDataModel } from "./module/models/character.js";
+import { BreakGMCDataModel } from "./module/models/gmc.js";
+import { BreakAdversaryDataModel } from "./module/models/adversary.js";
+import { AccessoryDataModel } from './module/models/accessory.js';
+import { ArmorDataModel } from './module/models/armor.js';
+import { OutfitDataModel } from './module/models/outfit.js';
+import { ShieldDataModel } from './module/models/shield.js';
+import { GenericItemDataModel } from './module/models/item.js';
+import { CallingDataModel } from './module/models/calling.js';
+import { SpeciesDataModel } from './module/models/species.js';
+import { HomelandDataModel } from './module/models/homeland.js';
+import { HistoryDataModel } from './module/models/history.js';
+import { QuirkDataModel } from './module/models/quirk.js';
+import { AbilityDataModel } from './module/models/ability.js';
+import { WeaponDataModel } from './module/models/weapon.js';
+import { InjuryDataModel } from './module/models/injury.js';
+import { AilmentDataModel } from './module/models/ailment.js';
+import { MaterialDataModel } from './module/models/material.js';
+import { AdditiveDataModel } from './module/models/additive.js';
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -61,7 +82,26 @@ Hooks.once("init", async function() {
   };
 
   // Define custom Document classes
+  CONFIG.Actor.dataModels["character"] = BreakCharacterDataModel;
+  CONFIG.Actor.dataModels["gmc"] = BreakGMCDataModel;
+  CONFIG.Actor.dataModels["adversary"] = BreakAdversaryDataModel;
   CONFIG.Actor.documentClass = BreakActor;
+  CONFIG.Item.dataModels["accessory"] = AccessoryDataModel;
+  CONFIG.Item.dataModels["armor"] = ArmorDataModel;
+  CONFIG.Item.dataModels["item"] = GenericItemDataModel;
+  CONFIG.Item.dataModels["outfit"] = OutfitDataModel;
+  CONFIG.Item.dataModels["shield"] = ShieldDataModel;
+  CONFIG.Item.dataModels["calling"] = CallingDataModel;
+  CONFIG.Item.dataModels["species"] = SpeciesDataModel;
+  CONFIG.Item.dataModels["homeland"] = HomelandDataModel;
+  CONFIG.Item.dataModels["history"] = HistoryDataModel;
+  CONFIG.Item.dataModels["quirk"] = QuirkDataModel;
+  CONFIG.Item.dataModels["ability"] = AbilityDataModel;
+  CONFIG.Item.dataModels["weapon"] = WeaponDataModel;
+  CONFIG.Item.dataModels["injury"] = InjuryDataModel;
+  CONFIG.Item.dataModels["ailment"] = AilmentDataModel;
+  CONFIG.Item.dataModels["material"] = MaterialDataModel;
+  CONFIG.Item.dataModels["additive"] = AdditiveDataModel;
   CONFIG.Item.documentClass = BreakItem;
   CONFIG.Token.documentClass = BreakTokenDocument;
   CONFIG.Token.objectClass = BreakToken;
@@ -466,6 +506,7 @@ Hooks.once("init", async function() {
 /////// STATUS
   Items.registerSheet("break", BreakGiftSheet, { types: ['gift'], makeDefault: true });
   Items.registerSheet("break", BreakInjurySheet, {types:['injury'], makeDefault: true });
+  Items.registerSheet("break", BreakAilmentSheet, {types:['ailment'], makeDefault: true });
   Items.registerSheet("break", BreakCallingSheet, {types:['calling'], makeDefault: true });
   Items.registerSheet("break", BreakSpeciesSheet, {types:['species'], makeDefault: true });
   Items.registerSheet("break", BreakHomelandSheet, {types:['homeland'], makeDefault: true });
@@ -542,7 +583,7 @@ Hooks.once('canvasInit', (canvas) => {
         .sort((a, b) => b.document.elevation - a.document.elevation)
         .find((t) => t.bounds.contains(dropData.x, dropData.y));
       const actor = dropTarget?.actor;
-      if(actor && item.type == "injury") {
+      if(actor && (item.type == "injury" || item.type == "ailment")) {
         item.effects.forEach(async (effect) => {
           const newEffect = ActiveEffect.create({...effect}, {parent: actor});
         });

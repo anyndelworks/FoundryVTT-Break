@@ -66,12 +66,19 @@ export class BreakAbilitySheet extends BreakItemSheet {
       label: game.i18n.localize(BREAK.ability_types[k]),
       active: context.document.system.type === k
     }));
-    context.requiresSubtype = context.document.system.type === 'calling';
-    context.itemSubtypes = Object.keys(BREAK.ability_levels).map(k => ({
-      key: k,
-      label: game.i18n.localize(BREAK.ability_levels[k]),
-      active: context.document.system.subtype === k
-    }));
+    context.requiresSubtype = context.document.system.type === 'calling' || context.document.system.type === 'species';
+    if(context.document.system.type === 'calling')
+      context.itemSubtypes = Object.keys(BREAK.ability_levels).map(k => ({
+        key: k,
+        label: game.i18n.localize(BREAK.ability_levels[k]),
+        active: context.document.system.subtype === k
+      }));
+    else if(context.document.system.type === 'species')
+      context.itemSubtypes = Object.keys(BREAK.species_ability_levels).map(k => ({
+        key: k,
+        label: game.i18n.localize(BREAK.species_ability_levels[k]),
+        active: context.document.system.subtype === k
+      }));
     context.isMagic = context.document.system.magic ?? false;
     context.isAbility = true;
     console.log(context.isMagic);

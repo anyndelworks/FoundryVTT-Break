@@ -90,6 +90,16 @@
     padding: 5px;
   }
 
+  .list-item {
+    display: flex;
+    margin-bottom: 6px;
+    align-items: center;
+    box-sizing: content-box;
+    border: 1px solid;
+    padding:4px;
+    column-gap:6px;
+  }
+
   .input {
     &.root {
       display: inline-flex;
@@ -605,6 +615,8 @@
     .adversary-misc-sub-section {
       display: flex;
       flex-direction: column;
+      flex: 1;
+      min-height: 225px;
     }
   }
 

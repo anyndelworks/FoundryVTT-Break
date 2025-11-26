@@ -30,6 +30,11 @@ export class BreakCharacterSheet extends BreakActorSheet {
     actions: {
       selectFeature: this.#onSelectFeature,
       setTrait: this.#onSetTrait,
+      addPurview: this.#addPurview,
+      deletePurview: this.#deletePurview,
+    },
+    form: {
+      handler: BreakCharacterSheet.#onSubmit,
     }
   }
 
@@ -99,36 +104,6 @@ export class BreakCharacterSheet extends BreakActorSheet {
       }
     }
 
-    context.species = context.document.items.find(i => i.type === "species");
-    context.hasSpecies = context.species != null;
-
-    const sizes = this.getSizes();
-    const size = context.document.system.size?.modifier ?? (context.hasSpecies ? context.species.system.size : null);
-    if(size) {
-      context.inventorySlots = sizes[size].inventorySize;
-    }
-    context.size = sizes[size];
-    
-
-    context.calling = context.document.items.find(i => i.type === "calling");
-    context.hasCalling = context.calling != null;
-    
-    if (context.hasCalling && context.calling.system.advancementTable && Object.keys(context.calling.system.advancementTable).length > 0) {
-      const stats = context.calling.system.advancementTable[context.rank - 1];
-
-      context.document.system.aptitudes.might.value = stats.might;
-      context.document.system.aptitudes.deftness.value = stats.deftness;
-      context.document.system.aptitudes.grit.value = stats.grit;
-      context.document.system.aptitudes.insight.value = stats.insight;
-      context.document.system.aptitudes.aura.value = stats.aura;
-
-      context.document.system.attack.value = stats.attack;
-      context.document.system.hearts.max = stats.hearts;
-
-      context.document.system.defense.value = context.calling.system.baseDefense;
-      context.document.system.speed.value = context.calling.system.baseSpeed;
-    }
-
     context.homeland = context.document.items.find(i => i.type === "homeland");
     context.hasHomeland = context.homeland != null;
 
@@ -138,6 +113,13 @@ export class BreakCharacterSheet extends BreakActorSheet {
     context.abilities = context.document.items.filter(i => i.type === "ability");
     context.gifts = context.document.items.filter(i => i.type === "gift");
     context.quirks = context.document.items.filter(i => i.type === "quirk");
+
+    context.calling = context.document.items.find(i => i.type === "calling");
+    context.hasCalling = context.document.system.hasCalling;
+
+    context.hasSpecies = context.document.system.hasSpecies;
+    context.species = context.document.items.find(i => i.type === "species");
+    context.size = context.document.system.sizeData;
 
     let allegiancePoints = +context.document.system.allegiance.dark + +context.document.system.allegiance.bright;
     // 0 = None, 1 = Bright, 2 = Twilight, 3 = Bright
@@ -151,24 +133,12 @@ export class BreakCharacterSheet extends BreakActorSheet {
       context.allegiance = 2;
     }
 
-    context.document.system.purviews = context.document.system.purviews.replaceAll("\n", "&#10;")
-    const armor = context.document.system.equipment.armor;
-    const defense = context.document.system.defense;
-    const aptitudes = context.document.system.aptitudes;
-    const shield = context.document.system.equipment.shield;
+    context.purviews = context.document.system.purviews ?? [];
+    context.inventorySlots = context.document.system.inventorySlots;
 
-    defense.bon = (size ? +sizes[size].defense : 0) + (shield ? shield.system.defenseBonus : 0) + (armor ? +armor.system.defenseBonus : 0) + (context.speedRating == 2 ? 2 : +context.speedRating >= 3 ? 4 : 0) + (defense.modifier ?? 0);
-    context.defenseRating = defense.value + defense.bon;
-    aptitudes.might.bon = (size ? +sizes[size].might : 0) + (aptitudes.might.modifier ?? 0);
-    aptitudes.might.total = aptitudes.might.value + aptitudes.might.bon + aptitudes.might.trait;
-    aptitudes.deftness.bon = (size ? +sizes[size].deftness : 0) + (aptitudes.deftness.modifier ?? 0);
-    aptitudes.deftness.total = aptitudes.deftness.value + aptitudes.deftness.bon + aptitudes.deftness.trait;
-    aptitudes.grit.bon = (size ? +sizes[size].grit : 0) + (aptitudes.grit.modifier ?? 0);
-    aptitudes.grit.total = aptitudes.grit.value + aptitudes.grit.bon + aptitudes.grit.trait;
-    aptitudes.insight.bon = (size ? +sizes[size].insight : 0) + (aptitudes.insight.modifier ?? 0);
-    aptitudes.insight.total = aptitudes.insight.value + aptitudes.insight.bon + aptitudes.insight.trait;
-    aptitudes.aura.bon = (size ? +sizes[size].aura : 0) + (aptitudes.aura.modifier ?? 0);
-    aptitudes.aura.total = aptitudes.aura.value + aptitudes.aura.bon + aptitudes.aura.trait;
+    const defense = context.document.system.defense;
+    context.defenseRating = defense.total;
+    console.log(context)
     return context;
   }
   //#endregion
@@ -193,9 +163,21 @@ export class BreakCharacterSheet extends BreakActorSheet {
         });
         return;
       case "calling":
+        const calling = this.actor.items.find(i => i.type === "calling");
+        if(calling)
+          return;
       case "species":
+        const species = this.actor.items.find(i => i.type === "species");
+        if(species)
+          return;
       case "homeland":
+        const homeland = this.actor.items.find(i => i.type === "homeland");
+        if(homeland)
+          return;
       case "history":
+        const history = this.actor.items.find(i => i.type === "history");
+        if(history)
+          return;
       case "ability":
       default:
         await super._onDrop(event);
@@ -212,6 +194,7 @@ export class BreakCharacterSheet extends BreakActorSheet {
     let filters = [];
     const homeland = this.actor.items.find(i => i.type === "homeland");
     const species = this.actor.items.find(i => i.type === "species");
+    const calling = this.actor.items.find(i => i.type === "calling");
     if(featureType === "history" && homeland) {
       predefinedList = await Promise.all(homeland.system.histories.map(async (id) => await fromUuid(id)));
       predefinedList.forEach(history => {
@@ -221,7 +204,14 @@ export class BreakCharacterSheet extends BreakActorSheet {
       filters = [i => species.system.quirkCategories.includes(i.system.type ?? "")];
     } else if(featureType === "ability") {
       filters = [a => a.system.type === "calling" || a.system.type === "species"];
+      if(calling) {
+        filters.push(i => calling.system.abilities?.includes(i.uuid) || i.system.type === "species");
+      }
+      if(species) {
+        filters.push(i => species.system.abilities?.includes(i.uuid) || i.system.type === "calling")
+      }
     }
+    filters.push(i => !this.actor.items.find(it => it.uuid === i.uuid));
     new FeatureSelectionDialog({
       itemType: featureType,
       document: this.document,
@@ -241,6 +231,30 @@ export class BreakCharacterSheet extends BreakActorSheet {
     this.actor.setAptitudeTrait(aptitude, +value)
   }
 
+  static async #onSubmit(event, form, formData) {
+    event.preventDefault();
+    const updateData = foundry.utils.expandObject(formData.object);
+    const purviews = Object.keys(updateData.system.purviews ?? {}).map((k) => {
+        return updateData.system.purviews[k];
+    });
+    updateData.system.purviews = purviews;
+    await this.actor.update(updateData);
+  }
+
+  static #addPurview() {
+    const purviews = [...this.actor.system.purviews];
+    purviews.push("");
+    this.actor.update({"system.purviews": purviews});
+  }
+
+  static #deletePurview(event) {
+    event.preventDefault();
+    const button = event.target;
+    const index = Number(button.dataset.index);
+    const purviews = [...this.actor.system.purviews];
+    purviews.splice(index, 1);
+    this.actor.update({"system.purviews": purviews});
+  }
   //#endregion
 
   _onOpenContextMenu(element) {

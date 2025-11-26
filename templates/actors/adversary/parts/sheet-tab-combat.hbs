@@ -1,6 +1,6 @@
 <section class="tab description scrollable {{tabs.combat.cssClass}}" data-group="primary" data-tab="combat">
     <header class="adversary-header">
-        <img class="profile-img" src="{{document.img}}" title="{{document.name}}" data-action="editImage" data-field="img" style="width: 120px;"/>
+        <img class="profile-img" src="{{document.img}}" title="{{document.name}}" data-action="editImage" data-field="img" style="width: 120px;object-fit:contain;"/>
         <div style="display: flex; flex-direction: column; flex-grow: 1; ">
             <div class="adversary-header-sub-section">
                 <input name="name" type="text" value="{{document.name}}" placeholder="Name" />
@@ -13,7 +13,13 @@
                 <label style="margin: 0 10px 0 5px;">{{localize "BREAK.Rank"}}</label>
                 <input name="system.rank" type="text" value="{{document.system.rank}}" placeholder="0" />
             </div>
-            <textarea name="system.description" type="text" placeholder="..." style=" height: 100%;" value="{{document.system.description}}">{{document.system.description}}</textarea>
+            {{#if editable}}
+            <prose-mirror name="system.description" value="{{ document.system.description }}"></prose-mirror>
+            {{else}}
+            <div class="editor">
+                <div class="editor-content">{{{ descriptionHTML }}}</div>
+            </div>
+            {{/if}}
         </div>
     </header>
     {{> "systems/break/templates/actors/shared/sheet-combat.html"}}

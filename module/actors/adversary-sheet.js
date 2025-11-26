@@ -66,6 +66,18 @@ export class BreakAdversarySheet extends BreakActorSheet {
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
+    context.habitatHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.habitat, {secrets: this.document.isOwner,async: true});
+    context.gearInfoHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.gearInfo, {secrets: this.document.isOwner,async: true});
+    context.communicationHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.communication, {secrets: this.document.isOwner,async: true});
+    context.tacticsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.tactics, {secrets: this.document.isOwner,async: true});
+    context.indicatorsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.indicators, {secrets: this.document.isOwner,async: true});
+    context.rpNoteHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.rpNote, {secrets: this.document.isOwner,async: true});
+    context.customizationHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.customization, {secrets: this.document.isOwner,async: true});
+    context.reskinHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.reskin, {secrets: this.document.isOwner,async: true});
+    context.yieldHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.yield, {secrets: this.document.isOwner,async: true});
+    context.notesHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.notes, {secrets: this.document.isOwner,async: true});
+    context.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.description, {secrets: this.document.isOwner,async: true});
+    
     context.abilities = context.document.items.filter(i => i.type === "ability");
 
     if (context.document.system.equipment.armor && context.document.system.equipment.armor.system.speedLimit != null && context.document.system.equipment.armor.system.speedLimit != "") {
@@ -79,34 +91,7 @@ export class BreakAdversarySheet extends BreakActorSheet {
       active: context.document.system.size === k
     }));
 
-    const size = context.document.system.size ? sizes[context.document.system.size] : null;
-
-    const aptitudes = context.document.system.aptitudes;
-    aptitudes.might.bon = (size ? +size.might : 0) + (aptitudes.might.modifiers ?? 0);
-    aptitudes.might.total = aptitudes.might.value + aptitudes.might.bon + aptitudes.might.trait;
-    aptitudes.deftness.bon = (size ? +size.deftness : 0) + (aptitudes.deftness.modifiers ?? 0);
-    aptitudes.deftness.total = aptitudes.deftness.value + aptitudes.deftness.bon + aptitudes.deftness.trait;
-    aptitudes.grit.bon = (size ? +size.grit : 0) + (aptitudes.grit.modifiers ?? 0);
-    aptitudes.grit.total = aptitudes.grit.value + aptitudes.grit.bon + aptitudes.grit.trait;
-    aptitudes.insight.bon = (size ? +size.insight : 0) + (aptitudes.insight.modifiers ?? 0);
-    aptitudes.insight.total = aptitudes.insight.value + aptitudes.insight.bon + aptitudes.insight.trait;
-    aptitudes.aura.bon = (size ? +size.aura : 0) + (aptitudes.aura.modifiers ?? 0);
-    aptitudes.aura.total = aptitudes.aura.value + aptitudes.aura.bon + aptitudes.aura.trait;
-
-    //Fix line break issue with textarea input
-    context.document.system.misc.habitat = context.document.system.misc.habitat.replaceAll("\n", "&#10;")
-    context.document.system.misc.gearInfo = context.document.system.misc.gearInfo.replaceAll("\n", "&#10;")
-    context.document.system.misc.communication = context.document.system.misc.communication.replaceAll("\n", "&#10;")
-    context.document.system.misc.tactics = context.document.system.misc.tactics.replaceAll("\n", "&#10;")
-    context.document.system.misc.indicators = context.document.system.misc.indicators.replaceAll("\n", "&#10;")
-    context.document.system.misc.rpNote = context.document.system.misc.rpNote.replaceAll("\n", "&#10;")
-    context.document.system.misc.customization = context.document.system.misc.customization.replaceAll("\n", "&#10;")
-    context.document.system.misc.yield = context.document.system.misc.yield.replaceAll("\n", "&#10;")
-    context.document.system.misc.reskin = context.document.system.misc.reskin.replaceAll("\n", "&#10;")
-    const armor = context.document.system.equipment.armor;
-    const defense = context.document.system.defense;
-    defense.bon = (size ? +size.defense : 0) + (armor ? +armor.system.defenseBonus : 0) + (context.speedRating == 2 ? 2 : +context.speedRating >= 3 ? 4 : 0) + (defense.modifiers ?? 0);
-    context.defenseRating = defense.value + defense.bon;
+    context.defenseRating = context.document.system.defense.total;
     return context;
   }
   //#endregion

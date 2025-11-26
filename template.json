@@ -145,6 +145,7 @@
       "accessory",
       "gift",
       "injury",
+      "ailment",
       "calling",
       "species",
       "homeland",
@@ -191,7 +192,11 @@
     },
     "item": {
       "templates": ["baseItem"],
-      "type": null
+      "type": null,
+      "uses": {
+        "value": 1,
+        "total": 1
+      }
     },
     "calling": {
       "name": "",
@@ -213,10 +218,12 @@
       "size": null,
       "innateAbilities": [],
       "maturativeAbilities": [],
-      "quirkCategories": []
+      "quirkCategories": [],
+      "abilities": []
     },
     "homeland": {
       "name": "",
+      "description": "",
       "bonusLanguages": "",
       "histories": []
     },
@@ -258,6 +265,13 @@
       "actions": []
     },
     "injury": {
+      "description": "",
+      "duration": {
+        "value": 1,
+        "permanent": false
+      }
+    },
+    "ailment": {
       "description": "",
       "duration": {
         "value": 1,

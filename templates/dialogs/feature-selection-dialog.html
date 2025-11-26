@@ -21,6 +21,7 @@
                     <img style="width: 32px;height: 32px;object-fit: contain;" src="{{item.img}}" title="{{item.name}}" />
                     <div style="display: flex; flex-direction: column;">
                         <a style="cursor:pointer;" class="item-link" data-action="linkItem">{{item.name}}</a>
+                        {{#if item.desc}}<label style="font-size: 11px;">{{item.desc}}</label>{{/if}}
                         <label style="font-size: 11px;">From {{item.from}}</label>
                     </div>
                     {{#if item.picked}}

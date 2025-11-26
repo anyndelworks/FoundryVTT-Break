@@ -1,3 +1,5 @@
+import BREAK from "../constants.js";
+
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api
 
 export class FeatureSelectionDialog extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -74,6 +76,16 @@ export class FeatureSelectionDialog extends HandlebarsApplicationMixin(Applicati
     const worldItems = game.items.filter(i => i.type === type);
     worldItems.forEach(i => {
       i.from = "World";
+      if(i.type === "ability") {
+        i.desc = "";
+        if(i.system.type)
+          i.desc = game.i18n.localize(BREAK.ability_types[i.system.type])
+        if(i.system.subtype)
+          if(i.system.type === "calling")
+            i.desc = `${game.i18n.localize(BREAK.ability_levels[i.system.subtype])} ${i.desc} ${game.i18n.localize("BREAK.Ability")}`
+          else if(i.system.type === "species")
+            i.desc = `${game.i18n.localize(BREAK.species_ability_levels[i.system.subtype])} ${i.desc} ${game.i18n.localize("BREAK.Ability")}`
+      }
     });
     items.push(...worldItems);
 

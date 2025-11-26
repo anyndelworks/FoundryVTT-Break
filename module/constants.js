@@ -17,6 +17,11 @@ BREAK.ability_levels = {
     advanced: "BREAK.ABILITIES.Advanced"
 }
 
+BREAK.species_ability_levels = {
+    innate: "BREAK.Innate",
+    maturative: "BREAK.Maturative"
+}
+
 BREAK.item_types = {
     wayfinding: "TYPES.Item.wayfinding",
     illumination: "TYPES.Item.illumination",

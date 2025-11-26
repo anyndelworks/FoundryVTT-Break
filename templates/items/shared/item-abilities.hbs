@@ -1,8 +1,8 @@
 <div class="flexcol" style="margin-top: 12px;">
     <div class="section-header">{{localize "BREAK.Abilities"}}</div>
-    <div class="ability-list" style="display: flex; flex-wrap: wrap;">
+    <div class="ability-list" style="display: flex; flex-wrap: wrap;column-gap:12px;">
         {{#each abilities}}
-            <div style="display: flex; margin-bottom: 6px;align-items: center; width: 25%;" data-type="ability" data-id="{{this.uuid}}">
+            <div class="list-item" data-type="ability" data-id="{{this.uuid}}">
                 <a data-tooltip="{{this.system.description}}" >{{this.name}}</a>
                 <a class="item-control interface-only" style="margin-left: 6px;" data-context-menu>
                     <i class="fas fa-ellipsis-vertical"></i>

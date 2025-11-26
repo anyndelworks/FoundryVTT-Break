@@ -1,0 +1,16 @@
+<section class="tab description flexcol scrollable {{tabs.description.cssClass}}" autocomplete="off" style="height: 100%;" data-group="primary" data-tab="description">
+    <div style="display:flex;column-gap: 24px;flex: 1;">
+        <div class="flexcol" style="flex: 1;">
+            <div class="section-header">
+                {{localize "BREAK.Description"}}
+            </div>
+            {{#if editable}}
+            <prose-mirror name="system.description" value="{{ document.system.description }}" style="flex: 1;"></prose-mirror>
+            {{else}}
+            <div class="editor">
+                <div class="editor-content">{{{ descriptionHTML }}}</div>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+</section>

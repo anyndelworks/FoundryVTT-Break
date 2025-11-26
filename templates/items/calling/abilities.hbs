@@ -1,0 +1,36 @@
+<div class="flexcol" style="margin-top: 12px;">
+    <div class="section-header">{{localize "BREAK.ABILITIES.StartingLong"}}</div>
+    <div class="ability-list" style="display: flex; flex-wrap: wrap;column-gap:12px;">
+        {{#each startingAbilities}}
+            <div class="list-item" data-type="ability" data-id="{{this.uuid}}">
+                <a data-tooltip="{{this.system.description}}" >{{this.name}}</a>
+                <a class="item-control interface-only" data-context-menu>
+                    <i class="fas fa-ellipsis-vertical"></i>
+                </a>
+            </div>
+        {{/each}}
+    </div>
+    <div class="section-header">{{localize "BREAK.ABILITIES.StandardLong"}}</div>
+    <div class="ability-list" style="display: flex; flex-wrap: wrap;column-gap:12px;">
+        {{#each standardAbilities}}
+            <div class="list-item" data-type="ability" data-id="{{this.uuid}}">
+                <a data-tooltip="{{this.system.description}}" >{{this.name}}</a>
+                <a class="item-control interface-only" style="margin-left: 6px;" data-context-menu>
+                    <i class="fas fa-ellipsis-vertical"></i>
+                </a>
+            </div>
+        {{/each}}
+    </div>
+    <div class="section-header">{{localize "BREAK.ABILITIES.AdvancedLong"}}</div>
+    <div class="ability-list" style="display: flex; flex-wrap: wrap;column-gap:12px;">
+        {{#each advancedAbilities}}
+            <div class="list-item" data-type="ability" data-id="{{this.uuid}}">
+                <a data-tooltip="{{this.system.description}}" >{{this.name}}</a>
+                <a class="item-control interface-only" style="margin-left: 6px;" data-context-menu>
+                    <i class="fas fa-ellipsis-vertical"></i>
+                </a>
+            </div>
+        {{/each}}
+    </div>
+    <button class="select-feature" data-type="ability" data-action="selectFeature" style="height: inherit;">{{localize 'BREAK.PickOrDrag'}} {{localize 'BREAK.Ability'}}</i></button>
+</div>

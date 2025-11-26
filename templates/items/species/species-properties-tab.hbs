@@ -1,0 +1,51 @@
+<section class="tab properties scrollable {{tabs.properties.cssClass}}" data-group="primary" data-tab="properties" style="height: 100%;">
+    <div class="flexrow" style="flex: 1;align-items:start;column-gap:12px;">
+        <div class="size-drag-slot" id="size" style="flex: 1;">
+            <div class="section-header">{{localize "BREAK.Size"}}</div>
+            <select name="system.size" id="type-select" >
+                {{#each sizes as |size|}}
+                    <option value="{{size.key}}" {{#if size.active}}selected="selected"{{/if}}>{{size.label}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="flexcol" style="flex: 1;">
+            <div class="section-header">{{localize "BREAK.QUIRKS.QuirkCategories"}}</div>
+            <select name="quirkCategory" id="type-select" >
+                <option value="">Pick an item</option>
+                {{#each quirkCategoryList as |type|}}
+                    <option value="{{type.key}}" {{#if type.disabled}}disabled{{/if}}>{{type.label}}</option>
+                {{/each}}
+            </select>
+            <div style="display: flex;flex-wrap:wrap;row-gap:8px;margin-top:12px;">
+                {{#each quirkCategories as |category|}}
+                    <label style="width: 33%;max-width:250px;"><i data-action="removeQuirkCategory" data-key="{{category.key}}" class="fa-regular fa-xmark clickable"></i>{{category.label}}</label>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+    <div class="flexcol" style="margin-top: 12px;">
+        <div class="section-header">{{localize "BREAK.Innate"}}</div>
+        <div class="ability-list" style="display: flex; flex-wrap: wrap;column-gap:12px;">
+            {{#each innateAbilities}}
+                <div class="list-item" data-type="ability" data-id="{{this.uuid}}">
+                    <a data-tooltip="{{this.system.description}}" >{{this.name}}</a>
+                    <a class="item-control interface-only" data-context-menu>
+                        <i class="fas fa-ellipsis-vertical"></i>
+                    </a>
+                </div>
+            {{/each}}
+        </div>
+        <div class="section-header">{{localize "BREAK.Maturative"}}</div>
+        <div class="ability-list" style="display: flex; flex-wrap: wrap;column-gap:12px;">
+            {{#each maturativeAbilities}}
+                <div class="list-item" data-type="ability" data-id="{{this.uuid}}">
+                    <a data-tooltip="{{this.system.description}}" >{{this.name}}</a>
+                    <a class="item-control interface-only" style="margin-left: 6px;" data-context-menu>
+                        <i class="fas fa-ellipsis-vertical"></i>
+                    </a>
+                </div>
+            {{/each}}
+        </div>
+        <button class="select-feature" data-type="ability" data-action="selectFeature" style="height: inherit;">{{localize 'BREAK.PickOrDrag'}} {{localize 'BREAK.Ability'}}</i></button>
+    </div>
+</section>

@@ -104,8 +104,14 @@
     <!-- PURVIEWS SECTION -->
     <div class="input root">
         <label class="identity-header-label">{{ localize 'BREAK.Purviews' }}</label>
-        <div class="input wrapper">
-            <textarea style="width: 100%;" rows="6" data-type="purview" name="system.purviews" type="text" placeholder="{{ localize 'BREAK.Purviews' }}">{{{document.system.purviews}}}</textarea>
+        <div class="purview-list" style="display: flex; flex-wrap: wrap;flex-grow: 0;">
+            {{#each purviews}}
+                <div style="display: flex; margin-bottom: 6px;align-items: center; width: 100%;">
+                    <input name="system.purviews.{{@index}}" type="text" style="margin-right: 6px" value="{{this}}" id="purview-{{@index}}" placeholder="Purview..." class="purview-input" />
+                    <button data-action="deletePurview" data-index="{{@index}}" style="margin-left: auto; max-width: 32px; margin-right: 8px;"><i class="fas fa-trash" style="margin: 0px;"></i></button>
+                </div>
+            {{/each}}
+            <button data-action="addPurview" style="margin-left: auto; max-width: 32px; margin-right: auto;"><i class="fa-solid fa-plus" style="margin: 0px;"></i></button>
         </div>
     </div>
 </div>

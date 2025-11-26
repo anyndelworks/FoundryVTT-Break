@@ -12,6 +12,8 @@ export class BreakActor extends Actor {
   /** @inheritdoc */
   prepareDerivedData() {
     super.prepareDerivedData();
+    this.system.computeDerivedData(this);
+    this.system.updateSource(this.system.toObject());
   }
 
   async _preCreate(data, options, user) {
@@ -29,6 +31,7 @@ export class BreakActor extends Actor {
 
   prepareData(){
     super.prepareData();
+    console.log(this.system);
 
     if(canvas.ready) {
       const thisTokenIsControlled = canvas.tokens.controlled.some(
@@ -50,8 +53,8 @@ export class BreakActor extends Actor {
   async deleteItem(id) {
     const item = this.items.find(i => i._id == id);
     if(item) {
-      this.unequipItem(id, item.type)
-      item.delete()
+      this.unequipItem(id, item.type);
+      await this.deleteEmbeddedDocuments("Item", [id]);
     }
     return this
   }
@@ -139,9 +142,9 @@ export class BreakActor extends Actor {
     const item = this.items.find(i => i._id == itemId);
     const action = item.system.actions.find(a => a.id === actionId);
     console.log(action);
+    Action.sendToChat(action, this.name);
     switch(action.rollType){
       case BREAK.roll_types.none.key:
-        Action.sendToChat(action, this.name);
         break;
       case BREAK.roll_types.contest.key:
         break;
@@ -164,6 +167,8 @@ export class BreakActor extends Actor {
     switch(item.type) {
       case "history":
         console.log(item);
+        const purviews = item.system.purviews ?? [];
+        this.update({"system.purviews": [...this.system.purviews, ...purviews]});
         const picks = item.system.gearPicks ?? 0;
         const startingGear = item.system.startingGear ?? [];
         if (!picks || !startingGear.length) return;
@@ -176,6 +181,12 @@ export class BreakActor extends Actor {
           predefinedList: gearItems,
           filters: []
         }).render(true);
+        break;
+      case "species":
+        const abilityUuids = (item.system.abilities ?? []);
+        const abilities = await Promise.all(abilityUuids.map(uuid => fromUuid(uuid)));
+        const innateAbilities = abilities.filter(a => a?.system.subtype === "innate");
+        this.createEmbeddedDocuments("Item", innateAbilities);
         break;
     }
   }
