@@ -19,6 +19,8 @@ export class BreakAccessorySheet extends BreakItemSheet {
     },
     actions: {
       editImage: this.onEditImage,
+      addEffect: this.onAddEffect,
+      displayEffect: this.onDisplayEffect
     }
   }
 
@@ -26,8 +28,21 @@ export class BreakAccessorySheet extends BreakItemSheet {
     header: {
       template: "systems/break/templates/items/shared/item-header.hbs"
     },
-    body: {
-      template: "systems/break/templates/items/accessory/accessory-sheet.hbs"
+    tabs: {
+      template: "systems/break/templates/shared/sheet-tabs.hbs",
+    },
+    description: {
+      template: "systems/break/templates/items/accessory/accessory-description-tab.hbs"
+    },
+    effects: {
+      template: "systems/break/templates/items/accessory/accessory-effects-tab.hbs"
+    }
+  }
+
+  static TABS = {
+    primary: {
+      initial: "description",
+      tabs: [{id: "description", icon: "fas fa-scroll"}, {id: "effects", icon: "fas fa-sparkles"}],
     }
   }
 

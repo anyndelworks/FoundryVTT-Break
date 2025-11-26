@@ -25,6 +25,16 @@
             {{/each}}
             </select>
         </div>
+        <div class="form-group vs-select" style="width:50%;display: none;">
+            <label>{{localize "BREAK.VS"}}</label>
+            <select name="vs">
+            {{#each aptitudes as |aptitude key|}}
+                <option value="{{aptitude.key}}" {{#if (eq aptitude.key ../action.vs)}}selected{{/if}}>
+                {{localize aptitude.label}}
+                </option>
+            {{/each}}
+            </select>
+        </div>
     </div>
     
     <div class="form-group">

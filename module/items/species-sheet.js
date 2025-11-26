@@ -3,6 +3,7 @@ import BREAK from "../constants.js";
 import { FeatureSelectionDialog } from "../dialogs/feature-selection-dialog.js";
 
 export class BreakSpeciesSheet extends BreakItemSheet {
+  allowedItemTypes = ["ability"];
   //#region DocumentV2 initialization and setup
   static DEFAULT_OPTIONS = {
       ...this.DEFAULT_OPTIONS,
@@ -82,13 +83,6 @@ export class BreakSpeciesSheet extends BreakItemSheet {
     context.maturativeAbilities = abilityList.filter(a => a?.system.subtype === "maturative");
     return context;
   }
-
-  async _onDeleteAbility(element) {
-    const id = element.dataset.id;
-    let abilities = this.document.system.abilities ?? [];
-    abilities = abilities.filter(a => a !== id);
-    this.document.update({"system.abilities": abilities});
-  }
   //#endregion
 
   //#region Actions
@@ -123,9 +117,7 @@ export class BreakSpeciesSheet extends BreakItemSheet {
       case "ability":
         filters.push(a => a.system.type === "species" && !this.document.system.abilities?.includes(a.uuid));
         callback = (picks) => {
-          const abilities = [...this.document.system.abilities ?? []];
-          abilities.push(picks[0].uuid);
-          this.document.update({"system.abilities": abilities});
+          this.addAbilities(picks);
         }
         break;
     }
@@ -139,16 +131,8 @@ export class BreakSpeciesSheet extends BreakItemSheet {
   }
   //#endregion
   
-  async _onDrop(event) {
-    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
-    if(data.type !== "Item") return;
-    const draggedItem = await fromUuid(data.uuid);
-
-    if(draggedItem.type === "ability") {
-      const abilities = [...this.document.system.abilities];
-      abilities.push(data.uuid);
-      this.document.update({"system.abilities": abilities});
-    }
+  _onDropValidItem(item) {
+    this.addAbility(item);
   }
 
   //#region DocumentV2 submit

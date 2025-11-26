@@ -109,7 +109,7 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
   static async onAddAction(event) {
     event.preventDefault();
     const actions = this.document.system.actions ?? [];
-    actions.push(new Action("New action"));
+    actions.push(Action.create("New action"));
     this.document.update({"system.actions": actions});
   }
 
@@ -119,6 +119,13 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     const action = this.document.system.actions.find(a => a.id === id);
     console.log(action);
     new ActionFormDialog(this.item, action.id).render(true);
+  }
+
+  static async onDisplayEffect(element) {
+    event.preventDefault();
+    const id = event.target.dataset.id;
+    const effect = this.document.effects.get(id);
+    effect.sheet.render(true);
   }
   //#endregion
 
@@ -179,12 +186,6 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     // Standard Options
     const options = [
       {
-        name: "BREAK.ContextMenuEdit",
-        icon: "<i class='fas fa-edit fa-fw'></i>",
-        condition: () => effect.isOwner,
-        callback: li => this._onDisplayEffect(li)
-      },
-      {
         name: "BREAK.ContextMenuDelete",
         icon: "<i class='fas fa-trash fa-fw'></i>",
         condition: () => effect.isOwner,
@@ -193,6 +194,37 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     ];
 
     return options;
+  }
+
+  async _onSendAbilityToChat(element) {
+    const id = element.dataset.id;
+    const ability = await fromUuid(id);
+    if(ability)
+      ability.sendToChat();
+  }
+
+  async _onDeleteAbility(element) {
+    const uuid = element.dataset.id;
+    let abilities = this.document.system.abilities ?? [];
+    abilities = abilities.filter(a => a !== uuid);
+    this.document.update({"system.abilities": abilities});
+  }
+
+  async addAbility(ability) {
+    const abilities = [...this.item.system.abilities ?? []];
+    if(!abilities.includes(ability.uuid) && ability.system.type === this.item.type) {
+      abilities.push(ability.uuid);
+      this.item.update({"system.abilities": abilities});
+    }
+  }
+
+  async addAbilities(newAbilities) {
+    const abilities = [...this.document.system.abilities ?? []];
+    newAbilities.forEach(ability => {
+      if(!abilities.includes(ability.uuid) && ability.system.type === this.item.type)
+        abilities.push(ability.uuid);
+    });
+    this.document.update({"system.abilities": abilities});
   }
 
   async _onDeleteEffect(element) {
@@ -205,12 +237,6 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     let actions = this.document.system.actions ?? [];
     actions = actions.filter(a => a.id !== id);
     this.document.update({"system.actions": actions});
-  }
-
-  async _onDisplayEffect(element) {
-    const id = element.dataset.id;
-    const effect = this.document.effects.get(id);
-    effect.sheet.render(true);
   }
 
   async _onSendActionToChat(element) {

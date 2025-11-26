@@ -21,7 +21,8 @@ export class BreakInjurySheet extends BreakItemSheet {
       actions: {
         editImage: this.onEditImage,
         linkEffect: this.#onLinkEffect,
-        addEffect: this.onAddEffect
+        addEffect: this.onAddEffect,
+        displayEffect: this.onDisplayEffect
       }
   }
 

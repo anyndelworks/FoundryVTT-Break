@@ -23,7 +23,8 @@ export class BreakWeaponSheet extends BreakItemSheet {
       addEffect: this.onAddEffect,
       addAction: this.onAddAction,
       displayAction: this.onDisplayAction,
-      selectFeature: this.onSelectFeature
+      selectFeature: this.onSelectFeature,
+      displayEffect: this.onDisplayEffect
     }
   }
 
@@ -52,14 +53,6 @@ export class BreakWeaponSheet extends BreakItemSheet {
     }
   }
 
-  async #getAbilities(context) {
-    context.abilities = []
-    for(let id of this.document.system.abilities) {
-      const ability = await fromUuid(id);
-      context.abilities.push(ability);
-    }
-  }
-
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
     console.log(context.document)
@@ -79,7 +72,7 @@ export class BreakWeaponSheet extends BreakItemSheet {
     const weaponType2Ranged = weaponTypes[context.document.system.weaponType2]?.ranged;
     context.isRanged = weaponType1Ranged || weaponType2Ranged;
     context.isMelee = (context.document.system.weaponType1 && !weaponType1Ranged) || (context.document.system.weaponType2 && !weaponType2Ranged);
-    await this.#getAbilities(context);
+    context.abilities = await Promise.all((context.document.system.abilities ?? []).map(async uuid => (await fromUuid(uuid))));
     return context;
   }
   //#endregion
@@ -148,20 +141,6 @@ export class BreakWeaponSheet extends BreakItemSheet {
     return updates;
   }
 
-  async _onSendAbilityToChat(element) {
-    const id = element.dataset.id;
-    const ability = await fromUuid(id);
-    if(ability)
-      ability.sendToChat();
-  }
-
-  async _onDeleteAbility(element) {
-    const id = element.dataset.id;
-    let abilities = this.document.system.abilities ?? [];
-    abilities = abilities.filter(a => a !== id);
-    this.document.update({"system.abilities": abilities});
-  }
-
   //#region Actions
   static async onSelectFeature(event) {
     event.preventDefault();
@@ -173,9 +152,7 @@ export class BreakWeaponSheet extends BreakItemSheet {
       case "ability":
         filters.push(a => a.system.type === "weapon" && !this.document.system.abilities.includes(a.uuid));
         callback = (picks) => {
-          const abilities = [...this.document.system.abilities];
-          abilities.push(picks[0].uuid);
-          this.document.update({"system.abilities": abilities});
+          this.addAbilities(picks);
         }
         break;
     }
@@ -191,11 +168,7 @@ export class BreakWeaponSheet extends BreakItemSheet {
 
   //#region Events
   _onDropValidItem(item) {
-    const abilities = this.item.system.abilities ?? [];
-    if(!abilities.includes(item.uuid)) {
-        abilities.push(item.uuid);
-        this.item.update({"system.abilities": abilities});
-    }
+    this.addAbility(item);
   }
   //#endregion
 

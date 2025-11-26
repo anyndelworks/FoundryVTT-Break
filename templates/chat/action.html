@@ -9,7 +9,7 @@
             </div>
         </div>
         {{#if requiresRoll}}
-        <p>{{localize "BREAK.Requires"}} {{localize rollTypeLabel}} {{#if aptitudeLabel}}({{localize aptitudeLabel}}){{/if}}</p>
+        <p>{{localize "BREAK.Requires"}} {{#if aptitudeLabel}}{{localize aptitudeLabel}}{{/if}} {{#if vsLabel}} {{localize "BREAK.VS"}} {{localize vsLabel}} {{/if}} {{localize rollTypeLabel}} </p>
         {{/if}}
         <p>{{localize costLabel}}</p>
         <!-- Description -->

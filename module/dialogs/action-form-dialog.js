@@ -29,7 +29,7 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
             action: this.action,
             rollTypes: BREAK.roll_types,
             costs: BREAK.action_costs,
-            aptitudes: BREAK.aptitudes
+            aptitudes: BREAK.aptitudes,
         };
     }
 
@@ -43,6 +43,11 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
             if (allowed) $(el).show();
             else $(el).hide();
         });
+        html.find('.vs-select').each((i, el) => {
+            const allowed = this.action.rollType === BREAK.roll_types.contest.key;
+            if (allowed) $(el).show();
+            else $(el).hide();
+        });
     }
 
     _toggleConditionalFields(event) {
@@ -50,6 +55,11 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
         const rollType = event.currentTarget.value;
         html.find('.aptitude-select').each((i, el) => {
             const allowed = rollType === BREAK.roll_types.check.key || rollType === BREAK.roll_types.contest.key;
+            if (allowed) $(el).show();
+            else $(el).hide();
+        });
+        html.find('.vs-select').each((i, el) => {
+            const allowed = rollType === BREAK.roll_types.contest.key;
             if (allowed) $(el).show();
             else $(el).hide();
         });
@@ -66,14 +76,14 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
     }
 
     static async _handleSubmit(event, form, formData) {
-        console.log('test')
         event.preventDefault();
         const updates = {
             name: formData.get("name"),
             rollType: formData.get("rollType"),
             cost: formData.get("cost"),
             description: formData.get("description") ?? "",
-            aptitude: formData.get("aptitude")
+            aptitude: formData.get("aptitude"),
+            vs: formData.get("vs")
         };
         
         if(updates.rollType === BREAK.roll_types.none.key || updates.rollType === BREAK.roll_types.attack.key)

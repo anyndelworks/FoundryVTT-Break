@@ -164,20 +164,24 @@ export class BreakCharacterSheet extends BreakActorSheet {
         return;
       case "calling":
         const calling = this.actor.items.find(i => i.type === "calling");
-        if(calling)
-          return;
+        if(!calling)
+          await super._onDrop(event);
+        return;
       case "species":
         const species = this.actor.items.find(i => i.type === "species");
-        if(species)
-          return;
+        if(!species)
+          await super._onDrop(event);
+        return;
       case "homeland":
         const homeland = this.actor.items.find(i => i.type === "homeland");
-        if(homeland)
-          return;
+        if(!homeland)
+          await super._onDrop(event);
+        return;
       case "history":
         const history = this.actor.items.find(i => i.type === "history");
-        if(history)
-          return;
+        if(!history)
+          await super._onDrop(event);
+        return;
       case "ability":
       default:
         await super._onDrop(event);

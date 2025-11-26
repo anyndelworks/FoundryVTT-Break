@@ -1,15 +1,17 @@
 <div class="section-header">{{localize "BREAK.Details"}}</div>
-<div style="display:flex; align-items: center;flex: 0;">
-    <label>{{localize "BREAK.DefenseRating"}}</label>
-    <input name="system.defenseBonus" value="{{document.system.defenseBonus}}" placeholder="0" type="number" style="width:32px; text-align:center;margin-left: 6px;"/>
-</div>
-<div style="display:flex; align-items: center;flex: 0;margin-top:6px;">
-    <label>{{localize "BREAK.MaxSpeed"}}</label>
-    <select name="system.speedLimit" style="margin-left:6px;">
-        <option {{#when "" 'eq' document.system.speedLimit}}selected{{/when}} value="">{{localize "BREAK.None"}}</option>
-        <option {{#when "0" 'eq' document.system.speedLimit}}selected{{/when}} value="0">{{localize "BREAK.SLOW"}}</option>
-        <option {{#when "1" 'eq' document.system.speedLimit}}selected{{/when}} value="1">{{localize "BREAK.AVERAGE"}}</option>
-        <option {{#when "2" 'eq' document.system.speedLimit}}selected{{/when}} value="2">{{localize "BREAK.FAST"}}</option>
-        <option {{#when "3" 'eq' document.system.speedLimit}}selected{{/when}} value="3">{{localize "BREAK.VFAST"}}</option>
-    </select>
+<div style="display: flex;flex: 1;">
+    <div style="display:flex; align-items: center;flex: 1;">
+        <label>{{localize "BREAK.DefenseRating"}}</label>
+        <input name="system.defenseBonus" value="{{document.system.defenseBonus}}" placeholder="0" type="number" style="width:32px; text-align:center;margin-left: 6px;"/>
+    </div>
+    <div style="display:flex; align-items: center;flex: 1;margin-top:6px;">
+        <label>{{localize "BREAK.MaxSpeed"}}</label>
+        <select name="system.speedLimit" style="margin-left:6px;">
+            <option {{#when "" 'eq' document.system.speedLimit}}selected{{/when}} value="">{{localize "BREAK.None"}}</option>
+            <option {{#when "0" 'eq' document.system.speedLimit}}selected{{/when}} value="0">{{localize "BREAK.SLOW"}}</option>
+            <option {{#when "1" 'eq' document.system.speedLimit}}selected{{/when}} value="1">{{localize "BREAK.AVERAGE"}}</option>
+            <option {{#when "2" 'eq' document.system.speedLimit}}selected{{/when}} value="2">{{localize "BREAK.FAST"}}</option>
+            <option {{#when "3" 'eq' document.system.speedLimit}}selected{{/when}} value="3">{{localize "BREAK.VFAST"}}</option>
+        </select>
+    </div>
 </div>

@@ -1,7 +1,8 @@
+import { FeatureSelectionDialog } from "../dialogs/feature-selection-dialog.js";
 import { BreakItemSheet } from "./item-sheet.js";
 
 export class BreakArmorSheet extends BreakItemSheet {
-
+  allowedItemTypes = ["ability"];
   //#region DocumentV2 initialization and setup
   static DEFAULT_OPTIONS = {
     tag: "form",
@@ -19,6 +20,9 @@ export class BreakArmorSheet extends BreakItemSheet {
     },
     actions: {
       editImage: this.onEditImage,
+      selectFeature: this.onSelectFeature,
+      addEffect: this.onAddEffect,
+      displayEffect: this.onDisplayEffect
     }
   }
 
@@ -26,8 +30,24 @@ export class BreakArmorSheet extends BreakItemSheet {
     header: {
       template: "systems/break/templates/items/shared/item-header.hbs"
     },
-    body: {
-      template: "systems/break/templates/items/armor/armor-sheet.hbs"
+    tabs: {
+      template: "systems/break/templates/shared/sheet-tabs.hbs",
+    },
+    description: {
+      template: "systems/break/templates/items/armor/armor-description-tab.hbs"
+    },
+    properties: {
+      template: "systems/break/templates/items/armor/armor-properties-tab.hbs"
+    },
+    effects: {
+      template: "systems/break/templates/items/armor/armor-effects-tab.hbs"
+    }
+  }
+
+  static TABS = {
+    primary: {
+      initial: "description",
+      tabs: [{id: "description", icon: "fas fa-scroll"}, {id: "properties", icon: "fas fa-sword"}, {id: "effects", icon: "fas fa-sparkles"}],
     }
   }
 
@@ -46,19 +66,36 @@ export class BreakArmorSheet extends BreakItemSheet {
       label: armorTypes[k].label,
       active: context.document.system.type === k
     }));
+    context.abilities = await Promise.all((context.document.system.abilities ?? []).map(async uuid => (await fromUuid(uuid))));
     return context;
   }
   //#endregion
 
-  async _onDrop(event) {
-    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
-    if(data.type !== "Item") return;
-    const draggedItem = await fromUuid(data.uuid)
-    if(draggedItem.type === "ability" && draggedItem.system.subtype === "armor") {
-      const abilityArray = this.item.system.abilities ?? [];
-      abilityArray.push(draggedItem.toObject());
-      this.item.update({"system.abilities": abilityArray});
+  _onDropValidItem(item) {
+    this.addAbility(item);
+  }
+
+  static async onSelectFeature(event) {
+    event.preventDefault();
+    const featureType = event.target.dataset.type;
+    let predefinedList = null;
+    let filters = [];
+    let callback = () => {};
+    switch(featureType){
+      case "ability":
+        filters.push(a => a.system.type === "armor" && !this.document.system.abilities.includes(a.uuid));
+        callback = (picks) => {
+          this.addAbilities(picks);
+        }
+        break;
     }
+    new FeatureSelectionDialog({
+      itemType: featureType,
+      document: this.document,
+      predefinedList,
+      filters,
+      callback
+    }).render(true);
   }
 
   //#region DocumentV2 submit

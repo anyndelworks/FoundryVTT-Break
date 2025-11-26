@@ -23,7 +23,8 @@ export class BreakAbilitySheet extends BreakItemSheet {
         editImage: this.onEditImage,
         addAction: this.onAddAction,
         addEffect: this.onAddEffect,
-        displayAction: this.onDisplayAction
+        displayAction: this.onDisplayAction,
+        displayEffect: this.onDisplayEffect
       }
   }
 

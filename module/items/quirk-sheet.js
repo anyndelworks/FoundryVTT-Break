@@ -20,7 +20,8 @@ export class BreakQuirkSheet extends BreakItemSheet {
       },
       actions: {
         editImage: this.onEditImage,
-        addEffect: this.onAddEffect
+        addEffect: this.onAddEffect,
+        displayEffect: this.onDisplayEffect
       }
   }
 

@@ -413,6 +413,7 @@
     "NoRoll": "Sin tirada",
     "Requires": "Requiere",
     "PickOneItem": "Pick 1 item",
-    "PickManyItems": "Pick {number} items"
+    "PickManyItems": "Pick {number} items",
+    "VS": "vs"
   }
 }

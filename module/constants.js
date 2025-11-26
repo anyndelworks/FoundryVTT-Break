@@ -8,7 +8,8 @@ BREAK.ability_types = {
     calling: "BREAK.Calling",
     species: "BREAK.Species",
     weapon: "BREAK.GEAR.TYPE.Weapon",
-    armor: "BREAK.GEAR.TYPE.Armor"
+    armor: "BREAK.GEAR.TYPE.Armor",
+    shield: "TYPES.Item.shield"
 }
 
 BREAK.ability_levels = {

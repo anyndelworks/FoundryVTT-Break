@@ -18,7 +18,15 @@ export class WeaponDataModel extends BaseItemDataModel {
             hands: new fields.NumberField({ initial: 1 }),
             ranged: new fields.BooleanField({ initial: false }),
             melee: new fields.BooleanField({ initial: true }),
-            actions: new fields.ArrayField(new fields.ObjectField())
+            actions: new fields.ArrayField(new fields.ObjectField({
+                id: new fields.StringField({ initial: "" }),
+                name: new fields.StringField({ initial: "" }),
+                rollType: new fields.StringField({ initial: "none" }),
+                cost: new fields.StringField({ initial: "free" }),
+                description: new fields.HTMLField({ initial: "" }),
+                aptitude: new fields.StringField({ initial: "might" }),
+                vs: new fields.StringField({ initial: "might" }),
+            })),
         };
     }
 }

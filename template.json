@@ -242,7 +242,7 @@
     },
     "ability": {
       "type": "",
-      "level": "",
+      "subtype": "",
       "description": "",
       "rules": "",
       "actions": [],
