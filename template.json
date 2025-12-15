@@ -134,6 +134,9 @@
         "yield": "",
         "reskin": ""
       }
+    },
+    "companion": {
+      "templates": [ "baseActor" ]
     }
   },
   "Item": {
