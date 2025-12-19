@@ -39,7 +39,7 @@ export class BreakCharacterDataModel extends BreakBaseActorDataModel {
 
     const sizes = game.settings.get("break", "sizes");
     const sizeKey = this.size?.modifier ?? (species ? species.system.size : null);
-
+    this.inventorySlots = actor.system.slots;
     if (sizeKey && sizes[sizeKey]) {
       this.inventorySlots = sizes[sizeKey].inventorySize;
       this.sizeData = sizes[sizeKey];

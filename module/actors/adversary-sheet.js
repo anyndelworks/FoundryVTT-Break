@@ -92,6 +92,7 @@ export class BreakAdversarySheet extends BreakActorSheet {
     }));
 
     context.defenseRating = context.document.system.defense.total;
+    context.inventorySlots = context.document.system.slots;
     return context;
   }
   //#endregion

@@ -599,6 +599,30 @@ Hooks.on("createItem", (item) => {
   parent.onEmbedItem(item);
 });
 
+function rebuildStatusEffects() {
+  const effects = [];
+
+  const items = game.items.filter(i =>
+    ["injury", "ailment"].includes(i.type)
+  );
+
+  for (const item of items) {
+    effects.push({
+      statuses: [item.uuid],
+      id: item.uuid,
+      name: item.name,
+      icon: item.img,
+      origin: item.uuid
+    });
+  }
+
+  CONFIG.statusEffects = effects;
+}
+
+Hooks.once("ready", () => {
+  rebuildStatusEffects();
+});
+
 //Fix issue where if you use Enter key in a input it trigger a click on the next button
 window.addEventListener('keydown', function (e) {
   if (e.keyIdentifier == 'U+000A' || e.keyIdentifier == 'Enter' || e.keyCode == 13) {

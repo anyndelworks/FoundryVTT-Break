@@ -19,6 +19,8 @@ export class BreakAdversaryDataModel extends BreakBaseActorDataModel {
                 label: new fields.StringField({ initial: "BREAK.MENACE.Menace_Type" })
             }),
 
+            slots: new fields.NumberField({ initial: 0 }),
+
             misc: new fields.SchemaField({
                 habitat: new fields.HTMLField({ initial: "" }),
                 gearInfo: new fields.HTMLField({ initial: "" }),

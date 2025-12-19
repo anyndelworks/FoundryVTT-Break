@@ -119,6 +119,7 @@
       "rank": 1,
       "description": "",
       "size": null,
+      "slots": 0,
       "menace_type": {
         "value": "mook",
         "label": "BREAK.MENACE.Menace_Type"
