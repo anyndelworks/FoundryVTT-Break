@@ -81,7 +81,7 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       return {
         id: w._id,
         name: w.name,
-        type: (w.system.weaponType1 ? weaponTypes[w.system.weaponType1].label : "") + " " + (w.system.weaponType2 ? weaponTypes[w.system.weaponType2].label : ""),
+        type: (w.system.weaponType1 ? weaponTypes[w.system.weaponType1]?.label : "") + " " + (w.system.weaponType2 ? weaponTypes[w.system.weaponType2]?.label : ""),
         isRanged: w.system.ranged,
         isMelee: w.system.melee,
         rangedExtraDamage: w.system.rangedExtraDamage,

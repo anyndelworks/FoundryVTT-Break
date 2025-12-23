@@ -48,13 +48,23 @@ export class BreakCharacterDataModel extends BreakBaseActorDataModel {
     const calling = items.find(i => i.type === "calling");
     this._calling = calling ?? null;
     this.hasCalling = !!calling;
-
+    let rank = 1;
     if (this.hasCalling && calling.system.advancementTable) {
       const table = calling.system.advancementTable;
-      const rank = actor.system.xp?.rank ?? 1;
+      calling.system.advancementTable.forEach((callingRank, index) => {
+        if(callingRank.xp <= actor.system.xp.current) {
+          rank = index+1;
+          if(calling.system.advancementTable.length >= index) {
+            this.xpNextRank = calling.system.advancementTable[index+1].xp - actor.system.xp.current;
+          } else {
+            this.xpNextRank = 0;
+          }
+        }
+      });
+      this.xp.rank = rank;
 
-      if (table[rank - 1]) {
-        const stats = table[rank - 1];
+      if (table[this.xp.rank - 1]) {
+        const stats = table[this.xp.rank - 1];
 
         this.aptitudes.might.value = stats.might;
         this.aptitudes.deftness.value = stats.deftness;
@@ -68,6 +78,9 @@ export class BreakCharacterDataModel extends BreakBaseActorDataModel {
         this.defense.value = calling.system.baseDefense;
         this.speed.value = calling.system.baseSpeed;
       }
+    } else {
+      this.xp.rank = 1;
+      this.xpNextRank = 0;
     }
   }
 }
