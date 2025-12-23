@@ -54,7 +54,7 @@ export class BreakCharacterDataModel extends BreakBaseActorDataModel {
       calling.system.advancementTable.forEach((callingRank, index) => {
         if(callingRank.xp <= actor.system.xp.current) {
           rank = index+1;
-          if(calling.system.advancementTable.length > index) {
+          if(calling.system.advancementTable.length >= index) {
             this.xpNextRank = calling.system.advancementTable[index+1].xp - actor.system.xp.current;
           } else {
             this.xpNextRank = 0;
