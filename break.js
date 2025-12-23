@@ -609,3 +609,43 @@ window.addEventListener('keydown', function (e) {
     }
   }
 }, true);
+
+/*Hooks.once("ready", async () => {
+  if (!game.user.isGM) return;
+
+  await migrateWorld();
+});
+
+async function migrateWorld() {
+  const currentVersion = game.system.version;
+  const worldVersion = game.settings.get("break", "worldVersion") ?? "0.0.0";
+
+  if (foundry.utils.isNewerVersion(currentVersion, worldVersion)) {
+    ui.notifications.info("Migrating content...");
+
+    await migrateItems();
+
+    await game.settings.set("break", "worldVersion", currentVersion);
+    ui.notifications.info("Migration complete.");
+  }
+}
+
+async function migrateItems() {
+  for (const item of game.items) {
+    if (item.type !== "oldItem") continue;
+
+    const newData = {
+      name: item.name,
+      type: "newItem",
+      system: {
+        ...item.system,
+        migratedFrom: "oldItem"
+      },
+      img: item.img
+    };
+
+    await Item.create(newData, { parent: item.parent });
+
+    await item.delete();
+  }
+}*/

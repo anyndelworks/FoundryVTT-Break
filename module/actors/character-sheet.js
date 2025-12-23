@@ -95,14 +95,7 @@ export class BreakCharacterSheet extends BreakActorSheet {
       async: true
     });
 
-    for(let i = 0; i < RANK_XP.length; i++){
-      if(RANK_XP[i] <= context.document.system.xp.current) {
-        context.rank = i + 1;
-      } else {
-        context.xpNextRank = RANK_XP[i] - context.document.system.xp.current;
-        break;
-      }
-    }
+    context.xpNextRank = context.document.system.xpNextRank;
 
     context.homeland = context.document.items.find(i => i.type === "homeland");
     context.hasHomeland = context.homeland != null;
