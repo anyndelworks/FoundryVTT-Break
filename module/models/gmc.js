@@ -3,8 +3,7 @@ export class BreakGMCDataModel extends foundry.abstract.DataModel {
     const fields = foundry.data.fields;
 
     return {
-      biography: new fields.StringField({ initial: "" }),
-      description: new fields.StringField({ initial: "" })
+      notes: new fields.HTMLField({ initial: "" })
     };
   }
 

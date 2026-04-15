@@ -3,7 +3,8 @@
     "Actor": {
       "gmc": "GMC",
       "character": "Player Character (PC)",
-      "adversary": "Adversary"
+      "adversary": "Adversary",
+      "companion": "Companion"
     },
     "Item": {
       "weapon": "Weapon",

@@ -109,8 +109,7 @@
       }
     },
     "gmc": {
-      "biography": "",
-      "description": ""
+      "notes": ""
     },
     "adversary": {
       "templates": [ "baseActor" ],
@@ -137,7 +136,8 @@
       }
     },
     "companion": {
-      "templates": [ "baseActor" ]
+      "templates": [ "baseActor" ],
+      "notes": ""
     }
   },
   "Item": {

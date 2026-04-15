@@ -3,7 +3,8 @@
     "Actor": {
       "gmc": "PMJ",
       "character": "Personaje (PJ)",
-      "adversary": "Adversario"
+      "adversary": "Adversario",
+      "companion": "Compañero"
     },
     "Item": {
       "weapon": "Arma",
