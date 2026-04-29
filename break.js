@@ -5,6 +5,7 @@ import { preloadHandlebarsTemplates } from "./module/templates.js";
 import { BreakToken, BreakTokenDocument } from "./module/token.js";
 import { BreakCharacterSheet } from "./module/actors/character-sheet.js";
 import { BreakAdversarySheet } from "./module/actors/adversary-sheet.js";
+import { BreakCompanionSheet } from "./module/actors/companion-sheet.js";
 import {ArmorTypeSettingsForm} from "./module/system/armor-type-settings.js";
 import {WeaponTypeSettingsForm} from "./module/system/weapon-type-settings.js";
 import {ShieldTypeSettingsForm} from "./module/system/shield-type-settings.js";
@@ -14,8 +15,6 @@ import { BreakWeaponSheet } from "./module/items/weapon-sheet.js";
 import { BreakArmorSheet } from "./module/items/armor-sheet.js";
 import { BreakShieldSheet } from "./module/items/shield-sheet.js";
 ////// INVENTORY
-import { BreakInjurySheet } from "./module/items/injury-sheet.js";
-import { BreakAilmentSheet } from "./module/items/ailment-sheet.js";
 import { ActiveEffectsPanel } from "./module/apps/active-effects-list.js";
 import { BreakGiftSheet } from "./module/items/gift-sheet.js";
 import { BreakOutfitSheet } from "./module/items/outfit-sheet.js";
@@ -32,6 +31,7 @@ import { BreakAbilitySheet } from "./module/items/ability-sheet.js";
 import { BreakCharacterDataModel } from "./module/models/character.js";
 import { BreakGMCDataModel } from "./module/models/gmc.js";
 import { BreakAdversaryDataModel } from "./module/models/adversary.js";
+import { BreakCompanionDataModel } from "./module/models/companion.js";
 import { AccessoryDataModel } from './module/models/accessory.js';
 import { ArmorDataModel } from './module/models/armor.js';
 import { OutfitDataModel } from './module/models/outfit.js';
@@ -44,8 +44,6 @@ import { HistoryDataModel } from './module/models/history.js';
 import { QuirkDataModel } from './module/models/quirk.js';
 import { AbilityDataModel } from './module/models/ability.js';
 import { WeaponDataModel } from './module/models/weapon.js';
-import { InjuryDataModel } from './module/models/injury.js';
-import { AilmentDataModel } from './module/models/ailment.js';
 import { MaterialDataModel } from './module/models/material.js';
 import { AdditiveDataModel } from './module/models/additive.js';
 
@@ -85,6 +83,7 @@ Hooks.once("init", async function() {
   CONFIG.Actor.dataModels["character"] = BreakCharacterDataModel;
   CONFIG.Actor.dataModels["gmc"] = BreakGMCDataModel;
   CONFIG.Actor.dataModels["adversary"] = BreakAdversaryDataModel;
+  CONFIG.Actor.dataModels["companion"] = BreakCompanionDataModel;
   CONFIG.Actor.documentClass = BreakActor;
   CONFIG.Item.dataModels["accessory"] = AccessoryDataModel;
   CONFIG.Item.dataModels["armor"] = ArmorDataModel;
@@ -98,8 +97,6 @@ Hooks.once("init", async function() {
   CONFIG.Item.dataModels["quirk"] = QuirkDataModel;
   CONFIG.Item.dataModels["ability"] = AbilityDataModel;
   CONFIG.Item.dataModels["weapon"] = WeaponDataModel;
-  CONFIG.Item.dataModels["injury"] = InjuryDataModel;
-  CONFIG.Item.dataModels["ailment"] = AilmentDataModel;
   CONFIG.Item.dataModels["material"] = MaterialDataModel;
   CONFIG.Item.dataModels["additive"] = AdditiveDataModel;
   CONFIG.Item.documentClass = BreakItem;
@@ -494,6 +491,7 @@ Hooks.once("init", async function() {
   Actors.unregisterSheet("core", foundry.applications.sheets.ActorSheetV2);
   Actors.registerSheet("break", BreakCharacterSheet, {types:['character'], makeDefault: true });
   Actors.registerSheet("break", BreakAdversarySheet, {types:['adversary'], makeDefault: true });
+  Actors.registerSheet("break", BreakCompanionSheet, {types:['companion'], makeDefault: true });
   Items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
 /////// EQUIPMENT
   Items.registerSheet("break", BreakWeaponSheet, {types:['weapon'], makeDefault: true });
@@ -505,8 +503,6 @@ Hooks.once("init", async function() {
   Items.registerSheet("break", BreakAccessorySheet, { types: ['accessory'], makeDefault: true });
 /////// STATUS
   Items.registerSheet("break", BreakGiftSheet, { types: ['gift'], makeDefault: true });
-  Items.registerSheet("break", BreakInjurySheet, {types:['injury'], makeDefault: true });
-  Items.registerSheet("break", BreakAilmentSheet, {types:['ailment'], makeDefault: true });
   Items.registerSheet("break", BreakCallingSheet, {types:['calling'], makeDefault: true });
   Items.registerSheet("break", BreakSpeciesSheet, {types:['species'], makeDefault: true });
   Items.registerSheet("break", BreakHomelandSheet, {types:['homeland'], makeDefault: true });
@@ -575,21 +571,6 @@ Hooks.once("init", async function() {
 
 Hooks.once('canvasInit', (canvas) => {
   game.break.activeEffectPanel.render(true);
-  Hooks.on("dropCanvasData", (canvas, dropData) => {
-    if ( dropData.type === 'Item') {
-      const item = game.items.get(dropData.uuid.split('.')[1]);
-      const dropTarget = [...canvas.tokens.placeables]
-        .sort((a, b) => b.document.sort - a.document.sort)
-        .sort((a, b) => b.document.elevation - a.document.elevation)
-        .find((t) => t.bounds.contains(dropData.x, dropData.y));
-      const actor = dropTarget?.actor;
-      if(actor && (item.type == "injury" || item.type == "ailment")) {
-        item.effects.forEach(async (effect) => {
-          const newEffect = ActiveEffect.create({...effect}, {parent: actor});
-        });
-      }
-    }
-  });
 });
 
 Hooks.on("createItem", (item) => {
@@ -599,29 +580,67 @@ Hooks.on("createItem", (item) => {
   parent.onEmbedItem(item);
 });
 
-function rebuildStatusEffects() {
-  const effects = [];
-
-  const items = game.items.filter(i =>
-    ["injury", "ailment"].includes(i.type)
-  );
-
-  for (const item of items) {
-    effects.push({
-      statuses: [item.uuid],
-      id: item.uuid,
-      name: item.name,
-      icon: item.img,
-      origin: item.uuid
-    });
-  }
-
-  CONFIG.statusEffects = effects;
+function findAilmentStatusPack() {
+  const activeEffectPacks = game.packs.filter(pack => pack.documentName === "ActiveEffect");
+  return activeEffectPacks.find(pack => pack.collection === "break.ailments")
+    ?? activeEffectPacks.find(pack => pack.metadata.id === "ailments")
+    ?? activeEffectPacks.find(pack => /ailment/i.test(pack.collection))
+    ?? activeEffectPacks.find(pack => /ailment/i.test(pack.metadata.label ?? ""))
+    ?? null;
 }
 
-Hooks.once("ready", () => {
-  rebuildStatusEffects();
+function createStatusEffectConfig(effect) {
+  const statuses = Array.from(effect.statuses ?? []);
+  const id = effect.getFlag("break", "statusId")
+    ?? statuses[0]
+    ?? effect.name.slugify({strict: true});
+
+  return [id, {
+    id,
+    name: effect.name,
+    img: effect.img,
+    hud: true,
+    statuses: [id],
+    description: effect.description ?? "",
+    changes: foundry.utils.deepClone(effect.changes ?? []),
+    tint: effect.tint,
+    showIcon: effect.showIcon,
+    flags: foundry.utils.deepClone(effect.flags ?? {})
+  }];
+}
+
+async function rebuildStatusEffectsFromAilments() {
+  const pack = findAilmentStatusPack();
+  if (!pack) {
+    ui.notifications.warn("BREAK | No ActiveEffect ailment pack was found for status effects.");
+    CONFIG.statusEffects = {};
+    return;
+  }
+
+  const effects = await pack.getDocuments();
+  CONFIG.statusEffects = Object.fromEntries(effects.map(createStatusEffectConfig));
+}
+
+function isAilmentStatusDocument(document) {
+  const pack = findAilmentStatusPack();
+  return !!pack && document?.pack === pack.collection;
+}
+
+async function refreshAilmentStatusEffects(document) {
+  if (!isAilmentStatusDocument(document)) return;
+  await rebuildStatusEffectsFromAilments();
+  canvas.tokens.hud?.render?.();
+}
+
+Hooks.once("ready", async () => {
+  game.break.rebuildStatusEffects = rebuildStatusEffectsFromAilments;
+  await rebuildStatusEffectsFromAilments();
+  canvas.tokens.hud?.render?.();
 });
+
+Hooks.on("createActiveEffect", refreshAilmentStatusEffects);
+Hooks.on("updateActiveEffect", refreshAilmentStatusEffects);
+Hooks.on("deleteActiveEffect", refreshAilmentStatusEffects);
 
 //Fix issue where if you use Enter key in a input it trigger a click on the next button
 window.addEventListener('keydown', function (e) {

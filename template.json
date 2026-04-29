@@ -1,34 +1,44 @@
 {
   "Actor": {
-    "types": [ "character", "gmc", "adversary" ],
+    "types": [ "character", "gmc", "adversary", "companion" ],
     "htmlFields": [ "biography", "notes" ],
     "templates": {
       "baseActor": {
         "attack": {
           "value": 0,
           "bon": 0,
-          "total": 0
+          "total": 0,
+          "modifier": 0,
+          "override": null
         },
         "defense": {
           "value": 0,
           "bon": 0,
-          "total": 0
+          "total": 0,
+          "modifier": 0,
+          "override": null
         },
         "speed": {
           "value": 1,
           "bon": 0,
-          "total": 1
+          "total": 1,
+          "modifier": 0,
+          "override": null
         },
         "hearts": {
           "value": 0,
           "max": 0,
           "bon": 0,
-          "total": 0
+          "total": 0,
+          "modifier": 0,
+          "override": null
         },
         "hands": {
           "value": 2,
           "bon": 0,
-          "total": 2
+          "total": 2,
+          "modifier": 0,
+          "override": null
         },
         "aptitudes": {
           "might": {
@@ -38,7 +48,9 @@
             "total": 10,
             "description": "BREAK.APTITUDE.MightDesc",
             "label": "BREAK.APTITUDE.Might",
-            "color": "rgb(238, 61, 52) !important"
+            "color": "rgb(238, 61, 52) !important",
+            "modifier": 0,
+            "override": null
           },
           "deftness": {
             "value": 10,
@@ -47,7 +59,9 @@
             "total": 10,
             "description": "BREAK.APTITUDE.DeftnessDesc",
             "label": "BREAK.APTITUDE.Deftness",
-            "color":"rgb(244, 127, 38) !important;"
+            "color":"rgb(244, 127, 38) !important;",
+            "modifier": 0,
+            "override": null
           },
           "grit": {
             "value": 10,
@@ -56,7 +70,9 @@
             "total": 10,
             "description": "BREAK.APTITUDE.GritDesc",
             "label": "BREAK.APTITUDE.Grit",
-            "color":"rgb(93, 186, 72) !important"
+            "color":"rgb(93, 186, 72) !important",
+            "modifier": 0,
+            "override": null
           },
           "insight": {
             "value": 10,
@@ -65,7 +81,9 @@
             "total": 10,
             "description": "BREAK.APTITUDE.InsightDesc",
             "label": "BREAK.APTITUDE.Insight",
-            "color":"rgb(23, 126, 194) !important"
+            "color":"rgb(23, 126, 194) !important",
+            "modifier": 0,
+            "override": null
           },
           "aura": {
             "value": 10,
@@ -74,7 +92,9 @@
             "total": 10,
             "description": "BREAK.APTITUDE.AuraDesc",
             "label": "BREAK.APTITUDE.Aura",
-            "color":"rgb(108, 60, 148) !important"
+            "color":"rgb(108, 60, 148) !important",
+            "modifier": 0,
+            "override": null
           }
         },
         "equipment": {
@@ -137,6 +157,39 @@
     },
     "companion": {
       "templates": [ "baseActor" ],
+      "category": "pet",
+      "description": "",
+      "size": null,
+      "slots": 0,
+      "owner": null,
+      "named": false,
+      "loyalty": {
+        "recruited": false,
+        "autoPass": false
+      },
+      "cost": {
+        "price": {
+          "gems": 0,
+          "coins": 0,
+          "stones": 0
+        },
+        "fee": {
+          "gems": 0,
+          "coins": 0,
+          "stones": 0
+        }
+      },
+      "capabilities": {
+        "canUseEquipment": false,
+        "canBeMounted": false,
+        "canCarryGear": true,
+        "battleReady": false
+      },
+      "mount": {
+        "riderSize": null,
+        "riderSlots": 0
+      },
+      "services": "",
       "notes": ""
     }
   },
@@ -148,8 +201,6 @@
       "outfit",
       "accessory",
       "gift",
-      "injury",
-      "ailment",
       "calling",
       "species",
       "homeland",
@@ -267,20 +318,6 @@
       "ranged": false,
       "melee": true,
       "actions": []
-    },
-    "injury": {
-      "description": "",
-      "duration": {
-        "value": 1,
-        "permanent": false
-      }
-    },
-    "ailment": {
-      "description": "",
-      "duration": {
-        "value": 1,
-        "permanent": false
-      }
     },
     "material": {
       "templates": ["baseItem"]

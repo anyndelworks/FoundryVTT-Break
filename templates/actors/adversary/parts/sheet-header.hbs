@@ -1,0 +1,47 @@
+<header class="adversary-header" style="margin-bottom: 12px;">
+    <div class="flexrow adversary-header-top" style="margin-bottom: 10px;">
+        <div class="adversary-name-banner">
+            <a
+                class="clickable"
+                data-action="toggleHeader"
+                style="display:flex; align-items:center; justify-content:center; width:32px;flex: 0;color:#ef7f23;"
+            >
+                <i class="fas {{#if headerCollapsed}}fa-chevron-down{{else}}fa-chevron-up{{/if}}"></i>
+            </a>
+            <input name="name" type="text" style="color: #ef7f23;margin-left:6px;" value="{{document.name}}" placeholder="Name" />
+            <div class="rank-chip flexrow">
+                <input name="system.menace" style="color: #3F4B9B;" type="text" value="{{document.system.menace}}" />
+                <label style="flex-grow: 0;margin-left:auto;">{{localize "BREAK.Rank"}}</label>
+                <input name="system.rank" style="color: #3F4B9B;width:32px;text-align:center;flex-grow:0;" type="text" value="{{document.system.rank}}" placeholder="0" />
+            </div>
+        </div>
+        <a
+            class="clickable"
+            data-action="toggleEditable"
+            style="display:flex; align-items:center; justify-content:center; width:32px; margin-left:8px;flex: 0;"
+        >
+            <i class="fas {{#if sheetEditable}}fa-lock-open{{else}}fa-lock{{/if}}"></i>
+        </a>
+    </div>
+
+    {{#unless headerCollapsed}}
+    {{#if sheetEditable}}
+        <prose-mirror name="system.description" value="{{ document.system.description }}"></prose-mirror>
+    {{else}}
+        <div class="editor">
+            <div class="editor-content">{{{ descriptionHTML }}}</div>
+        </div>
+    {{/if}}
+
+    <img class="profile-img" src="{{document.img}}" title="{{document.name}}" data-action="editImage" data-field="img" style="flex: 0;"/>
+
+
+    <div class="flexrow adversary-header-controls" style="column-gap: 12px;">
+        <select name="system.size" id="type-select">
+                {{#each sizes as |size|}}
+                    <option value="{{size.key}}" {{#if size.active}}selected="selected"{{/if}}>{{size.label}}</option>
+                {{/each}}
+        </select>
+    </div>
+    {{/unless}}
+</header>

@@ -85,7 +85,7 @@ export class BreakActor extends Actor {
 
   async rollAptitude(aptitudeId) {
     const aptitude = this.system.aptitudes[aptitudeId];
-    const targetValue = +aptitude.value + +aptitude.bon + +aptitude.trait;
+    const targetValue = +aptitude.total;
 
     new Dialog({
       title: "Roll " +game.i18n.localize(aptitude.label)+ " check",
@@ -103,8 +103,8 @@ export class BreakActor extends Actor {
     }).render(true);
   }
 
-  async rollAttack(bonus, extraDamage, weaponName = "") {
-    const attack = +this.system.attack.value + +this.system.attack.bon + +bonus;
+  async rollAttack(bonus, extraDamage, resolveAction = null, weaponName = "") {
+    const attack = +this.system.attack.total + +bonus;
     let flavor = game.i18n.format("BREAK.Attacks");
     new Dialog({
       title: "Roll attack",
@@ -117,13 +117,16 @@ export class BreakActor extends Actor {
             let targetValue = -1;
             const target = game.users.get(game.userId).targets.size > 0 ? game.users.get(game.userId).targets.first() : null;
             if(target && target.actor.system.defense != null) {
-              targetValue = target.actor.system.defense.value + target.actor.system.defense.bon;
+              targetValue = target.actor.system.defense.total;
               flavor = game.i18n.format("BREAK.ActorAttacksActor", {name: this.name, target: target.document.name});
             }
             if(weaponName) {
               flavor = `${flavor} with ${weaponName}`;
             }
-            return roll(flavor, RollType.ATTACK, targetValue, form.edge.value, form.bonus.value, form.customBonus.value, attack, +extraDamage);
+            await roll(flavor, RollType.ATTACK, targetValue, form.edge.value, form.bonus.value, form.customBonus.value, attack, +extraDamage);
+            if(resolveAction) {
+              resolveAction();
+            }
           }
         }
       }
@@ -131,7 +134,7 @@ export class BreakActor extends Actor {
   }
 
   async modifyHp(amount) {
-    if(this.system.hearts.value + amount >= 0 && this.system.hearts.value + amount <= (this.system.hearts.max + this.system.hearts.bon)) {
+    if(this.system.hearts.value + amount >= 0 && this.system.hearts.value + amount <= this.system.hearts.total) {
       const updates = {"system.hearts.value": this.system.hearts.value+amount}
       await this.update(updates)
     }
@@ -142,11 +145,15 @@ export class BreakActor extends Actor {
     const item = this.items.find(i => i._id == itemId);
     const action = item.system.actions.find(a => a.id === actionId);
     const aptitude = action.aptitude ? this.system.aptitudes[action.aptitude] : null;
-    const checkTargetValue = +aptitude?.value + +aptitude?.bon + +aptitude?.trait;
+    const checkTargetValue = +aptitude?.total;
+    const resolveAction = async () => {
+      await Action.resolve(this, item, action);
+    };
     console.log(action);
     Action.sendToChat(action, this.name);
     switch(action.rollType){
       case BREAK.roll_types.none.key:
+        await resolveAction();
         break;
       case BREAK.roll_types.contest.key:
         new Dialog({
@@ -158,14 +165,15 @@ export class BreakActor extends Actor {
               callback: async (html) => {
                 const form = html[0].querySelector("form");
                 const flavor = `${action.name} ${game.i18n.format("BREAK.AptitudeContest", {aptitude:  game.i18n.localize(aptitude.label)})}`;
-                return roll(flavor, form.rollType.value, checkTargetValue, form.edge.value, form.bonus.value, form.customBonus.value);
+                await roll(flavor, form.rollType.value, checkTargetValue, form.edge.value, form.bonus.value, form.customBonus.value);
+                return resolveAction();
               }
             }
           }
         }).render(true);
         break;
       case BREAK.roll_types.attack.key:
-        this.rollAttack(0, 0, action.name);
+        this.rollAttack(0, 0, resolveAction, action.name);
         break;
       case BREAK.roll_types.check.key:
         new Dialog({
@@ -177,7 +185,8 @@ export class BreakActor extends Actor {
               callback: async (html) => {
                 const form = html[0].querySelector("form");
                 const flavor = `${action.name} ${game.i18n.format("BREAK.AptitudeCheck", {aptitude:  game.i18n.localize(aptitude.label)})}`;
-                return roll(flavor, form.rollType.value, checkTargetValue, form.edge.value, form.bonus.value, form.customBonus.value);
+                await roll(flavor, form.rollType.value, checkTargetValue, form.edge.value, form.bonus.value, form.customBonus.value);
+                return resolveAction();
               }
             }
           }
@@ -232,8 +241,8 @@ export class BreakActor extends Actor {
   /** @inheritdoc */
   async _onUpdate(data, options, userId) {
     super._onUpdate(data, options, userId);
-    if(data.system?.hearts?.bon != null && (this.system.hearts.max + data.system.hearts.bon) < this.system.hearts.value) {
-      this.update({"system.hearts.value": this.system.hearts.max + data.system.hearts.bon})
+    if(data.system?.hearts && this.system.hearts.total < this.system.hearts.value) {
+      this.update({"system.hearts.value": this.system.hearts.total})
     }
     if(data.system?.history) {
       this.update({"system.purviews": data.system?.history.system.purviews.join("\n")});

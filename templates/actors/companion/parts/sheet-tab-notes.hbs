@@ -1,0 +1,28 @@
+<section class="tab notes scrollable {{tabs.notes.cssClass}}" data-group="primary" data-tab="notes" style="height:100%;">
+    <div style="display: flex;height: 100%;column-gap: 12px;">
+        <div class="flexcol" style="flex: 1;">
+            <div class="section-header">
+                {{localize "BREAK.Notes"}}
+            </div>
+            {{#if sheetEditable}}
+            <prose-mirror name="system.notes" value="{{ document.system.notes }}"></prose-mirror>
+            {{else}}
+            <div class="editor">
+                <div class="editor-content">{{{ notesHTML }}}</div>
+            </div>
+            {{/if}}
+        </div>
+        <div class="flexcol" style="flex: 1;">
+            <div class="section-header">
+                {{localize "BREAK.COMPANION.Services"}}
+            </div>
+            {{#if sheetEditable}}
+            <prose-mirror name="system.services" value="{{ document.system.services }}"></prose-mirror>
+            {{else}}
+            <div class="editor">
+                <div class="editor-content">{{{ servicesHTML }}}</div>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+</section>

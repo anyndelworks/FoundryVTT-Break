@@ -1,0 +1,64 @@
+<section class="tab details scrollable {{tabs.details.cssClass}}" data-group="primary" data-tab="details">
+    <div style="display:flex; column-gap: 24px; margin-top: 12px; align-items: flex-start;">
+        <div class="flexcol" style="width: 100%; row-gap: 12px;">
+            <div class="section-header">{{localize "BREAK.COMPANION.Owner"}}</div>
+            <div data-owner-drop style="min-height: 38px;">
+                {{#if ownerActor}}
+                <a class="item-link" style="cursor:pointer;" data-action="openOwner">{{ownerActor.name}}</a>
+                <a style="margin-left: auto;" data-action="clearOwner"><i class="fas fa-xmark"></i></a>
+                {{else}}
+                <button type="button" class="select-feature" data-action="selectOwner">{{localize 'BREAK.PickOrDrag'}} {{localize 'BREAK.COMPANION.Owner'}}</button>
+                {{/if}}
+            </div>
+
+            <div class="section-header">{{localize "BREAK.COMPANION.Costs"}}</div>
+            <div>
+                <label>{{localize "BREAK.COMPANION.Price"}}</label>
+                <div class="input wrapper">
+                    <i class="fas fa-gem"></i>
+                    <input name="system.cost.price.gems" value="{{document.system.cost.price.gems}}" placeholder="0" class="money-input" type="number"/>
+                    <i class="fas fa-coins"></i>
+                    <input name="system.cost.price.coins" value="{{document.system.cost.price.coins}}" placeholder="0" class="money-input" type="number"/>
+                    <i class="fas fa-coin-vertical"></i>
+                    <input name="system.cost.price.stones" value="{{document.system.cost.price.stones}}" placeholder="0" class="money-input" type="number"/>
+                </div>
+            </div>
+            <div>
+                <label>{{localize "BREAK.COMPANION.Fee"}}</label>
+                <div class="input wrapper">
+                    <i class="fas fa-gem"></i>
+                    <input name="system.cost.fee.gems" value="{{document.system.cost.fee.gems}}" placeholder="0" class="money-input" type="number"/>
+                    <i class="fas fa-coins"></i>
+                    <input name="system.cost.fee.coins" value="{{document.system.cost.fee.coins}}" placeholder="0" class="money-input" type="number"/>
+                    <i class="fas fa-coin-vertical"></i>
+                    <input name="system.cost.fee.stones" value="{{document.system.cost.fee.stones}}" placeholder="0" class="money-input" type="number"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="flexcol" style="width: 100%; row-gap: 12px;">
+            <label><input name="system.loyalty.recruited" type="checkbox" {{checked document.system.loyalty.recruited}} /> {{localize "BREAK.COMPANION.Recruited"}}</label>
+            <label><input name="system.loyalty.autoPass" type="checkbox" {{checked document.system.loyalty.autoPass}} /> {{localize "BREAK.COMPANION.AutoPass"}}</label>
+            <label><input name="system.capabilities.canUseEquipment" type="checkbox" {{checked document.system.capabilities.canUseEquipment}} /> {{localize "BREAK.COMPANION.CanUseEquipment"}}</label>
+            <label><input name="system.capabilities.canCarryGear" type="checkbox" {{checked document.system.capabilities.canCarryGear}} /> {{localize "BREAK.COMPANION.CanCarryGear"}}</label>
+            <label><input name="system.capabilities.canBeMounted" type="checkbox" {{checked document.system.capabilities.canBeMounted}} /> {{localize "BREAK.COMPANION.CanBeMounted"}}</label>
+            <label><input name="system.capabilities.battleReady" type="checkbox" {{checked document.system.capabilities.battleReady}} /> {{localize "BREAK.COMPANION.BattleReady"}}</label>
+
+            {{#if document.system.capabilities.canBeMounted}}
+            <div class="section-header">{{localize "BREAK.COMPANION.Mount"}}</div>
+            <label>{{localize "BREAK.COMPANION.RiderSize"}}</label>
+            <div class="input wrapper">
+                <select name="system.mount.riderSize">
+                    {{#each mountSizes as |size|}}
+                        <option value="{{size.key}}" {{#if size.active}}selected="selected"{{/if}}>{{size.label}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <label>{{localize "BREAK.COMPANION.RiderSlots"}}</label>
+            <div class="input wrapper">
+                <input name="system.mount.riderSlots" type="number" value="{{document.system.mount.riderSlots}}" />
+            </div>
+            {{/if}}
+        </div>
+    </div>
+</section>

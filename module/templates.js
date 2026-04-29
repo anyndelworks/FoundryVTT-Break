@@ -19,6 +19,7 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/break/templates/actors/shared/sheet-equipment.hbs",
     "systems/break/templates/actors/shared/sheet-bag-content.hbs",
     "systems/break/templates/actors/shared/sheet-bags.hbs",
+    "systems/break/templates/actors/shared/sheet-compact-summary.hbs",
     "systems/break/templates/actors/adversary/parts/adversary-misc.hbs",
     "systems/break/templates/actors/adversary/parts/simplified-sheet-aptitudes.html",
     "systems/break/templates/rolls/roll-check.hbs",

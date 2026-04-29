@@ -18,6 +18,7 @@ const {HandlebarsApplicationMixin} = foundry.applications.api;
 export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
   freeHands;
+  _headerCollapsed = false;
 
   //#region DocumentV2 initialization and setup
   static DEFAULT_OPTIONS = {
@@ -25,7 +26,7 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     classes: ["break", "sheet", "actor"],
     position: {
       width: 750,
-      height: 870,
+      height: 900,
     },
     form: {
       submitOnChange: true
@@ -34,6 +35,7 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       resizable: true
     },
     actions: {
+      toggleHeader: this.#onToggleHeader,
       rollAttack: this.#onRollAttack,
       deleteItem: this.#deleteItemAction,
       editImage: this.#onEditImage,
@@ -113,13 +115,14 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     context.attackBonus = context.document.system.attack.total;
     context.speedRating = context.document.system.speed.total;
     const weaponHands = equipment.weapon.reduce((a, w) => a+(w.hands ?? 1), 0);
-    this.freeHands = context.document.system.hands.value - weaponHands - (equipment.shield?.system.hands ?? 0);
+    this.freeHands = context.document.system.hands.total - weaponHands - (equipment.shield?.system.hands ?? 0);
     context.hands = context.document.system.hands.total;
     context.freeHands = this.freeHands;
 
     this.prepareWeapons(context);
     this.prepareActions(context);
     this.prepareInventory(context);
+    context.headerCollapsed = this._headerCollapsed;
 
     return context;
   }
@@ -231,6 +234,12 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     const button = event.target;
     const {itemId, actionId} = button.dataset;
     this.actor.useAction(itemId, actionId);
+  }
+
+  static #onToggleHeader(event) {
+    event.preventDefault();
+    this._headerCollapsed = !this._headerCollapsed;
+    this.render(true);
   }
 
   //#endregion

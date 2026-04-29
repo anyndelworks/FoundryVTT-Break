@@ -75,6 +75,36 @@ BREAK.action_costs = {
     }
 }
 
+BREAK.action_targets = {
+    self: {
+        key: "self",
+        label: "BREAK.ACTION.TargetSelf"
+    },
+    target: {
+        key: "target",
+        label: "BREAK.ACTION.TargetSelected"
+    }
+}
+
+BREAK.action_effects = {
+    none: {
+        key: "none",
+        label: "BREAK.ACTION.EFFECT.None"
+    },
+    heal: {
+        key: "heal",
+        label: "BREAK.ACTION.EFFECT.Heal"
+    },
+    damage: {
+        key: "damage",
+        label: "BREAK.ACTION.EFFECT.Damage"
+    },
+    applyItemEffects: {
+        key: "applyItemEffects",
+        label: "BREAK.ACTION.EFFECT.ApplyItemEffects"
+    }
+}
+
 BREAK.aptitudes = {
     might: {
         key: "might",

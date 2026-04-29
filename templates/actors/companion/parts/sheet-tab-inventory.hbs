@@ -1,0 +1,48 @@
+<section class="tab inventory scrollable {{tabs.inventory.cssClass}}" data-group="primary" data-tab="inventory">
+    <div style="display:flex;column-gap:24px;">
+        <div style="width: 100%;">
+            {{#if showEquipmentSection}}
+            {{> "systems/break/templates/actors/shared/sheet-equipment.hbs"}}
+            {{/if}}
+            {{#if showInventorySection}}
+            {{> "systems/break/templates/actors/shared/sheet-bags.hbs"}}
+            {{/if}}
+        </div>
+        {{#if showInventorySection}}
+        <div class="flexcol" style="width: 100%;">
+            <div class="section-header">
+                {{localize "BREAK.BagContent"}}
+                <div style="display:flex;width:100%;justify-content:flex-end;margin-right:12px;">
+                    <a class="add-item-custom" data-action="addCustomItem"><i class="fa-regular fa-plus"></i></a>
+                </div>
+            </div>
+            {{#each bagContent as |item|}}
+                <div style="display:flex;flex: 0;" {{#if item.equippable}}class="bag-item"{{/if}} data-id="{{item._id}}" data-type="{{item.type}}" data-equippable="{{item.equippable}}">
+                    <div style="text-align: center;width:40%;">
+                        <a style="font-size: 16px;font-weight: 700;cursor:pointer;" class="item-link" data-action="linkItem">{{item.name}}</a>
+                        <p style="font-size: 12px;">{{item.system.typeLabel}} {{localize (concat 'TYPES.Item.' item.type)}}</p>
+                    </div>
+                    <div style="display:flex; align-items:center;flex-grow:1;">
+                        <label>{{localize "BREAK.Quantity"}}</label>
+                        <div style="margin-left:auto;margin-right:auto;">
+                            <a class="adjustment-button" data-action="adjustItemQuantity" data-type="decrease" data-property="system.quantity">
+                                <i class="fa-regular fa-minus"></i>
+                            </a>
+                            <input class="item-quantity" value="{{ item.system.quantity }}" data-name="system.quantity" inputmode="numeric" pattern="[0-9+=\-]*" min="1" style="width:32px;text-align:center;" type="text" placeholder="0" data-dtype="Number"/>
+                            <a class="adjustment-button" data-action="adjustItemQuantity" data-type="increase" data-property="system.quantity">
+                                <i class="fa-regular fa-plus"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div style="margin-left: auto;text-align:center;width:20%;">
+                        <p>{{mul item.system.slots item.system.quantity precision=2}}  {{localize "BREAK.Slots"}}</p>
+                        <a class="item-control interface-only" data-context-menu>
+                            <i class="fas fa-ellipsis-vertical"></i>
+                        </a>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+        {{/if}}
+    </div>
+</section>

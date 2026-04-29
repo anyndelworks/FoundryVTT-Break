@@ -1,59 +1,140 @@
-<section style="display: flex;flex-direction:column;height:100%;">
-    <div class="form-group">
-        <label>{{localize "BREAK.Name"}}</label>
-        <input type="text" name="name" value="{{action.name}}">
+<section style="display:flex;flex-direction:column;height:100%;min-height:0;">
+    <div style="flex:1;min-height:0;overflow-y:auto;padding-right:6px;display:flex;flex-direction:column;">
+        <div class="form-group">
+            <label>{{localize "BREAK.Name"}}</label>
+            <input type="text" name="name" value="{{action.name}}">
+        </div>
+
+        <div style="display:flex;width:100%;column-gap:12px;">
+            <div class="form-group" style="width: 50%;">
+                <label>{{localize "BREAK.RollType"}}</label>
+                <select name="rollType" class="roll-type-select">
+                {{#each rollTypes as |type key|}}
+                    <option value="{{type.key}}" {{#if (eq type.key ../action.rollType)}}selected{{/if}}>
+                    {{localize type.label}}
+                    </option>
+                {{/each}}
+                </select>
+            </div>
+            <div class="form-group aptitude-select" style="width:50%;display: none;">
+                <label>{{localize "BREAK.Aptitude"}}</label>
+                <select name="aptitude">
+                {{#each aptitudes as |aptitude key|}}
+                    <option value="{{aptitude.key}}" {{#if (eq aptitude.key ../action.aptitude)}}selected{{/if}}>
+                    {{localize aptitude.label}}
+                    </option>
+                {{/each}}
+                </select>
+            </div>
+            <div class="form-group vs-select" style="width:50%;display: none;">
+                <label>{{localize "BREAK.VS"}}</label>
+                <select name="vs">
+                {{#each aptitudes as |aptitude key|}}
+                    <option value="{{aptitude.key}}" {{#if (eq aptitude.key ../action.vs)}}selected{{/if}}>
+                    {{localize aptitude.label}}
+                    </option>
+                {{/each}}
+                </select>
+            </div>
+        </div>
+        
+        <div class="flexrow" style="column-gap: 12px;">
+            <div class="form-group">
+                <label>{{localize "BREAK.ActionCost"}}</label>
+                <select name="cost">
+                {{#each costs as |cost key|}}
+                    <option value="{{cost.key}}" {{#if (eq cost.key ../action.cost)}}selected{{/if}}>
+                    {{localize cost.label}}
+                    </option>
+                {{/each}}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>{{localize "BREAK.Target"}}</label>
+                <select name="target">
+                {{#each targets as |target key|}}
+                    <option value="{{target.key}}" {{#if (eq target.key ../action.target)}}selected{{/if}}>
+                    {{localize target.label}}
+                    </option>
+                {{/each}}
+                </select>
+            </div>
+        </div>
+        
+        <div class="flexrow" style="column-gap: 12px;">
+            <fieldset>
+                <legend>{{localize "BREAK.ACTION.Requirements"}}</legend>
+                <div class="form-group" data-fieldset="required">
+                    <label>{{localize "TYPES.Item.item"}}</label>
+                    <div class="action-item-drop" data-fieldset="required" style="display:flex;align-items:center;column-gap:8px;min-height:38px;">
+                        {{#if action.requiredItemRef}}
+                            <a class="item-link" style="cursor:pointer;" data-action="openReference">{{requiredItemLabel}}</a>
+                            <a style="margin-left: auto;" data-action="clearReference"><i class="fas fa-xmark"></i></a>
+                        {{else}}
+                            <button type="button" class="select-feature" data-action="selectReference">{{localize "BREAK.PickOrDrag"}} {{localize "TYPES.Item.item"}}</button>
+                        {{/if}}
+                    </div>
+                </div>
+                <div style="display:flex;width:100%;column-gap:12px;">
+                    <div class="form-group" style="width:50%;">
+                        <label>{{localize "BREAK.Quantity"}}</label>
+                        <input type="number" min="0" name="requiredItemQuantity" value="{{action.requiredItemQuantity}}">
+                    </div>
+                    <input type="hidden" name="requiredItemRef" value="{{action.requiredItemRef}}">
+                    <input type="hidden" name="requiredItemName" value="{{action.requiredItemName}}">
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>{{localize "BREAK.ACTION.Costs"}}</legend>
+                <div class="form-group" data-fieldset="consume">
+                    <label>{{localize "TYPES.Item.item"}}</label>
+                    <div class="action-item-drop" data-fieldset="consume" style="display:flex;align-items:center;column-gap:8px;min-height:38px;">
+                        {{#if action.consumeItemRef}}
+                            <a class="item-link" style="cursor:pointer;" data-action="openReference">{{consumeItemLabel}}</a>
+                            <a style="margin-left: auto;" data-action="clearReference"><i class="fas fa-xmark"></i></a>
+                        {{else}}
+                            <button type="button" class="select-feature" data-action="selectReference">{{localize "BREAK.PickOrDrag"}} {{localize "TYPES.Item.item"}}</button>
+                        {{/if}}
+                    </div>
+                </div>
+                <div style="display:flex;width:100%;column-gap:12px;">
+                    <div class="form-group" style="width:50%;">
+                        <label>{{localize "BREAK.Quantity"}}</label>
+                        <input type="number" min="0" name="consumeItemQuantity" value="{{action.consumeItemQuantity}}">
+                    </div>
+                    <input type="hidden" name="consumeItemRef" value="{{action.consumeItemRef}}">
+                    <input type="hidden" name="consumeItemName" value="{{action.consumeItemName}}">
+                </div>
+            </fieldset>
+        </div>
+
+        <fieldset>
+            <legend>{{localize "BREAK.Effects"}}</legend>
+            <div class="form-group">
+                <label>{{localize "BREAK.Type"}}</label>
+                <select name="effectType" class="effect-type-select">
+                {{#each effects as |effect key|}}
+                    <option value="{{effect.key}}" {{#if (eq effect.key ../action.effectType)}}selected{{/if}}>
+                    {{localize effect.label}}
+                    </option>
+                {{/each}}
+                </select>
+            </div>
+            <div class="form-group effect-amount-group" style="display:none;">
+                <label>{{localize "BREAK.Amount"}}</label>
+                <input type="number" name="effectAmount" value="{{action.effectAmount}}">
+            </div>
+        </fieldset>
+        
+        <label>{{localize "BREAK.Description"}}</label>
+        <div class="form-group" style="flex: 1;">
+            <prose-mirror name="description" value="{{ action.description }}"></prose-mirror>
+        </div>
     </div>
 
-    <div style="display:flex;width:100%;column-gap:12px;">
-        <div class="form-group" style="width: 50%;">
-            <label>{{localize "BREAK.RollType"}}</label>
-            <select name="rollType" class="roll-type-select">
-            {{#each rollTypes as |type key|}}
-                <option value="{{type.key}}" {{#if (eq type.key ../action.rollType)}}selected{{/if}}>
-                {{localize type.label}}
-                </option>
-            {{/each}}
-            </select>
-        </div>
-        <div class="form-group aptitude-select" style="width:50%;display: none;">
-            <label>{{localize "BREAK.Aptitude"}}</label>
-            <select name="aptitude">
-            {{#each aptitudes as |aptitude key|}}
-                <option value="{{aptitude.key}}" {{#if (eq aptitude.key ../action.aptitude)}}selected{{/if}}>
-                {{localize aptitude.label}}
-                </option>
-            {{/each}}
-            </select>
-        </div>
-        <div class="form-group vs-select" style="width:50%;display: none;">
-            <label>{{localize "BREAK.VS"}}</label>
-            <select name="vs">
-            {{#each aptitudes as |aptitude key|}}
-                <option value="{{aptitude.key}}" {{#if (eq aptitude.key ../action.vs)}}selected{{/if}}>
-                {{localize aptitude.label}}
-                </option>
-            {{/each}}
-            </select>
-        </div>
-    </div>
-    
-    <div class="form-group">
-        <label>{{localize "BREAK.ActionCost"}}</label>
-        <select name="cost">
-        {{#each costs as |cost key|}}
-            <option value="{{cost.key}}" {{#if (eq cost.key ../action.cost)}}selected{{/if}}>
-            {{localize cost.label}}
-            </option>
-        {{/each}}
-        </select>
-    </div>
-    
-    <label>{{localize "BREAK.Description"}}</label>
-    <div class="form-group" style="flex: 1;">
-        <prose-mirror style="flex: 1;" name="description" value="{{ action.description }}"></prose-mirror>
-    </div>
-
-    <footer class="sheet-footer flexrow">
+    <footer class="sheet-footer flexrow" style="flex:0 0 auto;margin-top:8px;">
         <button type="submit" class="dialog-button"><i class="fas fa-save"></i> Save</button>
     </footer>
 </section>

@@ -4,11 +4,13 @@ import { BreakActorSheet } from "./actor-sheet.js";
 const allowedItemTypes = ["ability", "accessory", "armor", "otherworld", "outfit", "shield", "item", "weapon"]
 
 export class BreakAdversarySheet extends BreakActorSheet {
+  _viewOnly = true;
+
   //#region DocumentV2 initialization and setup
   static DEFAULT_OPTIONS = {
     classes: ["break", "sheet", "actor", "adversary"],
     actions: {
-
+      toggleEditable: this.#onToggleEditable
     }
   }
 
@@ -20,6 +22,9 @@ export class BreakAdversarySheet extends BreakActorSheet {
   }
 
   static PARTS = {
+    header: {
+      template: "systems/break/templates/actors/adversary/parts/sheet-header.hbs"
+    },
     tabs: {
       template: "systems/break/templates/shared/sheet-tabs.hbs",
     },
@@ -44,9 +49,10 @@ export class BreakAdversarySheet extends BreakActorSheet {
   async _onRender(context, options) {
     await super._onRender(context, options);
     const html = $(this.element);
+    this._toggleDisabled(!context.sheetEditable);
 
     // Everything below here is only needed if the sheet is editable
-    if ( !this.isEditable ) return;
+    if ( !context.sheetEditable ) return;
 
     html.find("input.item-quantity").on("change", this._onChangeItemInput.bind(this));
 
@@ -93,6 +99,7 @@ export class BreakAdversarySheet extends BreakActorSheet {
 
     context.defenseRating = context.document.system.defense.total;
     context.inventorySlots = context.document.system.slots;
+    context.sheetEditable = this.isEditable && !this._viewOnly;
     return context;
   }
   //#endregion
@@ -158,4 +165,9 @@ export class BreakAdversarySheet extends BreakActorSheet {
     return options;
   }
 
+  static #onToggleEditable(event) {
+    event.preventDefault();
+    this._viewOnly = !this._viewOnly;
+    this.render(true);
+  }
 }

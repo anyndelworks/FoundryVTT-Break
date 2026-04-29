@@ -5,6 +5,7 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api
 export class FeatureSelectionDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   #allowedTypes;
   #itemType;
+  _documentType;
   predefinedList;
   #filters;
   picks;
@@ -13,6 +14,7 @@ export class FeatureSelectionDialog extends HandlebarsApplicationMixin(Applicati
 
   constructor(...args) {
     super(...args);
+    this._documentType = this.options.documentType ?? "Item";
     this.#itemType = this.options.itemType ?? "ability";
     this.#allowedTypes = this.options.allowedTypes ?? [this.#itemType];
     this.predefinedList = this.options.predefinedList;
@@ -72,6 +74,15 @@ export class FeatureSelectionDialog extends HandlebarsApplicationMixin(Applicati
   }
 
   async _getItemsOfType(type) {
+    if (this._documentType === "Actor") {
+      const actors = game.actors.filter(a => a.type === type);
+      actors.forEach(a => {
+        a.from = "World";
+        a.desc = game.i18n.localize(`TYPES.Actor.${a.type}`);
+      });
+      return actors;
+    }
+
     const items = [];
     const worldItems = game.items.filter(i => i.type === type);
     worldItems.forEach(i => {
@@ -109,25 +120,32 @@ export class FeatureSelectionDialog extends HandlebarsApplicationMixin(Applicati
   async _prepareContext(options) {
     const context = await super._prepareContext(options)
     context.itemType = this.#itemType;
-    context.options = [
-      {name: "ability", i18n: "TYPES.Item.ability", active: "ability" === this.#itemType, disabled: !this.#allowedTypes.includes("ability")},
-      {name: "accessory", i18n: "TYPES.Item.accessory", active: "accessory" === this.#itemType, disabled: !this.#allowedTypes.includes("accessory")},
-      {name: "armor", i18n: "TYPES.Item.armor", active: "armor" === this.#itemType, disabled: !this.#allowedTypes.includes("armor")},
-      {name: "armorType", i18n: "TYPES.Item.armor-type", active: "armorType" === this.#itemType, disabled: !this.#allowedTypes.includes("armorType") },
-      {name: "calling", i18n: "TYPES.Item.calling", active: "calling" === this.#itemType, disabled: !this.#allowedTypes.includes("calling")},
-      {name: "gift", i18n: "TYPES.Item.gift", active: "gift" === this.#itemType, disabled: !this.#allowedTypes.includes("gift")},
-      {name: "history", i18n: "TYPES.Item.history", active: "history" === this.#itemType, disabled: !this.#allowedTypes.includes("history")},
-      {name: "homeland", i18n: "TYPES.Item.homeland", active: "homeland" === this.#itemType, disabled: !this.#allowedTypes.includes("homeland")},
-      {name: "item", i18n: "TYPES.Item.item", active: "item" === this.#itemType, disabled: !this.#allowedTypes.includes("item")},
-      {name: "outfit", i18n: "TYPES.Item.outfit", active: "outfit" === this.#itemType, disabled: !this.#allowedTypes.includes("outfit")},
-      {name: "quirk", i18n: "TYPES.Item.quirk", active: "quirk" === this.#itemType, disabled: !this.#allowedTypes.includes("quirk")},
-      {name: "shield", i18n: "TYPES.Item.shield", active: "shield" === this.#itemType, disabled: !this.#allowedTypes.includes("shield")},
-      {name: "shieldType", i18n: "TYPES.Item.shield-type", active: "shieldType" === this.#itemType, disabled: !this.#allowedTypes.includes("shieldType")},
-      {name: "size", i18n: "TYPES.Item.size", active: "size" === this.#itemType, disabled: !this.#allowedTypes.includes("size")},
-      {name: "species", i18n: "TYPES.Item.species", active: "species" === this.#itemType, disabled: !this.#allowedTypes.includes("species")},
-      {name: "weapon", i18n: "TYPES.Item.weapon", active: "weapon" === this.#itemType, disabled: !this.#allowedTypes.includes("weapon")},
-      {name: "weaponType", i18n: "TYPES.Item.weapon-type", active: "weaponType" === this.#itemType, disabled: !this.#allowedTypes.includes("weaponType")},
-    ];
+    context.options = this._documentType === "Actor"
+      ? [
+        { name: "character", i18n: "TYPES.Actor.character", active: "character" === this.#itemType, disabled: !this.#allowedTypes.includes("character") },
+        { name: "gmc", i18n: "TYPES.Actor.gmc", active: "gmc" === this.#itemType, disabled: !this.#allowedTypes.includes("gmc") },
+        { name: "adversary", i18n: "TYPES.Actor.adversary", active: "adversary" === this.#itemType, disabled: !this.#allowedTypes.includes("adversary") },
+        { name: "companion", i18n: "TYPES.Actor.companion", active: "companion" === this.#itemType, disabled: !this.#allowedTypes.includes("companion") },
+      ]
+      : [
+        {name: "ability", i18n: "TYPES.Item.ability", active: "ability" === this.#itemType, disabled: !this.#allowedTypes.includes("ability")},
+        {name: "accessory", i18n: "TYPES.Item.accessory", active: "accessory" === this.#itemType, disabled: !this.#allowedTypes.includes("accessory")},
+        {name: "armor", i18n: "TYPES.Item.armor", active: "armor" === this.#itemType, disabled: !this.#allowedTypes.includes("armor")},
+        {name: "armorType", i18n: "TYPES.Item.armor-type", active: "armorType" === this.#itemType, disabled: !this.#allowedTypes.includes("armorType") },
+        {name: "calling", i18n: "TYPES.Item.calling", active: "calling" === this.#itemType, disabled: !this.#allowedTypes.includes("calling")},
+        {name: "gift", i18n: "TYPES.Item.gift", active: "gift" === this.#itemType, disabled: !this.#allowedTypes.includes("gift")},
+        {name: "history", i18n: "TYPES.Item.history", active: "history" === this.#itemType, disabled: !this.#allowedTypes.includes("history")},
+        {name: "homeland", i18n: "TYPES.Item.homeland", active: "homeland" === this.#itemType, disabled: !this.#allowedTypes.includes("homeland")},
+        {name: "item", i18n: "TYPES.Item.item", active: "item" === this.#itemType, disabled: !this.#allowedTypes.includes("item")},
+        {name: "outfit", i18n: "TYPES.Item.outfit", active: "outfit" === this.#itemType, disabled: !this.#allowedTypes.includes("outfit")},
+        {name: "quirk", i18n: "TYPES.Item.quirk", active: "quirk" === this.#itemType, disabled: !this.#allowedTypes.includes("quirk")},
+        {name: "shield", i18n: "TYPES.Item.shield", active: "shield" === this.#itemType, disabled: !this.#allowedTypes.includes("shield")},
+        {name: "shieldType", i18n: "TYPES.Item.shield-type", active: "shieldType" === this.#itemType, disabled: !this.#allowedTypes.includes("shieldType")},
+        {name: "size", i18n: "TYPES.Item.size", active: "size" === this.#itemType, disabled: !this.#allowedTypes.includes("size")},
+        {name: "species", i18n: "TYPES.Item.species", active: "species" === this.#itemType, disabled: !this.#allowedTypes.includes("species")},
+        {name: "weapon", i18n: "TYPES.Item.weapon", active: "weapon" === this.#itemType, disabled: !this.#allowedTypes.includes("weapon")},
+        {name: "weaponType", i18n: "TYPES.Item.weapon-type", active: "weaponType" === this.#itemType, disabled: !this.#allowedTypes.includes("weaponType")},
+      ];
     if (this.predefinedList) {
       context.itemList = this.predefinedList;
     } else {
@@ -148,6 +166,11 @@ export class FeatureSelectionDialog extends HandlebarsApplicationMixin(Applicati
     event.preventDefault();
     const button = event.target.closest("[data-id]");
     const uuid = button.dataset.id;
+    if (this._documentType === "Actor") {
+      const actor = await fromUuid(uuid);
+      actor?.sheet?.render(true, { editable: false });
+      return;
+    }
     let item = game.items.find(i => i.uuid === uuid);
     if(!item) {
       for(const pack of game.packs) {
@@ -166,6 +189,20 @@ export class FeatureSelectionDialog extends HandlebarsApplicationMixin(Applicati
     event.preventDefault();
     const button = event.target.closest("[data-id]");
     const uuid = button.dataset.id;
+
+    if (this._documentType === "Actor") {
+      const actor = await fromUuid(uuid);
+      this.pickedItems.push(actor);
+      this.remainingPicks -= 1;
+      if (this.remainingPicks <= 0) {
+        this.callback(this.pickedItems);
+        this.close();
+      } else {
+        this.render(true);
+      }
+      return;
+    }
+    
     let item = game.items.find(i => i.uuid === uuid);
     if(!item) {
       for(const pack of game.packs) {

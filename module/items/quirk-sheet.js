@@ -20,7 +20,9 @@ export class BreakQuirkSheet extends BreakItemSheet {
       },
       actions: {
         editImage: this.onEditImage,
+        addAction: this.onAddAction,
         addEffect: this.onAddEffect,
+        displayAction: this.onDisplayAction,
         displayEffect: this.onDisplayEffect
       }
   }
@@ -79,7 +81,7 @@ export class BreakQuirkSheet extends BreakItemSheet {
   //#region DocumentV2 submit
   static async #onSubmit(event, form, formData) {
       event.preventDefault();
-      const updateData = foundry.utils.expandObject(formData.object);
+      const updateData = this.getSubmitData(formData);
       await this.item.update(updateData);
   }
   //#endregion

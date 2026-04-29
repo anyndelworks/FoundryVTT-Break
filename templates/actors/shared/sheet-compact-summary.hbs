@@ -1,0 +1,78 @@
+<div class="compact-summary">
+    <div class="compact-summary-aptitudes">
+        {{#each document.system.aptitudes as |attr key|}}
+        <div class="compact-summary-aptitude">
+            <input
+                name="system.aptitudes.{{key}}.value"
+                type="number"
+                class="compact-summary-input"
+                value="{{attr.value}}"
+                placeholder="0"
+            />
+            <label class="compact-summary-label">{{localize attr.label}}</label>
+            <div class="compact-summary-aptitude-row">
+                <div class="compact-summary-bar-track">
+                    <div class="compact-summary-bar-fill" style="background: {{attr.color}}; width: {{mul attr.total 5 precision=2}}%;"></div>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+
+    <div class="compact-summary-combat">
+        <div class="compact-summary-stat">
+            <div class="compact-summary-stat-top">
+                <span class="compact-summary-stat-icon"><i class="fas fa-sword"></i></span>
+                <input
+                    name="system.attack.value"
+                    type="number"
+                    class="compact-summary-stat-input"
+                    value="{{document.system.attack.value}}"
+                    placeholder="0"
+                />
+            </div>
+            <label class="compact-summary-label">{{localize "BREAK.Attack"}}</label>
+        </div>
+
+        <div class="compact-summary-stat">
+            <div class="compact-summary-stat-top">
+                <span class="compact-summary-stat-icon compact-summary-heart"><i class="fas fa-heart"></i></span>
+                <input
+                    name="system.hearts.max"
+                    type="number"
+                    class="compact-summary-stat-input"
+                    value="{{document.system.hearts.max}}"
+                    placeholder="0"
+                />
+            </div>
+            <label class="compact-summary-label">{{localize "BREAK.Hearts"}}</label>
+        </div>
+
+        <div class="compact-summary-stat">
+            <div class="compact-summary-stat-top">
+                <span class="compact-summary-stat-icon"><i class="fas fa-shield"></i></span>
+                <input
+                    name="system.defense.value"
+                    type="number"
+                    class="compact-summary-stat-input"
+                    value="{{document.system.defense.value}}"
+                    placeholder="0"
+                />
+            </div>
+            <label class="compact-summary-label">{{localize "BREAK.Defense"}}</label>
+        </div>
+
+        <div class="compact-summary-stat">
+            <div class="compact-summary-stat-top">
+                <span class="compact-summary-stat-icon"><i class="fas fa-person-running"></i></span>
+                <select name="system.speed.value" class="compact-summary-stat-select">
+                    <option value="0" {{#when document.system.speed.value 'eq' 0}}selected="selected"{{/when}}>{{localize "BREAK.SLOW"}}</option>
+                    <option value="1" {{#when document.system.speed.value 'eq' 1}}selected="selected"{{/when}}>{{localize "BREAK.AVERAGE"}}</option>
+                    <option value="2" {{#when document.system.speed.value 'eq' 2}}selected="selected"{{/when}}>{{localize "BREAK.FAST"}}</option>
+                    <option value="3" {{#when document.system.speed.value 'eq' 3}}selected="selected"{{/when}}>{{localize "BREAK.VFAST"}}</option>
+                </select>
+            </div>
+            <label class="compact-summary-label">{{localize "BREAK.Speed"}}</label>
+        </div>
+    </div>
+</div>
