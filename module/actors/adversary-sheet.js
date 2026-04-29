@@ -72,15 +72,15 @@ export class BreakAdversarySheet extends BreakActorSheet {
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
-    context.habitatHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.habitat, {secrets: this.document.isOwner,async: true});
-    context.gearInfoHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.gearInfo, {secrets: this.document.isOwner,async: true});
-    context.communicationHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.communication, {secrets: this.document.isOwner,async: true});
-    context.tacticsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.tactics, {secrets: this.document.isOwner,async: true});
-    context.indicatorsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.indicators, {secrets: this.document.isOwner,async: true});
-    context.rpNoteHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.rpNote, {secrets: this.document.isOwner,async: true});
-    context.customizationHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.customization, {secrets: this.document.isOwner,async: true});
-    context.reskinHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.reskin, {secrets: this.document.isOwner,async: true});
-    context.yieldHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.yield, {secrets: this.document.isOwner,async: true});
+    context.habitatHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.misc.habitat, {secrets: this.document.isOwner,async: true});
+    context.gearInfoHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.misc.gearInfo, {secrets: this.document.isOwner,async: true});
+    context.communicationHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.misc.communication, {secrets: this.document.isOwner,async: true});
+    context.tacticsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.misc.tactics, {secrets: this.document.isOwner,async: true});
+    context.indicatorsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.misc.indicators, {secrets: this.document.isOwner,async: true});
+    context.rpNoteHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.misc.rpNote, {secrets: this.document.isOwner,async: true});
+    context.customizationHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.misc.customization, {secrets: this.document.isOwner,async: true});
+    context.reskinHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.misc.reskin, {secrets: this.document.isOwner,async: true});
+    context.yieldHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.misc.yield, {secrets: this.document.isOwner,async: true});
     context.notesHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.notes, {secrets: this.document.isOwner,async: true});
     context.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.description, {secrets: this.document.isOwner,async: true});
     
