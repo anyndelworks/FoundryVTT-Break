@@ -59,6 +59,16 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     html.find("input.item-quantity").on("change", this._onChangeItemInput.bind(this));
   }
 
+  _toggleSheetControls(disabled) {
+    const viewActions = "[data-action='toggleEditable'], [data-action='toggleHeader'], [data-action='tab']";
+    const content = $(this.element).find(".window-content");
+    const root = content.length ? content : $(this.element);
+    root
+      .find("button, input, optgroup, option, select, textarea")
+      .filter((i, element) => !element.closest(viewActions))
+      .prop("disabled", disabled);
+  }
+
   prepareActions(context) {
     context.actions = [];
     context.document.items.forEach(i => {
