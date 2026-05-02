@@ -63,9 +63,9 @@ export class BreakCompanionSheet extends BreakActorSheet {
   async _onRender(context, options) {
     await super._onRender(context, options);
     const html = $(this.element);
-    this._toggleDisabled(!context.sheetEditable);
+    this._toggleSheetControls(!context.editable);
 
-    if (!context.sheetEditable) return;
+    if (!context.editable) return;
 
     html.find("[data-context-menu]").each((i, a) => {
       a.addEventListener("click", event => {
@@ -119,7 +119,7 @@ export class BreakCompanionSheet extends BreakActorSheet {
 
     context.inventorySlots = context.document.system.inventorySlots ?? context.document.system.slots;
     context.defenseRating = context.document.system.defense.total;
-    context.sheetEditable = this.isEditable && !this._viewOnly;
+    context.editable = this.isEditable && !this._viewOnly;
     context.hasEquippedItems = !!(
       equipment.armor ||
       equipment.outfit ||

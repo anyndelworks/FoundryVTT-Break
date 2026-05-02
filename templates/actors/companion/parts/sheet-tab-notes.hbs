@@ -4,7 +4,7 @@
             <div class="section-header">
                 {{localize "BREAK.Notes"}}
             </div>
-            {{#if sheetEditable}}
+            {{#if editable}}
             <prose-mirror name="system.notes" value="{{ document.system.notes }}"></prose-mirror>
             {{else}}
             <div class="editor">
@@ -16,7 +16,7 @@
             <div class="section-header">
                 {{localize "BREAK.COMPANION.Services"}}
             </div>
-            {{#if sheetEditable}}
+            {{#if editable}}
             <prose-mirror name="system.services" value="{{ document.system.services }}"></prose-mirror>
             {{else}}
             <div class="editor">

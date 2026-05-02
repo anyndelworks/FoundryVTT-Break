@@ -18,6 +18,7 @@ export class BreakAccessorySheet extends BreakItemSheet {
       resizable: true
     },
     actions: {
+      toggleEditable: this.onToggleEditable,
       editImage: this.onEditImage,
       addEffect: this.onAddEffect,
       displayEffect: this.onDisplayEffect

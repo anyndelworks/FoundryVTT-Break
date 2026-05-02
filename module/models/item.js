@@ -1,4 +1,5 @@
 import { BaseItemDataModel } from "./base-item.js";
+import { defineActionField } from "../system/action-schema.js";
 
 export class GenericItemDataModel extends BaseItemDataModel {
     static defineSchema() {
@@ -10,7 +11,8 @@ export class GenericItemDataModel extends BaseItemDataModel {
         uses: new fields.SchemaField({
             value: new fields.NumberField({ initial: 1 }),
             total: new fields.NumberField({ initial: 1 })
-        })
+        }),
+        actions: defineActionField(fields)
         };
     }
 }

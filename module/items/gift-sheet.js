@@ -19,6 +19,7 @@ export class BreakGiftSheet extends BreakItemSheet {
       resizable: true
     },
     actions: {
+      toggleEditable: this.onToggleEditable,
       editImage: this.onEditImage,
     }
   }

@@ -21,6 +21,7 @@ export class BreakSpeciesSheet extends BreakItemSheet {
         resizable: true
       },
       actions: {
+        toggleEditable: this.onToggleEditable,
         editImage: this.onEditImage,
         deleteInnateAbility: this.#onDeleteInnateAbility,
         deleteMaturativeAbility: this.#onDeleteMaturativeAbility,

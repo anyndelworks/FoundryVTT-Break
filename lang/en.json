@@ -283,7 +283,9 @@
       "StandardLong": "Standard Abilities",
       "AdvancedLong": "Advanced Abilities",
       "ElectiveLong": "Elective Abilities",
-      "Magic": "Magic"
+      "Magic": "Magic",
+      "Basic": "Basic",
+      "Legendary": "Legendary"
     },
 
     "Inventory": "Inventory",
@@ -335,6 +337,7 @@
     "Languages": "Languages",
     "BonusLanguages": "Bonus Languages",
     "Description": "Description",
+    "Overview": "Overview",
     "Rules": "Rules",
     "Purviews": "Purviews",
     "Base": "Base",

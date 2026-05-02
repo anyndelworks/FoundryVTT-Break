@@ -29,6 +29,7 @@ export class BreakHistorySheet extends BreakItemSheet {
             resizable: true
         },
         actions: {
+            toggleEditable: this.onToggleEditable,
             editImage: this.onEditImage,
             addPurview: this.#addPurview,
             deletePurview: this.#deletePurview,

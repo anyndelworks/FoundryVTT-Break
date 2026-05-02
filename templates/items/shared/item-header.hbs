@@ -1,46 +1,60 @@
-<section class="sheet-header" style="flex: 0;margin-bottom:12px;display:flex;">
-    <img class="profile-img" src="{{document.img}}" title="{{document.name}}" data-action="editImage" data-field="img" style="height:100px;max-width:33%" />
-    <div style="height: 100%;display:flex;flex-direction:column;width: 100%;">
-        <div class="header-fields" style="display:flex; align-items:center;width:100%">
-            <h3 class="charname">
-                <input name="name" type="text" value="{{document.name}}" placeholder="Name" />
-            </h3>
-            <div style="align-items: center; display:flex; flex-direction:column;margin-left:auto;">
-                <input name="system.slots" type="number" class="aptitude-base-circle" style="text-align: center; margin-left:0px; width: 38px; height: 38px;" value="{{document.system.slots}}" placeholder="0"/>
-                <label style="text-transform: uppercase;">{{localize "BREAK.Slots"}}</label>
-            </div>
+<section class="item-sheet-header">
+    <div class="flexrow" style="margin-bottom: 10px;">
+        <div class="name-banner" style="flex 1;">
+            <input name="name" type="text" value="{{document.name}}" placeholder="{{localize 'BREAK.Name'}}" />
         </div>
-        <div style="display: flex;align-items:center;height:100%;">
-            <div style="flex: 1; display:flex;height:100%;align-items:center;column-gap:12px;">
-                {{#if requiresType}}
-                <select name="system.type" id="type-select" style="max-width: 160px;">
-                    {{#each itemTypes as |type|}}
-                        <option value="{{type.key}}" {{#if type.active}}selected="selected"{{/if}}>{{type.label}}</option>
-                    {{/each}}
-                </select>
-                {{/if}}
-                {{#if isWeapon}}
-                <select name="system.weaponType1" id="type-select" style="max-width: 160px;">
-                    {{#each itemTypes as |type|}}
-                        <option value="{{type.key}}" {{#if type.active1}}selected="selected"{{/if}}>{{type.label}}</option>
-                    {{/each}}
-                </select>
-                <select name="system.weaponType2" id="type-select" style="max-width: 160px;">
-                    <option value="">{{localize "BREAK.None"}}</option>
-                    {{#each itemTypes as |type|}}
-                        <option value="{{type.key}}" {{#if type.active2}}selected="selected"{{/if}}>{{type.label}}</option>
-                    {{/each}}
-                </select>
-                {{/if}}
-            </div>
-            <div style="display: flex;align-items:center; justify-content:flex-end;">
-                <i class="fas fa-gem"></i>
-                <input name="system.value.gems" value="{{document.system.value.gems}}" placeholder="0" class="money-input" type="number"/>
-                <i class="fas fa-coins"></i>
-                <input name="system.value.coins" value="{{document.system.value.coins}}" placeholder="0" class="money-input" type="number"/>
-                <i class="fas fa-cubes-stacked"></i>
-                <input name="system.value.stones" value="{{document.system.value.stones}}" placeholder="0" class="money-input" type="number"/>
-            </div>
+        <a
+            class="clickable"
+            data-action="toggleEditable"
+            style="display:flex; align-items:center; justify-content:center; width:32px; margin-left:8px;flex: 0;"
+        >
+            <i class="fas {{#if editable}}fa-lock-open{{else}}fa-lock{{/if}}"></i>
+        </a>
+    </div>
+    <div class="flexrow" style="margin-bottom:12px;">
+        {{#if editable}}
+        <prose-mirror name="system.description" value="{{ document.system.description }}"></prose-mirror>
+        {{else}}
+        <div class="editor">
+            <div class="editor-content">{{{ descriptionHTML }}}</div>
         </div>
+        {{/if}}
+        <img class="profile-img" src="{{document.img}}" title="{{document.name}}" data-action="editImage" data-field="img" style="flex: 0;"/>
+    </div>
+    <div class="flexrow" style="column-gap: 12px;">
+        <div style="flex: 1; display:flex;height:100%;align-items:center;column-gap:12px;">
+            {{#if requiresType}}
+            <select name="system.type" id="type-select" style="max-width: 160px;">
+                {{#each itemTypes as |type|}}
+                    <option value="{{type.key}}" {{#if type.active}}selected="selected"{{/if}}>{{type.label}}</option>
+                {{/each}}
+            </select>
+            {{/if}}
+            {{#if isWeapon}}
+            <select name="system.weaponType1" id="type-select" style="max-width: 160px;">
+                {{#each itemTypes as |type|}}
+                    <option value="{{type.key}}" {{#if type.active1}}selected="selected"{{/if}}>{{type.label}}</option>
+                {{/each}}
+            </select>
+            <select name="system.weaponType2" id="type-select" style="max-width: 160px;">
+                <option value="">{{localize "BREAK.None"}}</option>
+                {{#each itemTypes as |type|}}
+                    <option value="{{type.key}}" {{#if type.active2}}selected="selected"{{/if}}>{{type.label}}</option>
+                {{/each}}
+            </select>
+            {{/if}}
+        </div>
+        <div style="align-items: center; display:flex; flex-direction:column;margin-left:auto;flex: none;width:100px;">
+            <input name="system.slots" type="number" class="aptitude-base-circle" style="text-align: center; margin-left:0px; width: 38px; height: 38px;" value="{{document.system.slots}}" placeholder="0"/>
+            <label style="text-transform: uppercase;">{{localize "BREAK.Slots"}}</label>
+        </div>
+    </div>
+    <div style="display: flex;align-items:center; justify-content:flex-end;">
+        <i class="fas fa-gem"></i>
+        <input name="system.value.gems" value="{{document.system.value.gems}}" placeholder="0" class="money-input" type="number"/>
+        <i class="fas fa-coins"></i>
+        <input name="system.value.coins" value="{{document.system.value.coins}}" placeholder="0" class="money-input" type="number"/>
+        <i class="fas fa-cubes-stacked"></i>
+        <input name="system.value.stones" value="{{document.system.value.stones}}" placeholder="0" class="money-input" type="number"/>
     </div>
 </section>

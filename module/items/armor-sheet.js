@@ -19,6 +19,7 @@ export class BreakArmorSheet extends BreakItemSheet {
       resizable: true
     },
     actions: {
+      toggleEditable: this.onToggleEditable,
       editImage: this.onEditImage,
       selectFeature: this.onSelectFeature,
       addEffect: this.onAddEffect,

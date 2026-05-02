@@ -11,7 +11,5 @@ break.lock
 releases/
 
 # BREAK
-packs/
-!packs/_source/
 FoundryCommon
 FoundryClient

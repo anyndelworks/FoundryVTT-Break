@@ -1,6 +1,6 @@
 <header class="companion-header" style="margin-bottom: 12px;">
     <div class="flexrow" style="margin-bottom: 10px;">
-        <div class="companion-name-banner">
+        <div class="name-banner">
             <input name="name" type="text" value="{{document.name}}" placeholder="{{localize 'BREAK.Name'}}" />
         </div>
         <label style="flex: 0; min-width:100px;"><input name="system.named" type="checkbox" {{checked document.system.named}} /> {{localize "BREAK.COMPANION.Named"}}</label>
@@ -9,20 +9,11 @@
             data-action="toggleEditable"
             style="display:flex; align-items:center; justify-content:center; width:32px; margin-left:8px;flex: 0;"
         >
-            <i class="fas {{#if sheetEditable}}fa-lock-open{{else}}fa-lock{{/if}}"></i>
+            <i class="fas {{#if editable}}fa-lock-open{{else}}fa-lock{{/if}}"></i>
         </a>
-        <a
-            class="clickable"
-            data-action="toggleHeader"
-            style="display:flex; align-items:center; justify-content:center; width:32px; margin-left:8px;flex: 0;"
-        >
-            <i class="fas {{#if headerCollapsed}}fa-chevron-down{{else}}fa-chevron-up{{/if}}"></i>
-        </a>
-
     </div>
-    {{#unless headerCollapsed}}
     <div class="flexrow" style="margin-bottom:12px;">
-        {{#if sheetEditable}}
+        {{#if editable}}
         <prose-mirror name="system.description" value="{{ document.system.description }}"></prose-mirror>
         {{else}}
         <div class="editor">
@@ -43,5 +34,4 @@
             {{/each}}
         </select>
     </div>
-    {{/unless}}
 </header>

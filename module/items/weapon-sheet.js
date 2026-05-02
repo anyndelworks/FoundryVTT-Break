@@ -19,6 +19,7 @@ export class BreakWeaponSheet extends BreakItemSheet {
       resizable: true
     },
     actions: {
+      toggleEditable: this.onToggleEditable,
       editImage: this.onEditImage,
       addEffect: this.onAddEffect,
       addAction: this.onAddAction,
@@ -35,9 +36,6 @@ export class BreakWeaponSheet extends BreakItemSheet {
     tabs: {
       template: "systems/break/templates/shared/sheet-tabs.hbs",
     },
-    description: {
-      template: "systems/break/templates/items/weapon/weapon-description-tab.hbs"
-    },
     properties: {
       template: "systems/break/templates/items/weapon/weapon-properties-tab.hbs"
     },
@@ -48,8 +46,8 @@ export class BreakWeaponSheet extends BreakItemSheet {
 
   static TABS = {
     primary: {
-      initial: "description",
-      tabs: [{id: "description", icon: "fas fa-scroll"}, {id: "properties", icon: "fas fa-sword"}, {id: "effects", icon: "fas fa-sparkles"}],
+      initial: "properties",
+      tabs: [{id: "properties", icon: "fas fa-sword"}, {id: "effects", icon: "fas fa-sparkles"}],
     }
   }
 

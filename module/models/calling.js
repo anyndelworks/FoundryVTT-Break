@@ -6,6 +6,7 @@ export class CallingDataModel extends foundry.abstract.DataModel {
             name: new fields.StringField({ initial: "" }),
             description: new fields.HTMLField({ initial: "" }),
             overview: new fields.HTMLField({ initial: "" }),
+            headerImage: new fields.StringField({ initial: "" }),
             baseSpeed: new fields.NumberField({ initial: 1 }),
             baseDefense: new fields.NumberField({ initial: 0 }),
             startingAbilities: new fields.ArrayField(new fields.StringField()),

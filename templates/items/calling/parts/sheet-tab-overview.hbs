@@ -1,0 +1,9 @@
+<section class="tab overview scrollable {{tabs.overview.cssClass}}" style="height: 100%;" data-group="primary" data-tab="overview">
+    {{#if editable}}
+    <prose-mirror name="system.overview" value="{{ document.system.overview }}"></prose-mirror>
+    {{else}}
+    <div class="editor">
+        <div class="editor-content">{{{ overviewHTML }}}</div>
+    </div>
+    {{/if}}
+</section>

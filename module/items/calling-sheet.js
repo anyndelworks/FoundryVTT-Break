@@ -19,6 +19,8 @@ export class BreakCallingSheet extends BreakItemSheet {
       resizable: true
     },
     actions: {
+      toggleEditable: this.onToggleEditable,
+      toggleHeader: this.onToggleHeader,
       editImage: this.onEditImage,
       addAdvancementRank: this.#addAdvancementRank,
       removeAdvancementRank: this.#removeAdvancementRank,
@@ -29,20 +31,20 @@ export class BreakCallingSheet extends BreakItemSheet {
 
   static TABS = {
     primary: {
-      initial: "description",
-      tabs: [{id:"description", icon: "fas fa-scroll"}, {id:"details", icon: "fas fa-swords"}, {id: "advancement", icon: "fas fa-book-sparkles"}],
+      initial: "overview",
+      tabs: [{id:"overview", icon: "fas fa-scroll"}, {id:"details", icon: "fas fa-swords"}, {id: "advancement", icon: "fas fa-book-sparkles"}],
     }
   }
 
   static PARTS = {
     header: {
-      template: "systems/break/templates/items/shared/generic-header.hbs"
+      template: "systems/break/templates/items/calling/parts/sheet-header.hbs"
     },
     tabs: {
       template: "systems/break/templates/shared/sheet-tabs.hbs",
     },
-    description: {
-      template: "systems/break/templates/items/calling/parts/sheet-tab-description.hbs"
+    overview: {
+      template: "systems/break/templates/items/calling/parts/sheet-tab-overview.hbs"
     },
     details: {
       template: "systems/break/templates/items/calling/parts/sheet-tab-details.hbs"
@@ -58,6 +60,11 @@ export class BreakCallingSheet extends BreakItemSheet {
         secrets: this.document.isOwner,
         async: true
     });
+    context.overviewHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.document.system.overview, {
+        secrets: this.document.isOwner,
+        async: true
+    });
+    context.headerImage = context.document.system.headerImage || "icons/svg/item-bag.svg";
     context.advancementTable = context.document.system.advancementTable ?? [];
 
     context.startingAbilities = context.document.system.startingAbilities ?? [];

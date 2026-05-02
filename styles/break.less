@@ -10,10 +10,23 @@
 
 .break.sheet.calling {
   .profile-img {
-    border-radius: 50%;
     border: 2px solid #AA3D9E;
-    width: 100px;
-    height: 100px;
+  }
+
+  .calling-header-top {
+    column-gap: 10px;
+  }
+
+  .name-banner {
+    background: linear-gradient(90deg, #AA3D9E 0%, #0081C6 100%);
+
+    input {
+      color: #FCFFFD;
+    }
+
+    input::placeholder {
+      color: #FCFFFD;
+    }
   }
 }
 
@@ -27,13 +40,97 @@
 
 .break.sheet.companion {
   .profile-img {
-    border-radius: 50%;
     border: 2px solid #d48aa2;
-    width: 100px;
-    height: 100px;
   }
 
-  .companion-name-banner {
+  .name-banner {
+    background: linear-gradient(90deg, #f3b8cb 0%, #f7d7e3 100%);
+
+    input {
+      color: #cf4f78;
+    }
+
+    input::placeholder {
+      color: rgba(207, 79, 120, 0.65);
+    }
+  }
+}
+
+.break.sheet.ability {
+  .profile-img {
+    border: 2px solid #AA3D9E;
+  }
+}
+
+.break.sheet.species {
+  .profile-img {
+    border: 2px solid #0084C7;
+  }
+}
+
+.break.sheet.quirk {
+  .profile-img {
+    border: 2px solid #98CF59;
+  }
+}
+
+.break.sheet.generic-item {
+  .profile-img {
+    border: 2px solid #C4397A;
+  }
+
+  .name-banner {
+    background: linear-gradient(90deg, #FBD6E6 0%, #E8D7E9 100%);
+
+    input {
+      color: #EE37A3;
+    }
+
+    input::placeholder {
+      color: #EE37A3;
+    }
+  }
+}
+
+.editor {
+  flex: 1;
+  height: 100%;
+}
+
+.break.sheet {
+  textarea {
+    resize: none;
+    overflow: auto;
+  }
+
+  .window-content {
+    height: 100%;
+    padding: 15px;
+  }
+
+  .profile-img {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    min-width: 100px;
+    min-height: 100px;
+    object-fit: contain;
+  }
+
+  .landscape-img {
+    align-self: center;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .landscape-header {
+    display: flex;
+    margin-bottom: 12px;
+    flex-direction: column;
+    max-height: 50%;
+  }
+
+  .name-banner {
     display: flex;
     align-items: center;
     min-height: 28px;
@@ -61,53 +158,6 @@
     input:focus {
       box-shadow: none;
     }
-  }
-}
-
-.break.sheet.ability {
-  .profile-img {
-    border-radius: 50%;
-    border: 2px solid #AA3D9E;
-    width: 100px;
-    height: 100px;
-  }
-}
-
-.break.sheet.species {
-  .profile-img {
-    border-radius: 50%;
-    border: 2px solid #0084C7;
-    width: 100px;
-    height: 100px;
-  }
-}
-
-.break.sheet.quirk {
-  .profile-img {
-    border-radius: 50%;
-    border: 2px solid #98CF59;
-    width: 100px;
-    height: 100px;
-  }
-}
-
-.editor {
-  flex: 1;
-  height: 100%;
-}
-
-.break.sheet {
-  textarea {
-    resize: none;
-    overflow: auto;
-  }
-
-  .window-content {
-    height: 100%;
-    padding: 15px;
-  }
-
-  .profile-img {
   }
 
   .sheet-body {
@@ -769,26 +819,16 @@
     }
   }
 
-  .adversary-header {
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-
-    .adversary-header-top {
-      align-items: center;
+      .adversary-header-top {
       column-gap: 10px;
     }
 
-    .adversary-name-banner {
-      display: flex;
-      align-items: center;
-      flex: 1;
-      min-height: 28px;
-      padding: 0 12px;
-      border-radius: 0 10px 10px 0;
+    .name-banner {
       background: linear-gradient(90deg, #FEEDD7 0%, #FBD6E6 100%);
-      box-shadow: inset 0 0 0 1px rgba(223, 138, 83, 0.18);
+
+      input::placeholder {
+        color: rgba(239, 127, 35, 0.65);
+      }
 
       .rank-chip {
         color: #3F4B9B;
@@ -798,30 +838,11 @@
         background-color: white;
       }
 
-      input {
-        border: none;
-        background: transparent;
-        padding: 0;
-        height: 100%;
-        font-family: Montserrat;
-        font-size: 18px;
-        font-weight: 800;
-        letter-spacing: 0.04em;
-      }
-
       label {
         font-family: Montserrat;
         font-size: 18px;
         font-weight: 800;
         letter-spacing: 0.04em;
-      }
-
-      input::placeholder {
-        color: rgba(239, 127, 35, 0.65);
-      }
-
-      input:focus {
-        box-shadow: none;
       }
     }
 
@@ -829,7 +850,6 @@
       align-self: center;
       width: 160px;
     }
-  }
 
   .description {
     .editor {
@@ -846,7 +866,11 @@
       display: flex;
       flex-direction: column;
       flex: 1;
-      min-height: 225px;
+
+      label {
+        font-weight: bold;
+        font-size: 16px;
+      }
     }
   }
 

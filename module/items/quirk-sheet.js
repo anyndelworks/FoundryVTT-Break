@@ -19,6 +19,7 @@ export class BreakQuirkSheet extends BreakItemSheet {
           resizable: true
       },
       actions: {
+        toggleEditable: this.onToggleEditable,
         editImage: this.onEditImage,
         addAction: this.onAddAction,
         addEffect: this.onAddEffect,

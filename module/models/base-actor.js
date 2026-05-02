@@ -152,7 +152,7 @@ export class BreakBaseActorDataModel extends foundry.abstract.DataModel {
         for (const k of ["might", "deftness", "grit", "insight", "aura"]) {
             const aptitude = aptitudes[k];
             aptitude.bon = Number(aptitude.modifier ?? 0) + Number(aptitude.trait ?? 0);
-            aptitude.total = BreakBaseActorDataModel.#resolveOverride(aptitude, aptitude.value + aptitude.bon);
+            aptitude.total = Math.floor(BreakBaseActorDataModel.#resolveOverride(aptitude, aptitude.value + aptitude.bon));
         }
     }
 }

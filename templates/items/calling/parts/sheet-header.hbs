@@ -1,0 +1,31 @@
+<section class="landscape-header" style="margin-bottom: 12px;">
+    <div class="flexrow calling-header-top">
+        <img class="profile-img" src="{{document.img}}" title="{{document.name}}" data-action="editImage" data-field="img" style="flex: 0; width: 40px; height: 40px; min-width: 40px; min-height: 40px;"/>
+        <div class="name-banner">
+            <a
+                class="clickable"
+                data-action="toggleHeader"
+                style="display:flex; align-items:center; justify-content:center; width:32px;flex: 0;color:#FCFFFD;"
+            >
+                <i class="fas {{#if headerCollapsed}}fa-chevron-down{{else}}fa-chevron-up{{/if}}"></i>
+            </a>
+            <input name="name" type="text" style="margin-left:6px;" value="{{document.name}}" placeholder="Name" />
+        </div>
+        <a
+            class="clickable"
+            data-action="toggleEditable"
+            style="display:flex; align-items:center; justify-content:center; width:32px; margin-left:8px;flex: 0;"
+        >
+            <i class="fas {{#if editable}}fa-lock-open{{else}}fa-lock{{/if}}"></i>
+        </a>
+    </div>
+
+    {{#unless headerCollapsed}}
+    {{#if editable}}
+        <prose-mirror name="system.description" value="{{ document.system.description }}"></prose-mirror>
+    {{else}}
+        <div class="editor-content" style="max-height: 75px;overflow:auto;flex: none;">{{{ descriptionHTML }}}</div>
+    {{/if}}
+    <img class="landscape-img" src="{{headerImage}}" title="{{document.name}}" data-action="editImage" data-field="system.headerImage"/>
+    {{/unless}}
+</section>

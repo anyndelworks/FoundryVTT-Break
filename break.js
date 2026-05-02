@@ -182,7 +182,7 @@ Hooks.once("init", async function() {
     unarmed: {
       label: "Unarmed",
       ranged: false,
-      extraDamage: 20,
+      extraDamage: 0,
       loadingTime: 1,
       hands: 1,
       slots: 0,
@@ -200,57 +200,57 @@ Hooks.once("init", async function() {
       extraDamage: 20,
       loadingTime: 1,
       hands: 1,
-      slots: 0,
+      slots: 1,
       range: 0,
       abilities: [],
       value: {
         gems: 0,
-        coins: 0,
+        coins: 10,
         stones: 0
       }
     },
     concealed: {
       label: "Concealed",
       ranged: false,
-      extraDamage: 20,
+      extraDamage: 22,
       loadingTime: 1,
       hands: 1,
-      slots: 0,
+      slots: 1,
       range: 0,
       abilities: [],
       value: {
         gems: 0,
-        coins: 0,
+        coins: 5,
         stones: 0
       }
     },
     quick: {
       label: "Quick",
       ranged: false,
-      extraDamage: 20,
+      extraDamage: 22,
       loadingTime: 1,
       hands: 1,
-      slots: 0,
+      slots: 1,
       range: 0,
       abilities: [],
       value: {
         gems: 0,
-        coins: 0,
+        coins: 15,
         stones: 0
       }
     },
     master: {
       label: "Master",
       ranged: false,
-      extraDamage: 20,
+      extraDamage: 18,
       loadingTime: 1,
       hands: 1,
-      slots: 0,
+      slots: 2,
       range: 0,
       abilities: [],
       value: {
         gems: 0,
-        coins: 0,
+        coins: 30,
         stones: 0
       }
     },
@@ -260,12 +260,12 @@ Hooks.once("init", async function() {
       extraDamage: 20,
       loadingTime: 1,
       hands: 1,
-      slots: 0,
+      slots: 2,
       range: 0,
       abilities: [],
       value: {
         gems: 0,
-        coins: 0,
+        coins: 20,
         stones: 0
       }
     },
@@ -275,27 +275,27 @@ Hooks.once("init", async function() {
       extraDamage: 20,
       loadingTime: 1,
       hands: 1,
-      slots: 0,
+      slots: 3,
       range: 0,
       abilities: [],
       value: {
         gems: 0,
-        coins: 0,
+        coins: 25,
         stones: 0
       }
     },
     lash: {
       label: "Lash",
       ranged: false,
-      extraDamage: 20,
+      extraDamage: 22,
       loadingTime: 1,
       hands: 1,
-      slots: 0,
+      slots: 1,
       range: 0,
       abilities: [],
       value: {
         gems: 0,
-        coins: 0,
+        coins: 30,
         stones: 0
       }
     },

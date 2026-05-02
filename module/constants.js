@@ -9,7 +9,8 @@ BREAK.ability_types = {
     species: "BREAK.Species",
     weapon: "BREAK.GEAR.TYPE.Weapon",
     armor: "BREAK.GEAR.TYPE.Armor",
-    shield: "TYPES.Item.shield"
+    shield: "TYPES.Item.shield",
+    adversary: "TYPES.Actor.adversary"
 }
 
 BREAK.ability_levels = {
@@ -21,6 +22,12 @@ BREAK.ability_levels = {
 BREAK.species_ability_levels = {
     innate: "BREAK.Innate",
     maturative: "BREAK.Maturative"
+}
+
+BREAK.adversary_ability_levels = {
+    basic: "BREAK.ABILITIES.Basic",
+    advanced: "BREAK.ABILITIES.Advanced",
+    legendary: "BREAK.ABILITIES.Legendary"
 }
 
 BREAK.item_types = {

@@ -5,6 +5,13 @@
             <h3 class="charname">
                 <input name="name" type="text" value="{{document.name}}" placeholder="Name" />
             </h3>
+            <a
+                class="clickable"
+                data-action="toggleEditable"
+                style="display:flex; align-items:center; justify-content:center; width:32px; margin-left:8px;flex: 0;"
+            >
+                <i class="fas {{#if editable}}fa-lock-open{{else}}fa-lock{{/if}}"></i>
+            </a>
             {{#if isAbility}}
                 <div style="display: flex; align-items: center;">
                     <input type="checkbox" name="system.magic" {{checked isMagic}} />

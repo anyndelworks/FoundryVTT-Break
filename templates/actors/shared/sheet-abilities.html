@@ -9,6 +9,8 @@
                 </a>
             </div>
         {{/each}}
+        {{#if editable}}
         <button class="select-feature" data-type="ability" data-action="selectFeature" style="height: inherit;">{{localize 'BREAK.PickOrDrag'}} {{localize 'BREAK.Ability'}}</i></button>
+        {{/if}}
     </div>
 </div>

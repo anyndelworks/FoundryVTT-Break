@@ -19,7 +19,10 @@ export class BreakGenericItemSheet extends BreakItemSheet {
       resizable: true
     },
     actions: {
+      toggleEditable: this.onToggleEditable,
       editImage: this.onEditImage,
+      addAction: this.onAddAction,
+      displayAction: this.onDisplayAction
     }
   }
 
@@ -52,7 +55,7 @@ export class BreakGenericItemSheet extends BreakItemSheet {
   //#region DocumentV2 submit
   static async #onSubmit(event, form, formData) {
     event.preventDefault();
-    const updateData = foundry.utils.expandObject(formData.object);
+    const updateData = this.getSubmitData(formData);
     await this.item.update(updateData);
   }
   //#endregion

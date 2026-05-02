@@ -49,10 +49,10 @@ export class BreakAdversarySheet extends BreakActorSheet {
   async _onRender(context, options) {
     await super._onRender(context, options);
     const html = $(this.element);
-    this._toggleDisabled(!context.sheetEditable);
+    this._toggleSheetControls(!context.editable);
 
     // Everything below here is only needed if the sheet is editable
-    if ( !context.sheetEditable ) return;
+    if ( !context.editable ) return;
 
     html.find("input.item-quantity").on("change", this._onChangeItemInput.bind(this));
 
@@ -99,7 +99,7 @@ export class BreakAdversarySheet extends BreakActorSheet {
 
     context.defenseRating = context.document.system.defense.total;
     context.inventorySlots = context.document.system.slots;
-    context.sheetEditable = this.isEditable && !this._viewOnly;
+    context.editable = this.isEditable && !this._viewOnly;
     return context;
   }
   //#endregion

@@ -20,6 +20,7 @@ export class BreakAbilitySheet extends BreakItemSheet {
           resizable: true
       },
       actions: {
+        toggleEditable: this.onToggleEditable,
         editImage: this.onEditImage,
         addAction: this.onAddAction,
         addEffect: this.onAddEffect,
@@ -67,7 +68,7 @@ export class BreakAbilitySheet extends BreakItemSheet {
       label: game.i18n.localize(BREAK.ability_types[k]),
       active: context.document.system.type === k
     }));
-    context.requiresSubtype = context.document.system.type === 'calling' || context.document.system.type === 'species';
+    context.requiresSubtype = context.document.system.type === 'calling' || context.document.system.type === 'species' || context.document.system.type === 'adversary';
     if(context.document.system.type === 'calling')
       context.itemSubtypes = Object.keys(BREAK.ability_levels).map(k => ({
         key: k,
@@ -78,6 +79,12 @@ export class BreakAbilitySheet extends BreakItemSheet {
       context.itemSubtypes = Object.keys(BREAK.species_ability_levels).map(k => ({
         key: k,
         label: game.i18n.localize(BREAK.species_ability_levels[k]),
+        active: context.document.system.subtype === k
+      }));
+    else if(context.document.system.type === 'adversary')
+      context.itemSubtypes = Object.keys(BREAK.adversary_ability_levels).map(k => ({
+        key: k,
+        label: game.i18n.localize(BREAK.adversary_ability_levels[k]),
         active: context.document.system.subtype === k
       }));
     context.isMagic = context.document.system.magic ?? false;

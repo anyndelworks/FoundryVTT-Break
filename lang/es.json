@@ -284,7 +284,9 @@
       "StandardLong": "Habilidades estandar",
       "AdvancedLong": "Habilidades avanzadas",
       "ElectiveLong": "Habilidades electivas",
-      "Magic": "Magica"
+      "Magic": "Magica",
+      "Basic": "Basica",
+      "Legendary": "Legendaria"
     },
 
     "Inventory": "Inventario",
@@ -335,6 +337,7 @@
     "Languages": "Idiomas",
     "BonusLanguages": "Idiomas extra",
     "Description": "Descripción",
+    "Overview": "Resumen",
     "Rules": "Reglas",
     "Purviews": "Competencias",
     "Base": "Base",

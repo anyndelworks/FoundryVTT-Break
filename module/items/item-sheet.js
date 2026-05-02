@@ -8,11 +8,17 @@ const { DragDrop } = foundry.applications.ux
 export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
   #dragDrop
   allowedItemTypes = [];
+  _headerCollapsed = false;
+  _viewOnly = true;
+
   static DEFAULT_OPTIONS = {
     dragDrop: [{
       dragSelector: '[data-drag="true"]',
       dropSelector: ''
-    }]
+    }],
+    actions: {
+      toggleEditable: this.onToggleEditable
+    }
   }
 
   constructor(options = {}) {
@@ -35,6 +41,8 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
+    context.editable = this._isSheetEditable();
+    context.headerCollapsed = this._headerCollapsed;
     context.actions = this.document.system.actions ?? [];
     context.actions = context.actions.map(a => ({
       ...a,
@@ -50,6 +58,15 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     await super._onRender(context, options);
     this.#dragDrop.forEach((d) => d.bind(this.element))
     const html = $(this.element);
+
+    this._toggleSheetControls(!context.editable);
+
+    if (!context.editable) {
+      const content = html.find(".window-content").length ? html.find(".window-content") : html;
+      content.find(".interface-only, .select-feature, .add-effect, [data-action='addAction'], [data-action='addAdvancementRank'], [data-action='removeAdvancementRank'], [data-action='removeAllowance'], [data-action='removeQuirkCategory'], [data-action='addPurview'], [data-action='deletePurview'], [data-action='deleteHistory'], [data-action='deleteItem']").hide();
+      content.find("[data-action]").not("[data-action='toggleEditable'], [data-action='toggleHeader'], [data-action='tab']").css("pointer-events", "none");
+      return;
+    }
 
     html.find("[data-context-menu]").each((i, a) =>{
       a.addEventListener("click", event => {
@@ -67,11 +84,11 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
   }
 
   _canDragStart(selector) {
-    return this.document.isOwner && this.isEditable
+    return this.document.isOwner && this._isSheetEditable()
   }
 
   _canDragDrop(selector) {
-    return this.document.isOwner && this.isEditable
+    return this.document.isOwner && this._isSheetEditable()
   }
 
   async _onDrop(event) {
@@ -88,7 +105,34 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
   }
 
   //#region Actions
+  _isSheetEditable() {
+    return this.isEditable && !this._viewOnly;
+  }
+
+  _toggleSheetControls(disabled) {
+    const viewActions = "[data-action='toggleEditable'], [data-action='toggleHeader'], [data-action='tab']";
+    const content = $(this.element).find(".window-content");
+    const root = content.length ? content : $(this.element);
+    root
+      .find("button, input, optgroup, option, select, textarea")
+      .filter((i, element) => !element.closest(viewActions))
+      .prop("disabled", disabled);
+  }
+
+  static onToggleEditable(event) {
+    event.preventDefault();
+    this._viewOnly = !this._viewOnly;
+    this.render(true);
+  }
+
+  static onToggleHeader(event) {
+    event.preventDefault();
+    this._headerCollapsed = !this._headerCollapsed;
+    this.render(true);
+  }
+
   static async onEditImage(event, target) {
+    if (!this._isSheetEditable()) return;
     const field = target.dataset.field || "img"
     const current = foundry.utils.getProperty(this.document, field)
 
@@ -103,11 +147,13 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
   static async onAddEffect(event) {
     event.preventDefault();
+    if (!this._isSheetEditable()) return;
     return ActiveEffect.implementation.create({name: 'New effect'}, {parent: this.item, renderSheet: true});
   }
 
   static async onAddAction(event) {
     event.preventDefault();
+    if (!this._isSheetEditable()) return;
     const actions = this.document.system.actions ?? [];
     actions.push(Action.create("New action"));
     this.document.update({"system.actions": actions});
@@ -115,6 +161,7 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
   static async onDisplayAction(event) {
     event.preventDefault();
+    if (!this._isSheetEditable()) return;
     const id = event.target.dataset.id;
     const action = this.document.system.actions.find(a => a.id === id);
     console.log(action);
@@ -123,6 +170,7 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
   static async onDisplayEffect(element) {
     event.preventDefault();
+    if (!this._isSheetEditable()) return;
     const id = event.target.dataset.id;
     const effect = this.document.effects.get(id);
     effect.sheet.render(true);

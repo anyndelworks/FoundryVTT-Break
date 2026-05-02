@@ -19,6 +19,7 @@ export class BreakHomelandSheet extends BreakItemSheet {
       resizable: true
     },
     actions: {
+      toggleEditable: this.onToggleEditable,
       editImage: this.onEditImage,
       deleteHistory: this.#onDeleteHistory,
       selectFeature: this.onSelectFeature

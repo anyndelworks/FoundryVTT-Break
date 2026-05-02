@@ -1,6 +1,6 @@
-<header class="adversary-header" style="margin-bottom: 12px;">
-    <div class="flexrow adversary-header-top" style="margin-bottom: 10px;">
-        <div class="adversary-name-banner">
+<section class="landscape-header" style="margin-bottom: 12px;">
+    <div class="flexrow adversary-header-top">
+        <div class="name-banner">
             <a
                 class="clickable"
                 data-action="toggleHeader"
@@ -20,20 +20,18 @@
             data-action="toggleEditable"
             style="display:flex; align-items:center; justify-content:center; width:32px; margin-left:8px;flex: 0;"
         >
-            <i class="fas {{#if sheetEditable}}fa-lock-open{{else}}fa-lock{{/if}}"></i>
+            <i class="fas {{#if editable}}fa-lock-open{{else}}fa-lock{{/if}}"></i>
         </a>
     </div>
 
     {{#unless headerCollapsed}}
-    {{#if sheetEditable}}
+    {{#if editable}}
         <prose-mirror name="system.description" value="{{ document.system.description }}"></prose-mirror>
     {{else}}
-        <div class="editor">
-            <div class="editor-content">{{{ descriptionHTML }}}</div>
-        </div>
+        <div class="editor-content" style="max-height: 75px;overflow:auto;flex: none;">{{{ descriptionHTML }}}</div>
     {{/if}}
 
-    <img class="profile-img" src="{{document.img}}" title="{{document.name}}" data-action="editImage" data-field="img" style="flex: 0;"/>
+    <img class="landscape-img" src="{{document.img}}" title="{{document.name}}" data-action="editImage" data-field="img"/>
 
 
     <div class="flexrow adversary-header-controls" style="column-gap: 12px;">
@@ -44,4 +42,4 @@
         </select>
     </div>
     {{/unless}}
-</header>
+</section>

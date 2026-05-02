@@ -132,10 +132,19 @@
   --text-secondary: white;
 }
 .break.sheet.calling .profile-img {
-  border-radius: 50%;
   border: 2px solid #AA3D9E;
-  width: 100px;
-  height: 100px;
+}
+.break.sheet.calling .calling-header-top {
+  column-gap: 10px;
+}
+.break.sheet.calling .name-banner {
+  background: linear-gradient(90deg, #AA3D9E 0%, #0081C6 100%);
+}
+.break.sheet.calling .name-banner input {
+  color: #FCFFFD;
+}
+.break.sheet.calling .name-banner input::placeholder {
+  color: #FCFFFD;
 }
 .select-feature {
   width: 100%;
@@ -145,54 +154,37 @@
   margin: 4px;
 }
 .break.sheet.companion .profile-img {
-  border-radius: 50%;
   border: 2px solid #d48aa2;
-  width: 100px;
-  height: 100px;
 }
-.break.sheet.companion .companion-name-banner {
-  display: flex;
-  align-items: center;
-  min-height: 28px;
-  padding: 0 12px;
-  border-radius: 0 10px 10px 0;
+.break.sheet.companion .name-banner {
   background: linear-gradient(90deg, #f3b8cb 0%, #f7d7e3 100%);
-  box-shadow: inset 0 0 0 1px rgba(167, 77, 109, 0.18);
 }
-.break.sheet.companion .companion-name-banner input {
-  border: none;
-  background: transparent;
-  padding: 0;
-  height: 100%;
-  font-family: Montserrat;
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
+.break.sheet.companion .name-banner input {
   color: #cf4f78;
 }
-.break.sheet.companion .companion-name-banner input::placeholder {
+.break.sheet.companion .name-banner input::placeholder {
   color: rgba(207, 79, 120, 0.65);
 }
-.break.sheet.companion .companion-name-banner input:focus {
-  box-shadow: none;
-}
 .break.sheet.ability .profile-img {
-  border-radius: 50%;
   border: 2px solid #AA3D9E;
-  width: 100px;
-  height: 100px;
 }
 .break.sheet.species .profile-img {
-  border-radius: 50%;
   border: 2px solid #0084C7;
-  width: 100px;
-  height: 100px;
 }
 .break.sheet.quirk .profile-img {
-  border-radius: 50%;
   border: 2px solid #98CF59;
-  width: 100px;
-  height: 100px;
+}
+.break.sheet.generic-item .profile-img {
+  border: 2px solid #C4397A;
+}
+.break.sheet.generic-item .name-banner {
+  background: linear-gradient(90deg, #FBD6E6 0%, #E8D7E9 100%);
+}
+.break.sheet.generic-item .name-banner input {
+  color: #EE37A3;
+}
+.break.sheet.generic-item .name-banner input::placeholder {
+  color: #EE37A3;
 }
 .editor {
   flex: 1;
@@ -211,6 +203,51 @@
 .break.sheet .window-content {
   height: 100%;
   padding: 15px;
+}
+.break.sheet .profile-img {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  min-width: 100px;
+  min-height: 100px;
+  object-fit: contain;
+}
+.break.sheet .landscape-img {
+  align-self: center;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.break.sheet .landscape-header {
+  display: flex;
+  margin-bottom: 12px;
+  flex-direction: column;
+  max-height: 50%;
+}
+.break.sheet .name-banner {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 12px;
+  border-radius: 0 10px 10px 0;
+  background: linear-gradient(90deg, #f3b8cb 0%, #f7d7e3 100%);
+  box-shadow: inset 0 0 0 1px rgba(167, 77, 109, 0.18);
+}
+.break.sheet .name-banner input {
+  border: none;
+  background: transparent;
+  padding: 0;
+  height: 100%;
+  font-family: Montserrat;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #cf4f78;
+}
+.break.sheet .name-banner input::placeholder {
+  color: rgba(207, 79, 120, 0.65);
+}
+.break.sheet .name-banner input:focus {
+  box-shadow: none;
 }
 .break.sheet form {
   height: 100%;
@@ -784,56 +821,29 @@
 .break.sheet.adversary .adversary-aside .aside-section div {
   margin-bottom: 10px;
 }
-.break.sheet.adversary .adversary-header {
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-}
-.break.sheet.adversary .adversary-header .adversary-header-top {
-  align-items: center;
+.break.sheet.adversary .adversary-header-top {
   column-gap: 10px;
 }
-.break.sheet.adversary .adversary-header .adversary-name-banner {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  min-height: 28px;
-  padding: 0 12px;
-  border-radius: 0 10px 10px 0;
+.break.sheet.adversary .name-banner {
   background: linear-gradient(90deg, #FEEDD7 0%, #FBD6E6 100%);
-  box-shadow: inset 0 0 0 1px rgba(223, 138, 83, 0.18);
 }
-.break.sheet.adversary .adversary-header .adversary-name-banner .rank-chip {
+.break.sheet.adversary .name-banner input::placeholder {
+  color: rgba(239, 127, 35, 0.65);
+}
+.break.sheet.adversary .name-banner .rank-chip {
   color: #3F4B9B;
   border-radius: 8px;
   padding-left: 4px;
   padding-right: 4px;
   background-color: white;
 }
-.break.sheet.adversary .adversary-header .adversary-name-banner input {
-  border: none;
-  background: transparent;
-  padding: 0;
-  height: 100%;
+.break.sheet.adversary .name-banner label {
   font-family: Montserrat;
   font-size: 18px;
   font-weight: 800;
   letter-spacing: 0.04em;
 }
-.break.sheet.adversary .adversary-header .adversary-name-banner label {
-  font-family: Montserrat;
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-}
-.break.sheet.adversary .adversary-header .adversary-name-banner input::placeholder {
-  color: rgba(239, 127, 35, 0.65);
-}
-.break.sheet.adversary .adversary-header .adversary-name-banner input:focus {
-  box-shadow: none;
-}
-.break.sheet.adversary .adversary-header .profile-img {
+.break.sheet.adversary .profile-img {
   align-self: center;
   width: 160px;
 }
@@ -849,7 +859,10 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-height: 225px;
+}
+.break.sheet.adversary .adversary-misc-section .adversary-misc-sub-section label {
+  font-weight: bold;
+  font-size: 16px;
 }
 .break.sheet.adversary .aptitude-bon-input {
   margin-top: 0;
