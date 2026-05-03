@@ -1,5 +1,27 @@
 export class BreakBaseActorDataModel extends foundry.abstract.DataModel {
 
+    static migrateData(source) {
+        source = super.migrateData(source);
+        if (typeof source.slots === "number") {
+            source.slots = {
+                value: source.slots,
+                bon: 0,
+                total: source.slots,
+                modifier: 0,
+                override: null
+            };
+        }
+        if (typeof source.size === "string" || source.size === null) {
+            source.size = {
+                value: source.size,
+                modifier: 0,
+                override: null,
+                effective: null
+            };
+        }
+        return source;
+    }
+
     static defineSchema() {
         const fields = foundry.data.fields;
 
@@ -43,6 +65,21 @@ export class BreakBaseActorDataModel extends foundry.abstract.DataModel {
                 total: new fields.NumberField({ initial: 2 }),
                 modifier: new fields.NumberField({ initial: 0 }),
                 override: new fields.NumberField({ initial: null, nullable: true })
+            }),
+
+            slots: new fields.SchemaField({
+                value: new fields.NumberField({ initial: 0 }),
+                bon: new fields.NumberField({ initial: 0 }),
+                total: new fields.NumberField({ initial: 0 }),
+                modifier: new fields.NumberField({ initial: 0 }),
+                override: new fields.NumberField({ initial: null, nullable: true })
+            }),
+
+            size: new fields.SchemaField({
+                value: new fields.StringField({ nullable: true, initial: null }),
+                modifier: new fields.NumberField({ initial: 0 }),
+                override: new fields.StringField({ nullable: true, initial: null }),
+                effective: new fields.StringField({ nullable: true, initial: null })
             }),
 
             aptitudes: new fields.SchemaField({
@@ -124,9 +161,27 @@ export class BreakBaseActorDataModel extends foundry.abstract.DataModel {
         return stat.override != null ? Number(stat.override) : fallback;
     }
 
+    static #resolveSize(size, sizes) {
+        if (size.override) return size.override;
+
+        const keys = Object.keys(sizes);
+        const baseIndex = keys.indexOf(size.value);
+        if (baseIndex < 0) return size.value;
+
+        const modifier = Number(size.modifier ?? 0);
+        const index = Math.min(Math.max(baseIndex + modifier, 0), keys.length - 1);
+        return keys[index];
+    }
+
     computeDerivedData(actor) {
         const shield = this.equipment.shield;
         const armor = this.equipment.armor;
+        const sizes = game.settings.get("break", "sizes");
+        const sizeKey = BreakBaseActorDataModel.#resolveSize(this.size, sizes);
+
+        this.size.effective = sizeKey;
+        this.sizeData = sizeKey ? sizes[sizeKey] : null;
+        this.slots.value = this.sizeData?.inventorySize ?? this.slots.value;
         
         this.hearts.bon = this.hearts.modifier;
         this.hearts.total = BreakBaseActorDataModel.#resolveOverride(this.hearts, this.hearts.max + this.hearts.bon);
@@ -148,10 +203,13 @@ export class BreakBaseActorDataModel extends foundry.abstract.DataModel {
         this.hands.bon = this.hands.modifier;
         this.hands.total = BreakBaseActorDataModel.#resolveOverride(this.hands, this.hands.value + this.hands.bon);
 
+        this.slots.bon = this.slots.modifier;
+        this.slots.total = BreakBaseActorDataModel.#resolveOverride(this.slots, this.slots.value + this.slots.bon);
+
         const aptitudes = this.aptitudes;
         for (const k of ["might", "deftness", "grit", "insight", "aura"]) {
             const aptitude = aptitudes[k];
-            aptitude.bon = Number(aptitude.modifier ?? 0) + Number(aptitude.trait ?? 0);
+            aptitude.bon = Number(aptitude.modifier ?? 0) + Number(aptitude.trait ?? 0) + Number(this.sizeData?.[k] ?? 0);
             aptitude.total = Math.floor(BreakBaseActorDataModel.#resolveOverride(aptitude, aptitude.value + aptitude.bon));
         }
     }

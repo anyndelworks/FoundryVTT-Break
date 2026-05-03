@@ -1,3 +1,28 @@
+Copyright Notice and License Scope
+==================================
+
+Unless otherwise stated below, the source code and system files in this
+repository are licensed under the Apache License, Version 2.0.
+
+The following content is not licensed under the Apache License and remains
+copyrighted material:
+
+- All files in the assets/ directory.
+- All content contained in preview compendium packs, including:
+  - packs/preview-content/
+  - packs/preview-adversaries/
+  - any future packs with a preview-* name or equivalent preview-content purpose.
+
+Copyright for that excluded content:
+
+  © Reynaldo Madriñan + Carlo Tartaglia
+
+All rights are reserved for the excluded assets and preview compendium content
+unless explicit written permission is provided by the copyright holders. The
+presence of those files in this repository does not grant permission to copy,
+redistribute, modify, sublicense, or reuse them outside their intended use as
+part of this Foundry VTT game system.
+
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/

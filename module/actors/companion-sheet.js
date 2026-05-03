@@ -106,7 +106,7 @@ export class BreakCompanionSheet extends BreakActorSheet {
     context.sizes = Object.keys(sizes).map(k => ({
       key: k,
       label: sizes[k].label,
-      active: context.document.system.size === k
+      active: context.document.system.size.value === k
     }));
     context.mountSizes = [
       { key: "", label: game.i18n.localize("BREAK.None"), active: !context.document.system.mount.riderSize },
@@ -117,7 +117,7 @@ export class BreakCompanionSheet extends BreakActorSheet {
       }))
     ];
 
-    context.inventorySlots = context.document.system.inventorySlots ?? context.document.system.slots;
+    context.inventorySlots = context.document.system.inventorySlots ?? context.document.system.slots.total;
     context.defenseRating = context.document.system.defense.total;
     context.editable = this.isEditable && !this._viewOnly;
     context.hasEquippedItems = !!(
@@ -201,8 +201,9 @@ export class BreakCompanionSheet extends BreakActorSheet {
         ...updateData.system.capabilities,
         ...defaults.capabilities
       };
-      if (!updateData.system.slots) {
-        updateData.system.slots = defaults.slots;
+      if (!updateData.system.slots?.value) {
+        updateData.system.slots = updateData.system.slots ?? {};
+        updateData.system.slots.value = defaults.slots;
       }
     }
 

@@ -15,7 +15,6 @@ export class BreakCharacterDataModel extends BreakBaseActorDataModel {
       languages: new fields.StringField(),
       description: new fields.StringField(),
       purviews: new fields.ArrayField(new fields.StringField()),
-      slots: new fields.NumberField(),
 
       currency: new fields.SchemaField({
         gems: new fields.NumberField(),
@@ -28,6 +27,7 @@ export class BreakCharacterDataModel extends BreakBaseActorDataModel {
   computeDerivedData(actor) {
     this.computeItemEffects(actor);
     super.computeDerivedData(actor);
+    this.inventorySlots = this.slots.total;
   }
 
   computeItemEffects(actor) {
@@ -37,12 +37,8 @@ export class BreakCharacterDataModel extends BreakBaseActorDataModel {
     this._species = species ?? null;
     this.hasSpecies = !!species;
 
-    const sizes = game.settings.get("break", "sizes");
-    const sizeKey = this.size?.modifier ?? (species ? species.system.size : null);
-    this.inventorySlots = actor.system.slots;
-    if (sizeKey && sizes[sizeKey] && !actor.system.slots) {
-      this.inventorySlots = sizes[sizeKey].inventorySize;
-      this.sizeData = sizes[sizeKey];
+    if (!this.size.value && species?.system.size) {
+      this.size.value = species.system.size;
     }
 
     const calling = items.find(i => i.type === "calling");

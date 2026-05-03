@@ -40,6 +40,19 @@
           "modifier": 0,
           "override": null
         },
+        "slots": {
+          "value": 0,
+          "bon": 0,
+          "total": 0,
+          "modifier": 0,
+          "override": null
+        },
+        "size": {
+          "value": null,
+          "modifier": 0,
+          "override": null,
+          "effective": null
+        },
         "aptitudes": {
           "might": {
             "value": 10,
@@ -121,7 +134,6 @@
       "languages": "",
       "description": "",
       "purviews": "",
-      "slots": 0,
       "currency": {
         "gems": 0,
         "coins": 0,
@@ -137,8 +149,6 @@
       "menace": "Mook",
       "rank": 1,
       "description": "",
-      "size": null,
-      "slots": 0,
       "menace_type": {
         "value": "mook",
         "label": "BREAK.MENACE.Menace_Type"
@@ -159,8 +169,6 @@
       "templates": [ "baseActor" ],
       "category": "pet",
       "description": "",
-      "size": null,
-      "slots": 0,
       "owner": null,
       "named": false,
       "loyalty": {

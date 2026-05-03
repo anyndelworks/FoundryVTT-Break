@@ -1,0 +1,32 @@
+<section class="description flexcol {{tabs.description.cssClass}} scrollable" data-group="primary" autocomplete="off" style="height: 100%;">
+    <div style="display:flex;justify-content:space-between;flex: 1;column-gap:24px;">
+        <div class="flexcol" style="width: 50%;">
+            <div class="section-header" data-drag="true">{{localize "BREAK.Purviews"}}</div>
+            <div class="purview-list flexcol" style="width:100%;">
+                {{#each purviews}}
+                    <div style="display: flex; margin-bottom: 6px;align-items: center; width: 100%;">
+                        <input name="system.purviews.{{@index}}" type="text" style="margin-right: 6px" value="{{this}}" id="purview-{{@index}}" placeholder="Purview..." class="purview-input" />
+                        <button data-action="deletePurview" data-index="{{@index}}" style="margin-left: auto; max-width: 32px; margin-right: 8px;"><i class="fas fa-trash" style="margin: 0px;"></i></button>
+                    </div>
+                {{/each}}
+                <button data-action="addPurview" style="margin-left: auto; max-width: 32px; margin-right: auto;"><i class="fa-solid fa-plus" style="margin: 0px;"></i></button>
+            </div>
+        </div>
+        <div class="flexcol" style="width: 50%;">
+            <div class="section-header">{{localize "BREAK.GEAR.StartingGear"}}</div>
+            <div class="form-group" style="display: flex;align-items:center;column-gap:8px;">
+                <label>{{localize "BREAK.Pick"}}</label>
+                <input type="text" name="system.gearPicks" style="width: 36px;" value="{{document.system.gearPicks}}">
+            </div>
+            <div class="starting-gear-list flexcol drop-zone" style="display: flex; flex-wrap: wrap;flex-grow: 0;min-height:42px;">
+                {{#each startingGear}}
+                    <div style="display: flex; margin-bottom: 6px;align-items: center;">
+                        <label data-tooltip="{{this.system.description}}">{{this.name}}</label>
+                        <button data-action="deleteItem" class="delete-gear" data-id="{{this.uuid}}" style="margin-left: auto; max-width: 32px; margin-right: 8px;"><i class="fas fa-trash" style="margin: 0px;"></i></button>
+                    </div>
+                {{/each}}
+                <button class="select-feature" data-type="item" data-action="selectFeature" style="height: inherit;">{{localize 'BREAK.PickOrDrag'}} {{localize 'TYPES.Item.item'}}</i></button>
+            </div>
+        </div>
+    </div>
+</section>

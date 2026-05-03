@@ -94,11 +94,11 @@ export class BreakAdversarySheet extends BreakActorSheet {
     context.sizes = Object.keys(sizes).map(k => ({
       key: k,
       label: sizes[k].label,
-      active: context.document.system.size === k
+      active: context.document.system.size.value === k
     }));
 
     context.defenseRating = context.document.system.defense.total;
-    context.inventorySlots = context.document.system.slots;
+    context.inventorySlots = context.document.system.slots.total;
     context.editable = this.isEditable && !this._viewOnly;
     return context;
   }

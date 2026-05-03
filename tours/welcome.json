@@ -1,0 +1,35 @@
+{
+  "namespace": "break",
+  "id": "welcome",
+  "title": "BREAK!! game system",
+  "description": "This is a quick introduction to help you get started!",
+  "display": true,
+  "canBeResumed": true,
+  "restricted": false,
+  "steps": [
+    {
+      "id": "welcome",
+      "title": "BREAK!! welcome tour",
+      "content": "This is a quick introduction to help you get started! Keep in mind this system does not include the game core rules, which can be found at <a href=\"https://breakrpg.com/\" target=\"_blank\" rel=\"nofollow noopener\">breakrpg.com</a>. It does, however, include the preview content you can download for free.<p>Currently, there is also a kickstarter going on for a new book! You can find more at <a href=\"https://www.kickstarter.com/projects/greywizard/start-a-break-rpg-zine-01\" target=\"_blank\" rel=\"nofollow noopener\">START</a>.</p>"
+    },
+    {
+      "id": "settings",
+      "selector": "#sidebar-tabs [data-tab='settings']",
+      "title": "Game settings",
+      "content": "First of all, you'll find some BREAK!! specific settings to set up before you play. These include info about sizes, armors, weapons and shields.",
+      "position": "left"
+    },
+    {
+      "id": "compendiums",
+      "selector": "#sidebar-tabs [data-tab='compendium']",
+      "title": "Compendiums",
+      "content": "In your compendiums, you'll find an ailment compendium. You can add any active effect here and it'll be displayed in the token status effects. Besides this, you'll also find some game-ready free included preview content!",
+      "position": "left"
+    },
+    {
+      "id": "finish",
+      "title": "Ready to go!",
+      "content": "We hope you enjoy your games! Remember to check out the <a href=\"https://breakrpg.blogspot.com/\" target=\"_blank\" rel=\"nofollow noopener\">BREAK!! blog</a> for some extra content."
+    }
+  ]
+}

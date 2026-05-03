@@ -12,14 +12,10 @@ export class BreakAdversaryDataModel extends BreakBaseActorDataModel {
             rank: new fields.NumberField({ initial: 1 }),
             description: new fields.HTMLField({ initial: "" }),
 
-            size: new fields.StringField({ nullable: true, initial: null }),
-
             menace_type: new fields.SchemaField({
                 value: new fields.StringField({ initial: "mook" }),
                 label: new fields.StringField({ initial: "BREAK.MENACE.Menace_Type" })
             }),
-
-            slots: new fields.NumberField({ initial: 0 }),
 
             misc: new fields.SchemaField({
                 habitat: new fields.HTMLField({ initial: "" }),

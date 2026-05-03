@@ -34,24 +34,10 @@ export class BreakSpeciesSheet extends BreakItemSheet {
     header: {
         template: "systems/break/templates/items/shared/generic-header.hbs"
     },
-    tabs: {
-      template: "systems/break/templates/shared/sheet-tabs.hbs",
-    },
-    description: {
-      template: "systems/break/templates/items/species/species-description-tab.hbs"
-    },
     properties: {
       template: "systems/break/templates/items/species/species-properties-tab.hbs"
     },
   }
-
-  static TABS = {
-    primary: {
-      initial: "description",
-      tabs: [{id: "description", icon: "fas fa-scroll"}, {id: "properties", icon: "fas fa-sparkles"}],
-    }
-  }
-
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);

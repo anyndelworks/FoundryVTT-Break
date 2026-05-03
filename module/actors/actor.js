@@ -227,13 +227,14 @@ export class BreakActor extends Actor {
         abilityUuids = (item.system.abilities ?? []);
         abilities = await Promise.all(abilityUuids.map(uuid => fromUuid(uuid)));
         const innateAbilities = abilities.filter(a => a?.system.subtype === "innate");
-        this.createEmbeddedDocuments("Item", innateAbilities);
+        await this.update({"system.size.value": item.system.size ?? null});
+        await this.createEmbeddedDocuments("Item", innateAbilities);
         break;
       case "calling":
-        const abilityUuids = (item.system.abilities ?? []);
-        const abilities = await Promise.all(abilityUuids.map(uuid => fromUuid(uuid)));
+        abilityUuids = (item.system.abilities ?? []);
+        abilities = await Promise.all(abilityUuids.map(uuid => fromUuid(uuid)));
         const startingAbiligites = abilities.filter(a => a?.system.subtype === "starting");
-        this.createEmbeddedDocuments("Item", startingAbiligites);
+        await this.createEmbeddedDocuments("Item", startingAbiligites);
         break;
     }
   }

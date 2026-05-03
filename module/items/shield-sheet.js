@@ -34,9 +34,6 @@ export class BreakShieldSheet extends BreakItemSheet {
     tabs: {
       template: "systems/break/templates/shared/sheet-tabs.hbs",
     },
-    description: {
-      template: "systems/break/templates/items/shield/shield-description-tab.hbs"
-    },
     properties: {
       template: "systems/break/templates/items/shield/shield-properties-tab.hbs"
     },
@@ -47,8 +44,8 @@ export class BreakShieldSheet extends BreakItemSheet {
 
   static TABS = {
     primary: {
-      initial: "description",
-      tabs: [{id: "description", icon: "fas fa-scroll"}, {id: "properties", icon: "fas fa-sword"}, {id: "effects", icon: "fas fa-sparkles"}],
+      initial: "properties",
+      tabs: [{id: "properties", icon: "fas fa-sword"}, {id: "effects", icon: "fas fa-sparkles"}],
     }
   }
 

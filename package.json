@@ -13,7 +13,7 @@
     "last 3 versions"
   ],
   "author": "",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "private": true,
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.15",

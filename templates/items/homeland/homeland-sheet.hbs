@@ -2,7 +2,9 @@
     <div style="display:flex;column-gap: 24px;flex: 1;">
         <div class="flexcol" style="flex: 0.75;">
             <div class="section-header">{{localize "BREAK.BonusLanguages"}}</div>
-            <textarea name="system.bonusLanguages" style="flex: 0;" type="text" placeholder="{{ localize 'BREAK.Name' }}">{{document.system.bonusLanguages}}</textarea>
+            <textarea name="system.bonusLanguages" style="flex: 1;" type="text" placeholder="{{ localize 'BREAK.Name' }}">{{document.system.bonusLanguages}}</textarea>
+        </div>
+        <div class="flexcol" style="flex: 1;">
             <div class="section-header">{{localize "BREAK.Histories"}}</div>
             <div class="histories-list" style="display: flex; flex-wrap: wrap;flex-grow: 0;">
                 {{#each histories}}
@@ -13,18 +15,6 @@
                 {{/each}}
                 <button class="select-feature" data-type="history" data-action="selectFeature" style="height: inherit;">{{localize 'BREAK.PickOrDrag'}} {{localize 'TYPES.Item.history'}}</i></button>
             </div>
-        </div>
-        <div class="flexcol" style="flex: 1;">
-            <div class="section-header">
-                {{localize "BREAK.Description"}}
-            </div>
-            {{#if editable}}
-            <prose-mirror name="system.description" value="{{ document.system.description }}"></prose-mirror>
-            {{else}}
-            <div class="editor">
-                <div class="editor-content">{{{ descriptionHTML }}}</div>
-            </div>
-            {{/if}}
         </div>
     </div>
 </section>

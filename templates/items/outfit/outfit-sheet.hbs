@@ -1,16 +1,4 @@
-<section class="flexcol {{cssClass}} scrollable" autocomplete="off">
-    <div style="display:flex;column-gap: 24px;">
-        <div class="flexcol" style="flex: 1;">
-            <div class="section-header">
-                {{localize "BREAK.Description"}}
-            </div>
-            {{#if editable}}
-                <prose-mirror name="system.description" value="{{ document.system.description }}"></prose-mirror>
-            {{else}}
-                <div class="editor">
-                    <div class="editor-content">{{{ descriptionHTML }}}</div>
-                </div>
-            {{/if}}
-        </div>
-    </div>
+<section class="flexcol {{cssClass}} scrollable" autocomplete="off" style="height: 100%;">
+    {{> "systems/break/templates/items/shared/item-effect-list.hbs"}}
+    {{> "systems/break/templates/items/shared/item-action-list.hbs"}}
 </section>

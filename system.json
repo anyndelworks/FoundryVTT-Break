@@ -6,7 +6,8 @@
   "manifest": "https://raw.githubusercontent.com/Anyndol/FoundryVTT-Break/dev/system.json",
   "download": "https://github.com/anyndelworks/FoundryVTT-Break/releases/download/v1.0-beta.1.2/v1.0-beta.1.2.zip",
   "description": "A BREAK!! TTRPG game system",
-  "license": "LICENSE.txt",
+  "background": "systems/break/assets/headerimage.jpg",
+  "license": "LICENSE",
   "authors": [
     {
       "name": "Anyndol"
@@ -44,6 +45,12 @@
       "label": "BREAK!! Preview content",
       "path": "packs/preview-content",
       "type": "Item"
+    },
+    {
+      "name": "preview-adversaries",
+      "label": "BREAK!! Preview actors",
+      "path": "packs/preview-adversaries",
+      "type": "Actor"
     }
   ],
   "documentTypes": {

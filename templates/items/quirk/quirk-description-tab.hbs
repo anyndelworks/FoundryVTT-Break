@@ -25,16 +25,4 @@
             {{/if}}
         </div>
     </div>
-    <div class="flexcol" style="flex: 1;">
-        <div class="section-header">
-            {{localize "BREAK.Description"}}
-        </div>
-        {{#if editable}}
-        <prose-mirror name="system.description" value="{{ document.system.description }}" style="flex: 1;"></prose-mirror>
-        {{else}}
-        <div class="editor">
-            <div class="editor-content">{{{ descriptionHTML }}}</div>
-        </div>
-        {{/if}}
-    </div>
 </section>

@@ -131,6 +131,14 @@
   --text-primary: black;
   --text-secondary: white;
 }
+#pause img {
+  content: url("../assets/breaklogo.png");
+  width: min(360px, 40vw);
+  height: auto;
+  max-height: 140px;
+  object-fit: contain;
+  animation: none;
+}
 .break.sheet.calling .profile-img {
   border: 2px solid #AA3D9E;
 }
@@ -168,11 +176,62 @@
 .break.sheet.ability .profile-img {
   border: 2px solid #AA3D9E;
 }
+.break.sheet.ability .name-banner {
+  background: linear-gradient(90deg, #EED8EB 0%, #CCE5F3 100%);
+}
+.break.sheet.ability .name-banner input {
+  color: #AE46A2;
+}
+.break.sheet.ability .name-banner input::placeholder {
+  color: #AE46A2;
+}
+.break.sheet.homeland .profile-img {
+  border: 2px solid #16C4C3;
+}
+.break.sheet.homeland .name-banner {
+  background: linear-gradient(90deg, #CCF2F1 0%, #E0F2E7 100%);
+}
+.break.sheet.homeland .name-banner input {
+  color: #01C0C2;
+}
+.break.sheet.homeland .name-banner input::placeholder {
+  color: #01C0C2;
+}
+.break.sheet.history .profile-img {
+  border: 2px solid #16C4C3;
+}
+.break.sheet.history .name-banner {
+  background: linear-gradient(90deg, #CCF2F1 0%, #E0F2E7 100%);
+}
+.break.sheet.history .name-banner input {
+  color: #01C0C2;
+}
+.break.sheet.history .name-banner input::placeholder {
+  color: #01C0C2;
+}
 .break.sheet.species .profile-img {
   border: 2px solid #0084C7;
 }
+.break.sheet.species .name-banner {
+  background: linear-gradient(90deg, #CCE6F3 0%, #CCF2F2 100%);
+}
+.break.sheet.species .name-banner input {
+  color: #0E98D7;
+}
+.break.sheet.species .name-banner input::placeholder {
+  color: #0E98D7;
+}
 .break.sheet.quirk .profile-img {
   border: 2px solid #98CF59;
+}
+.break.sheet.quirk .name-banner {
+  background: linear-gradient(90deg, #EBF5DD 0%, #FEEDD6 100%);
+}
+.break.sheet.quirk .name-banner input {
+  color: #81B043;
+}
+.break.sheet.quirk .name-banner input::placeholder {
+  color: #81B043;
 }
 .break.sheet.generic-item .profile-img {
   border: 2px solid #C4397A;

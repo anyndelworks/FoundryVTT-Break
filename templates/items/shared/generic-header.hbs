@@ -1,44 +1,49 @@
-<section class="sheet-header" style="flex: 0;margin-bottom:12px;display:flex;">
-    <img class="profile-img" src="{{document.img}}" title="{{document.name}}" data-action="editImage" data-field="img" style="height:100px;max-width:33%"/>
-    <div style="height: 100%;display:flex;flex-direction:column;width: 100%;">
-        <div class="header-fields" style="display:flex; align-items:center;width:100%">
-            <h3 class="charname">
-                <input name="name" type="text" value="{{document.name}}" placeholder="Name" />
-            </h3>
-            <a
-                class="clickable"
-                data-action="toggleEditable"
-                style="display:flex; align-items:center; justify-content:center; width:32px; margin-left:8px;flex: 0;"
-            >
-                <i class="fas {{#if editable}}fa-lock-open{{else}}fa-lock{{/if}}"></i>
-            </a>
-            {{#if isAbility}}
-                <div style="display: flex; align-items: center;">
-                    <input type="checkbox" name="system.magic" {{checked isMagic}} />
-                    <label>{{localize "BREAK.ABILITIES.Magic"}}</label>
-                </div>
-            {{/if}}
+<section class="sheet-header">
+    <div class="flexrow" style="margin-bottom: 10px;">
+        <div class="name-banner" style="flex 1;">
+            <input name="name" type="text" value="{{document.name}}" placeholder="{{localize 'BREAK.Name'}}" />
         </div>
-        <div style="display: flex;align-items:center;height:100%;column-gap:12px;">
-            <div style="flex: 1; display:flex;height:100%;align-items:center;column-gap:12px;">
-                {{#if requiresType}}
-                    <select name="system.type" id="type-select" >
-                        {{#each itemTypes as |type|}}
-                            <option value="{{type.key}}" {{#if type.active}}selected="selected"{{/if}}>{{type.label}}</option>
-                        {{/each}}
-                    </select>
-                {{/if}}
+         {{#if isAbility}}
+            <div style="display: flex; align-items: center;flex:0;">
+                <input type="checkbox" name="system.magic" {{checked isMagic}} />
+                <label>{{localize "BREAK.ABILITIES.Magic"}}</label>
             </div>
-            <div style="flex: 1; display:flex;height:100%;align-items:center;column-gap:12px;">
+        {{/if}}
+        <a
+            class="clickable"
+            data-action="toggleEditable"
+            style="display:flex; align-items:center; justify-content:center; width:32px; margin-left:8px;flex: 0;"
+        >
+            <i class="fas {{#if editable}}fa-lock-open{{else}}fa-lock{{/if}}"></i>
+        </a>
+    </div>
+    <div class="flexrow" style="margin-bottom:12px;">
+        {{#if editable}}
+        <prose-mirror name="system.description" value="{{ document.system.description }}"></prose-mirror>
+        {{else}}
+        <div class="editor">
+            <div class="editor-content" style="max-height: 160px;overflow: auto;">{{{ descriptionHTML }}}</div>
+        </div>
+        {{/if}}
+        <img class="profile-img" src="{{document.img}}" title="{{document.name}}" data-action="editImage" data-field="img" style="flex: 0;"/>
+    </div>
+    <div class="flexrow" style="column-gap: 12px;">
+        <div style="flex: 1; display:flex;height:100%;align-items:center;column-gap:12px;margin-bottom:8px;">
+            {{#if requiresType}}
+                <select name="system.type" id="type-select" >
+                    {{#each itemTypes as |type|}}
+                        <option value="{{type.key}}" {{#if type.active}}selected="selected"{{/if}}>{{type.label}}</option>
+                    {{/each}}
+                </select>
+            {{/if}}
             {{#if requiresSubtype}}
-                <select name="system.subtype" style="flex: 1;">
+                <select name="system.subtype">
                     <option value=""></option>
                     {{#each itemSubtypes as |type|}}
                     <option value="{{type.key}}" {{#if type.active}}selected="selected"{{/if}}>{{type.label}}</option>
                     {{/each}}
                 </select>
             {{/if}}
-            </div>
         </div>
     </div>
 </section>

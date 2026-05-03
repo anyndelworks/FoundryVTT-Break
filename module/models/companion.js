@@ -52,8 +52,6 @@ export class BreakCompanionDataModel extends BreakBaseActorDataModel {
 
       category: new fields.StringField({ initial: "pet" }),
       description: new fields.HTMLField({ initial: "" }),
-      size: new fields.StringField({ initial: null, nullable: true }),
-      slots: new fields.NumberField({ initial: 0 }),
       owner: new fields.StringField({ initial: null, nullable: true }),
       named: new fields.BooleanField({ initial: false }),
 
@@ -96,20 +94,15 @@ export class BreakCompanionDataModel extends BreakBaseActorDataModel {
   }
 
   computeDerivedData(actor) {
-    const categoryDefaults = BreakCompanionDataModel.getCategoryDefaults();
-    const sizes = game.settings.get("break", "sizes");
+    const categoryDefaults = BreakCompanionDataModel.getCategoryDefaults(this.category);
 
     this.hands.value = categoryDefaults.hands;
 
-    this.inventorySlots = this.slots || categoryDefaults.slots;
-
-    if (this.size && sizes[this.size]) {
-      this.sizeData = sizes[this.size];
-      if (!this.slots) {
-        this.inventorySlots = sizes[this.size].inventorySize || categoryDefaults.slots;
-      }
+    if (!this.slots.value) {
+      this.slots.value = categoryDefaults.slots;
     }
 
     super.computeDerivedData(actor);
+    this.inventorySlots = this.slots.total;
   }
 }

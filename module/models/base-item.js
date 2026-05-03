@@ -1,3 +1,5 @@
+import { defineActionField } from "../system/action-schema.js";
+
 export class BaseItemDataModel extends foundry.abstract.DataModel {
     static defineSchema() {
         const fields = foundry.data.fields;
@@ -10,7 +12,8 @@ export class BaseItemDataModel extends foundry.abstract.DataModel {
                 coins: new fields.NumberField({ initial: 0, min: 0 }),
                 stones: new fields.NumberField({ initial: 0, min: 0 })
             }),
-            quantity: new fields.NumberField({ initial: 1, min: 0 })
+            quantity: new fields.NumberField({ initial: 1, min: 0 }),
+            actions: defineActionField(fields)
         };
     }
 }

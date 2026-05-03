@@ -8,6 +8,15 @@
   --text-secondary: white;
 }
 
+#pause img {
+  content: url("../assets/breaklogo.png");
+  width: min(360px, 40vw);
+  height: auto;
+  max-height: 140px;
+  object-fit: contain;
+  animation: none;
+}
+
 .break.sheet.calling {
   .profile-img {
     border: 2px solid #AA3D9E;
@@ -60,17 +69,89 @@
   .profile-img {
     border: 2px solid #AA3D9E;
   }
+
+  .name-banner {
+    background: linear-gradient(90deg, #EED8EB 0%, #CCE5F3 100%);
+
+    input {
+      color: #AE46A2;
+    }
+
+    input::placeholder {
+      color: #AE46A2;
+    }
+  }
+}
+
+.break.sheet.homeland {
+  .profile-img {
+    border: 2px solid #16C4C3;
+  }
+
+  .name-banner {
+    background: linear-gradient(90deg, #CCF2F1 0%, #E0F2E7 100%);
+
+    input {
+      color: #01C0C2;
+    }
+
+    input::placeholder {
+      color: #01C0C2;
+    }
+  }
+}
+
+.break.sheet.history {
+  .profile-img {
+    border: 2px solid #16C4C3;
+  }
+
+  .name-banner {
+    background: linear-gradient(90deg, #CCF2F1 0%, #E0F2E7 100%);
+
+    input {
+      color: #01C0C2;
+    }
+
+    input::placeholder {
+      color: #01C0C2;
+    }
+  }
 }
 
 .break.sheet.species {
   .profile-img {
     border: 2px solid #0084C7;
   }
+
+  .name-banner {
+    background: linear-gradient(90deg, #CCE6F3 0%, #CCF2F2 100%);
+
+    input {
+      color: #0E98D7;
+    }
+
+    input::placeholder {
+      color: #0E98D7;
+    }
+  }
 }
 
 .break.sheet.quirk {
   .profile-img {
     border: 2px solid #98CF59;
+  }
+
+  .name-banner {
+    background: linear-gradient(90deg, #EBF5DD 0%, #FEEDD6 100%);
+
+    input {
+      color: #81B043;
+    }
+
+    input::placeholder {
+      color: #81B043;
+    }
   }
 }
 

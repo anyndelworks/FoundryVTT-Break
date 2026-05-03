@@ -1,5 +1,5 @@
-<section class="tab description scrollable {{tabs.properties.cssClass}}" data-group="primary" data-tab="properties" style="height: 100%;">
-    <div style="display: flex; height: 100%: width:100%">
+<section class="tab description scrollable {{tabs.properties.cssClass}} flexrow" data-group="primary" data-tab="properties" style="height: 100%;">
+    <div style="display: flex; height: 100%; width:100%">
         <div style="flex: 1;">
             {{#if isMelee}}
                 <p style="flex: 0;font-weight:600;font-size:14px;">{{localize "BREAK.GEAR.MeleeProperties"}}</p>
@@ -37,5 +37,7 @@
             {{/if}}
         </div>
     </div>
-    {{> "systems/break/templates/items/shared/item-abilities.hbs"}}
+    <div style="display: flex;height:100%;flex:0.5;">
+        {{> "systems/break/templates/items/shared/item-abilities.hbs"}}
+    </div>
 </section>

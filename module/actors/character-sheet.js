@@ -127,7 +127,7 @@ export class BreakCharacterSheet extends BreakActorSheet {
     }
 
     context.purviews = context.document.system.purviews ?? [];
-    context.inventorySlots = context.document.system.inventorySlots;
+    context.inventorySlots = context.document.system.slots.total;
 
     const defense = context.document.system.defense;
     context.defenseRating = defense.total;

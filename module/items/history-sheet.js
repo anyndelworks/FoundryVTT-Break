@@ -42,21 +42,8 @@ export class BreakHistorySheet extends BreakItemSheet {
         header: {
             template: "systems/break/templates/items/shared/generic-header.hbs"
         },
-        tabs: {
-            template: "systems/break/templates/shared/sheet-tabs.hbs",
-        },
         description: {
-            template: "systems/break/templates/items/history/history-description-tab.hbs"
-        },
-        gear: {
-            template: "systems/break/templates/items/history/history-gear-tab.hbs"
-        }
-    }
-
-    static TABS = {
-        primary: {
-            initial: "description",
-            tabs: [{id: "description", icon: "fas fa-scroll"}, {id: "gear", icon: "fas fa-sword"}],
+            template: "systems/break/templates/items/history/history-sheet.hbs"
         }
     }
 

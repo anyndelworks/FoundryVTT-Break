@@ -632,10 +632,29 @@ async function refreshAilmentStatusEffects(document) {
   canvas.tokens.hud?.render?.();
 }
 
+async function registerWelcomeTour() {
+  const Tour = foundry.nue?.Tour ?? foundry.nue?.tours?.Tour;
+  if (!Tour || !game.tours) return null;
+  if (game.tours.has("break.welcome")) return game.tours.get("break.welcome");
+
+  const tour = await Tour.fromJSON("systems/break/tours/welcome.json");
+  game.tours.set(tour.key, tour);
+  return tour;
+}
+
+async function startWelcomeTour() {
+  const tour = await registerWelcomeTour();
+  if (!tour || foundry.nue?.Tour?.tourInProgress || foundry.nue?.tours?.Tour?.tourInProgress) return;
+  if (tour.status !== "unstarted") return;
+
+  await tour.start();
+}
+
 Hooks.once("ready", async () => {
   game.break.rebuildStatusEffects = rebuildStatusEffectsFromAilments;
   await rebuildStatusEffectsFromAilments();
   canvas.tokens.hud?.render?.();
+  await startWelcomeTour();
 });
 
 Hooks.on("createActiveEffect", refreshAilmentStatusEffects);

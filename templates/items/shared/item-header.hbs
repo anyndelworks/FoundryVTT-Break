@@ -16,7 +16,7 @@
         <prose-mirror name="system.description" value="{{ document.system.description }}"></prose-mirror>
         {{else}}
         <div class="editor">
-            <div class="editor-content">{{{ descriptionHTML }}}</div>
+            <div class="editor-content" style="max-height: 160px;overflow: auto;">{{{ descriptionHTML }}}</div>
         </div>
         {{/if}}
         <img class="profile-img" src="{{document.img}}" title="{{document.name}}" data-action="editImage" data-field="img" style="flex: 0;"/>
@@ -24,7 +24,7 @@
     <div class="flexrow" style="column-gap: 12px;">
         <div style="flex: 1; display:flex;height:100%;align-items:center;column-gap:12px;">
             {{#if requiresType}}
-            <select name="system.type" id="type-select" style="max-width: 160px;">
+            <select name="system.type" id="type-select" style="max-width: 200px;">
                 {{#each itemTypes as |type|}}
                     <option value="{{type.key}}" {{#if type.active}}selected="selected"{{/if}}>{{type.label}}</option>
                 {{/each}}
