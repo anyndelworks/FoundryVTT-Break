@@ -165,7 +165,7 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     const button = event.target;
     const bonus = button.dataset.bonus ?? 0;
     const extraDamage = button.dataset.extradamage ?? 0;
-    this.actor.rollAttack(bonus, extraDamage, button.dataset.name);
+    this.actor.rollAttack(bonus, extraDamage, null, button.dataset.name);
   }
 
   static async #onEditImage(event, target) {

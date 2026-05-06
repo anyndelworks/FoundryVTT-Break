@@ -173,7 +173,7 @@ export async function roll(flavor, rollType, targetValue, advantageType, bonusTy
             } else {
                 resultText = game.i18n.format("BREAK.Miss");
             }
-            if(extraDamage >= 0 && rollResult > extraDamage) {
+            if(extraDamage >= 0 && rollResult >= extraDamage) {
                 resultText += "\n" + game.i18n.format("BREAK.ExtraAttackRollResult")
             }
         }

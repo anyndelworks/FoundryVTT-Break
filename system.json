@@ -47,9 +47,9 @@
       "type": "Item"
     },
     {
-      "name": "preview-adversaries",
+      "name": "preview-actors",
       "label": "BREAK!! Preview actors",
-      "path": "packs/preview-adversaries",
+      "path": "packs/preview-actors",
       "type": "Actor"
     }
   ],
