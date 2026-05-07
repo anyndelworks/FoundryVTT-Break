@@ -215,6 +215,8 @@
       "history",
       "quirk",
       "ability",
+      "area-condition",
+      "ammo",
       "item",
       "material",
       "additive"
@@ -260,6 +262,20 @@
         "value": 1,
         "total": 1
       }
+    },
+    "ammo": {
+      "templates": ["baseItem"],
+      "weaponType": "",
+      "special": false,
+      "attackModifier": "",
+      "damageModifier": 0,
+      "targetMode": "target",
+      "check": {
+        "enabled": false,
+        "aptitude": "grit",
+        "modifier": ""
+      },
+      "actions": []
     },
     "calling": {
       "name": "",
@@ -311,6 +327,10 @@
       "rules": "",
       "actions": [],
       "magic": false
+    },
+    "area-condition": {
+      "description": "",
+      "applyEffectsWhileInside": true
     },
     "weapon": {
       "templates": [ "baseItem" ],

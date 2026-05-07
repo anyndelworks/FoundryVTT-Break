@@ -29,6 +29,8 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/break/templates/items/shared/item-abilities.hbs",
     "systems/break/templates/items/shared/item-effect-list.hbs",
     "systems/break/templates/items/shared/item-action-list.hbs",
+    "systems/break/templates/items/area-condition/area-condition-description-tab.hbs",
+    "systems/break/templates/items/area-condition/area-condition-effects-tab.hbs",
     "systems/break/templates/items/armor/armor-details.hbs",
     "systems/break/templates/items/shield/shield-details.hbs",
     "systems/break/templates/items/calling/advancement-table.hbs",

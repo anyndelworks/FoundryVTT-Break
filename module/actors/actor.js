@@ -3,6 +3,8 @@ import BREAK from "../constants.js";
 import Action from "../system/action.js";
 import { FeatureSelectionDialog } from "../dialogs/feature-selection-dialog.js";
 
+const { DialogV2 } = foundry.applications.api;
+
 /**
  * Extend the base Actor document to support aptitudes and groups with a custom template creation dialog.
  * @extends {Actor}
@@ -87,50 +89,153 @@ export class BreakActor extends Actor {
     const aptitude = this.system.aptitudes[aptitudeId];
     const targetValue = +aptitude.total;
 
-    new Dialog({
-      title: "Roll " +game.i18n.localize(aptitude.label)+ " check",
+    new DialogV2({
+      window: { title: "Roll " +game.i18n.localize(aptitude.label)+ " check" },
       content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-dialog.hbs",{bonuses: RollBonuses, aptitude: true}),
-      buttons: {
-        roll: {
-          label: game.i18n.localize("BREAK.Roll"),
-          callback: async (html) => {
-            const form = html[0].querySelector("form");
-            const flavor = form.rollType.value === RollType.CHECK ? game.i18n.format("BREAK.AptitudeCheck", {aptitude:  game.i18n.localize(aptitude.label)}) : game.i18n.format("BREAK.AptitudeContest", {aptitude:  game.i18n.localize(aptitude.label)});
-            return roll(flavor, form.rollType.value, targetValue, form.edge.value, form.bonus.value, form.customBonus.value);
-          }
+      buttons: [{
+        action: "roll",
+        label: "BREAK.Roll",
+        icon: "fa-solid fa-dice-d20",
+        default: true,
+        callback: async (event, button) => {
+          const form = button.form.elements;
+          const flavor = form.rollType.value === RollType.CHECK ? game.i18n.format("BREAK.AptitudeCheck", {aptitude:  game.i18n.localize(aptitude.label)}) : game.i18n.format("BREAK.AptitudeContest", {aptitude:  game.i18n.localize(aptitude.label)});
+          return roll(flavor, form.rollType.value, targetValue, form.edge.value, form.bonus.value, form.customBonus.value);
         }
-      }
-    }).render(true);
+      }]
+    }).render({force: true});
   }
 
-  async rollAttack(bonus, extraDamage, resolveAction = null, weaponName = "") {
+  async rollAttack(bonus, extraDamage, resolveAction = null, weaponName = "", ammo = null) {
+    const attackModifier = ammo?.system.special ? BREAK.ammo_attack_modifiers[ammo.system.attackModifier] : null;
+    const damageModifier = ammo?.system.special ? ammo.system.damageModifier : 0;
     const attack = +this.system.attack.total + +bonus;
+    const modifiedExtraDamage = Math.max(0, +extraDamage - +damageModifier);
     let flavor = game.i18n.format("BREAK.Attacks");
-    new Dialog({
-      title: "Roll attack",
-      content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-dialog.hbs",{bonuses: RollBonuses, aptitude: false, limited: true}),
-      buttons: {
-        roll: {
-          label: game.i18n.localize("BREAK.Roll"),
-          callback: async (html) => {
-            const form = html[0].querySelector("form");
-            let targetValue = -1;
-            const target = game.users.get(game.userId).targets.size > 0 ? game.users.get(game.userId).targets.first() : null;
-            if(target && target.actor.system.defense != null) {
-              targetValue = target.actor.system.defense.total;
-              flavor = game.i18n.format("BREAK.ActorAttacksActor", {name: this.name, target: target.document.name});
-            }
-            if(weaponName) {
-              flavor = `${flavor} with ${weaponName}`;
-            }
-            await roll(flavor, RollType.ATTACK, targetValue, form.edge.value, form.bonus.value, form.customBonus.value, attack, +extraDamage);
-            if(resolveAction) {
-              resolveAction();
-            }
+    new DialogV2({
+      window: { title: "Roll attack" },
+      content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-dialog.hbs",{
+        bonuses: RollBonuses,
+        aptitude: false,
+        limited: true,
+        defaultEdge: attackModifier?.edge,
+        defaultBonus: attackModifier?.bonus
+      }),
+      buttons: [{
+        action: "roll",
+        label: "BREAK.Roll",
+        icon: "fa-solid fa-dice-d20",
+        default: true,
+        callback: async (event, button) => {
+          const form = button.form.elements;
+          let targetValue = -1;
+          const target = game.users.get(game.userId).targets.size > 0 ? game.users.get(game.userId).targets.first() : null;
+          if(target && target.actor.system.defense != null) {
+            targetValue = target.actor.system.defense.total;
+            flavor = game.i18n.format("BREAK.ActorAttacksActor", {name: this.name, target: target.document.name});
+          }
+          if(weaponName) {
+            flavor = `${flavor} with ${weaponName}`;
+          }
+          if(ammo) {
+            flavor = `${flavor} (${ammo.name})`;
+          }
+          const result = await roll(flavor, RollType.ATTACK, targetValue, form.edge.value, form.bonus.value, form.customBonus.value, attack, modifiedExtraDamage);
+          if(result?.hit && target?.actor && ammo?.system.special && ammo.system.check?.enabled) {
+            await this.#notifyAmmoTargetCheck(target.actor, ammo);
+          }
+          if(result?.hit && target?.actor) {
+            await this.#notifyAttackDamage(target.actor, weaponName || game.i18n.localize("BREAK.Attack"), ammo, result.extraDamageHit);
+          }
+          await this.consumeAmmo(ammo);
+          if(resolveAction) {
+            resolveAction();
           }
         }
+      }]
+    }).render({force: true});
+  }
+
+  async #notifyAttackDamage(targetActor, weaponName, ammo, extraDamageHit = false) {
+    const damageModifier = ammo?.system.special ? Number(ammo.system.damageModifier) || 0 : 0;
+    const damage = Math.max(0, 1 + damageModifier + (extraDamageHit ? 1 : 0));
+    const data = {
+      weaponName,
+      targetName: targetActor.name,
+      targetActorUuid: targetActor.uuid,
+      damage,
+      resolved: false
+    };
+    const content = await foundry.applications.handlebars.renderTemplate("systems/break/templates/chat/attack-damage.html", data);
+    await ChatMessage.create({
+      user: game.user.id,
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      whisper: ChatMessage.getWhisperRecipients("GM"),
+      flavor: weaponName,
+      content,
+      flags: {
+        break: {
+          attackDamage: data
+        }
       }
-    }).render(true);
+    });
+  }
+
+  async consumeAmmo(ammo) {
+    if(!ammo) return;
+    const ammoName = ammo.name;
+    const currentQuantity = ammo.system?.quantity ?? 1;
+    const remainingQuantity = currentQuantity - 1;
+    if(remainingQuantity <= 0) {
+      await ammo.delete();
+    } else {
+      await ammo.update({"system.quantity": remainingQuantity});
+    }
+    ui.notifications.info(game.i18n.format("BREAK.AMMO.Consumed", {
+      ammo: ammoName,
+      quantity: Math.max(remainingQuantity, 0)
+    }));
+  }
+
+  async #notifyAmmoTargetCheck(targetActor, ammo) {
+    const aptitude = targetActor.system.aptitudes[ammo.system.check.aptitude];
+    if(!aptitude) return;
+    const effectData = this.#getAmmoEffectData(ammo);
+    const data = {
+      ammoName: ammo.name,
+      targetName: targetActor.name,
+      targetActorUuid: targetActor.uuid,
+      aptitude: ammo.system.check.aptitude,
+      aptitudeLabel: game.i18n.localize(aptitude.label),
+      modifier: ammo.system.check.modifier,
+      modifierLabel: game.i18n.localize(BREAK.ammo_attack_modifiers[ammo.system.check.modifier]?.label ?? "BREAK.None"),
+      effectData,
+      resolved: false
+    };
+    const content = await foundry.applications.handlebars.renderTemplate("systems/break/templates/chat/ammo-check.html", data);
+    await ChatMessage.create({
+      user: game.user.id,
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      whisper: ChatMessage.getWhisperRecipients("GM"),
+      flavor: ammo.name,
+      content,
+      flags: {
+        break: {
+          ammoCheck: data
+        }
+      }
+    });
+  }
+
+  #getAmmoEffectData(ammo) {
+    const effects = ammo.effects?.contents ?? [];
+    return effects.map(effect => {
+      const data = effect.toObject();
+      delete data._id;
+      data.disabled = false;
+      data.origin = ammo.uuid;
+      return data;
+    });
   }
 
   async modifyHp(amount) {
@@ -156,41 +261,43 @@ export class BreakActor extends Actor {
         await resolveAction();
         break;
       case BREAK.roll_types.contest.key:
-        new Dialog({
-          title: action.name,
+        new DialogV2({
+          window: { title: action.name },
           content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-dialog.hbs",{bonuses: RollBonuses, aptitude: true, limited: true, defaultContest: true}),
-          buttons: {
-            roll: {
-              label: game.i18n.localize("BREAK.Roll"),
-              callback: async (html) => {
-                const form = html[0].querySelector("form");
-                const flavor = `${action.name} ${game.i18n.format("BREAK.AptitudeContest", {aptitude:  game.i18n.localize(aptitude.label)})}`;
-                await roll(flavor, form.rollType.value, checkTargetValue, form.edge.value, form.bonus.value, form.customBonus.value);
-                return resolveAction();
-              }
+          buttons: [{
+            action: "roll",
+            label: "BREAK.Roll",
+            icon: "fa-solid fa-dice-d20",
+            default: true,
+            callback: async (event, button) => {
+              const form = button.form.elements;
+              const flavor = `${action.name} ${game.i18n.format("BREAK.AptitudeContest", {aptitude:  game.i18n.localize(aptitude.label)})}`;
+              await roll(flavor, form.rollType.value, checkTargetValue, form.edge.value, form.bonus.value, form.customBonus.value);
+              return resolveAction();
             }
-          }
-        }).render(true);
+          }]
+        }).render({force: true});
         break;
       case BREAK.roll_types.attack.key:
         this.rollAttack(0, 0, resolveAction, action.name);
         break;
       case BREAK.roll_types.check.key:
-        new Dialog({
-          title: action.name,
+        new DialogV2({
+          window: { title: action.name },
           content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-dialog.hbs",{bonuses: RollBonuses, aptitude: true, limited: true, defaultCheck: true}),
-          buttons: {
-            roll: {
-              label: game.i18n.localize("BREAK.Roll"),
-              callback: async (html) => {
-                const form = html[0].querySelector("form");
-                const flavor = `${action.name} ${game.i18n.format("BREAK.AptitudeCheck", {aptitude:  game.i18n.localize(aptitude.label)})}`;
-                await roll(flavor, form.rollType.value, checkTargetValue, form.edge.value, form.bonus.value, form.customBonus.value);
-                return resolveAction();
-              }
+          buttons: [{
+            action: "roll",
+            label: "BREAK.Roll",
+            icon: "fa-solid fa-dice-d20",
+            default: true,
+            callback: async (event, button) => {
+              const form = button.form.elements;
+              const flavor = `${action.name} ${game.i18n.format("BREAK.AptitudeCheck", {aptitude:  game.i18n.localize(aptitude.label)})}`;
+              await roll(flavor, form.rollType.value, checkTargetValue, form.edge.value, form.bonus.value, form.customBonus.value);
+              return resolveAction();
             }
-          }
-        }).render(true);
+          }]
+        }).render({force: true});
         break;
     }
   }

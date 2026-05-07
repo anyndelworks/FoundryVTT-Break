@@ -3,6 +3,8 @@ import { BreakActor } from "./module/actors/actor.js";
 import { BreakItem } from "./module/items/item.js";
 import { preloadHandlebarsTemplates } from "./module/templates.js";
 import { BreakToken, BreakTokenDocument } from "./module/token.js";
+import { RollBonuses, RollType, roll } from "./utils/dice.js";
+import BREAK from "./module/constants.js";
 import { BreakCharacterSheet } from "./module/actors/character-sheet.js";
 import { BreakAdversarySheet } from "./module/actors/adversary-sheet.js";
 import { BreakCompanionSheet } from "./module/actors/companion-sheet.js";
@@ -10,6 +12,7 @@ import {ArmorTypeSettingsForm} from "./module/system/armor-type-settings.js";
 import {WeaponTypeSettingsForm} from "./module/system/weapon-type-settings.js";
 import {ShieldTypeSettingsForm} from "./module/system/shield-type-settings.js";
 import {SizeSettingsForm} from "./module/system/size-settings.js";
+import { registerAreaMovement } from "./module/system/area-movement.js";
 ////// EQUIPMENT
 import { BreakWeaponSheet } from "./module/items/weapon-sheet.js";
 import { BreakArmorSheet } from "./module/items/armor-sheet.js";
@@ -20,6 +23,7 @@ import { BreakGiftSheet } from "./module/items/gift-sheet.js";
 import { BreakOutfitSheet } from "./module/items/outfit-sheet.js";
 import { BreakAccessorySheet } from "./module/items/accessory-sheet.js";
 import { BreakGenericItemSheet } from "./module/items/generic-item-sheet.js";
+import { BreakAmmoSheet } from "./module/items/ammo-sheet.js";
 ////// STATUS
 import { BreakCallingSheet } from "./module/items/calling-sheet.js";
 import { BreakSpeciesSheet } from "./module/items/species-sheet.js";
@@ -27,6 +31,7 @@ import { BreakHomelandSheet } from "./module/items/homeland-sheet.js";
 import { BreakHistorySheet } from "./module/items/history-sheet.js";
 import { BreakQuirkSheet } from "./module/items/quirk-sheet.js";
 import { BreakAbilitySheet } from "./module/items/ability-sheet.js";
+import { BreakAreaConditionSheet } from "./module/items/area-condition-sheet.js";
 ////// MODELS
 import { BreakCharacterDataModel } from "./module/models/character.js";
 import { BreakGMCDataModel } from "./module/models/gmc.js";
@@ -37,12 +42,14 @@ import { ArmorDataModel } from './module/models/armor.js';
 import { OutfitDataModel } from './module/models/outfit.js';
 import { ShieldDataModel } from './module/models/shield.js';
 import { GenericItemDataModel } from './module/models/item.js';
+import { AmmoDataModel } from './module/models/ammo.js';
 import { CallingDataModel } from './module/models/calling.js';
 import { SpeciesDataModel } from './module/models/species.js';
 import { HomelandDataModel } from './module/models/homeland.js';
 import { HistoryDataModel } from './module/models/history.js';
 import { QuirkDataModel } from './module/models/quirk.js';
 import { AbilityDataModel } from './module/models/ability.js';
+import { AreaConditionDataModel } from './module/models/area-condition.js';
 import { WeaponDataModel } from './module/models/weapon.js';
 import { MaterialDataModel } from './module/models/material.js';
 import { AdditiveDataModel } from './module/models/additive.js';
@@ -88,6 +95,7 @@ Hooks.once("init", async function() {
   CONFIG.Item.dataModels["accessory"] = AccessoryDataModel;
   CONFIG.Item.dataModels["armor"] = ArmorDataModel;
   CONFIG.Item.dataModels["item"] = GenericItemDataModel;
+  CONFIG.Item.dataModels["ammo"] = AmmoDataModel;
   CONFIG.Item.dataModels["outfit"] = OutfitDataModel;
   CONFIG.Item.dataModels["shield"] = ShieldDataModel;
   CONFIG.Item.dataModels["calling"] = CallingDataModel;
@@ -96,6 +104,7 @@ Hooks.once("init", async function() {
   CONFIG.Item.dataModels["history"] = HistoryDataModel;
   CONFIG.Item.dataModels["quirk"] = QuirkDataModel;
   CONFIG.Item.dataModels["ability"] = AbilityDataModel;
+  CONFIG.Item.dataModels["area-condition"] = AreaConditionDataModel;
   CONFIG.Item.dataModels["weapon"] = WeaponDataModel;
   CONFIG.Item.dataModels["material"] = MaterialDataModel;
   CONFIG.Item.dataModels["additive"] = AdditiveDataModel;
@@ -499,6 +508,7 @@ Hooks.once("init", async function() {
   Items.registerSheet("break", BreakShieldSheet, { types: ['shield'], makeDefault: true });
 /////// INVENTORY
   Items.registerSheet("break", BreakGenericItemSheet, { types: ['item'], makeDefault: true });
+  Items.registerSheet("break", BreakAmmoSheet, { types: ['ammo'], makeDefault: true });
   Items.registerSheet("break", BreakOutfitSheet, { types: ['outfit'], makeDefault: true });
   Items.registerSheet("break", BreakAccessorySheet, { types: ['accessory'], makeDefault: true });
 /////// STATUS
@@ -509,6 +519,7 @@ Hooks.once("init", async function() {
   Items.registerSheet("break", BreakHistorySheet, {types:['history'], makeDefault: true });
   Items.registerSheet("break", BreakQuirkSheet, { types: ['quirk'], makeDefault: true });
   Items.registerSheet("break", BreakAbilitySheet, {types:['ability'], makeDefault: true });
+  Items.registerSheet("break", BreakAreaConditionSheet, {types:['area-condition'], makeDefault: true });
 
   /**
    * Slugify a string.
@@ -566,6 +577,7 @@ Hooks.once("init", async function() {
 
   // Preload template partials
   await preloadHandlebarsTemplates();
+  registerAreaMovement();
 });
 
 
@@ -660,6 +672,110 @@ Hooks.once("ready", async () => {
 Hooks.on("createActiveEffect", refreshAilmentStatusEffects);
 Hooks.on("updateActiveEffect", refreshAilmentStatusEffects);
 Hooks.on("deleteActiveEffect", refreshAilmentStatusEffects);
+
+Hooks.on("renderChatMessageHTML", (message, html) => {
+  const button = html.querySelector("[data-action='ammoCheck']");
+  const damageButton = html.querySelector("[data-action='applyAttackDamage']");
+  if(button) bindAmmoCheckButton(message, button);
+  if(damageButton) bindAttackDamageButton(message, damageButton);
+});
+
+function bindAmmoCheckButton(message, button) {
+  const data = message.getFlag("break", "ammoCheck");
+  if(data?.resolved) {
+    button.disabled = true;
+    button.querySelector("span").textContent = game.i18n.localize("BREAK.AMMO.CheckResolved");
+  }
+  button.addEventListener("click", event => onAmmoCheckChatButton(event, message));
+}
+
+function bindAttackDamageButton(message, button) {
+  const data = message.getFlag("break", "attackDamage");
+  if(data?.resolved) {
+    button.disabled = true;
+    button.querySelector("span").textContent = game.i18n.localize("BREAK.DamageApplied");
+  }
+  button.addEventListener("click", event => onApplyAttackDamageChatButton(event, message));
+}
+
+async function onAmmoCheckChatButton(event, message) {
+  event.preventDefault();
+  if(!game.user.isGM) {
+    ui.notifications.warn(game.i18n.localize("BREAK.AMMO.OnlyGM"));
+    return;
+  }
+
+  const data = message.getFlag("break", "ammoCheck");
+  if(!data || data.resolved) return;
+
+  const targetActor = await fromUuid(data.targetActorUuid);
+  if(!targetActor) {
+    ui.notifications.warn(game.i18n.localize("BREAK.AMMO.TargetMissing"));
+    return;
+  }
+
+  const aptitude = targetActor.system.aptitudes[data.aptitude];
+  if(!aptitude) return;
+
+  const checkModifier = BREAK.ammo_attack_modifiers[data.modifier] ?? BREAK.ammo_attack_modifiers.none;
+  const { DialogV2 } = foundry.applications.api;
+  new DialogV2({
+    window: { title: game.i18n.format("BREAK.AptitudeCheck", {aptitude: data.aptitudeLabel}) },
+    content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-dialog.hbs",{
+      bonuses: RollBonuses,
+      aptitude: true,
+      limited: true,
+      defaultCheck: true,
+      defaultEdge: checkModifier.edge,
+      defaultBonus: checkModifier.bonus
+    }),
+    buttons: [{
+      action: "roll",
+      label: "BREAK.Roll",
+      icon: "fa-solid fa-dice-d20",
+      default: true,
+      callback: async (event, button) => {
+        const form = button.form.elements;
+        const flavor = `${data.ammoName} ${game.i18n.format("BREAK.AptitudeCheck", {aptitude: data.aptitudeLabel})}`;
+        const result = await roll.call(targetActor, flavor, RollType.CHECK, +aptitude.total, form.edge.value, form.bonus.value, form.customBonus.value);
+        if(!result?.hit && data.effectData?.length) {
+          await ActiveEffect.implementation.createDocuments(data.effectData, {parent: targetActor});
+        }
+        data.resolved = true;
+        const content = await foundry.applications.handlebars.renderTemplate("systems/break/templates/chat/ammo-check.html", data);
+        await message.update({
+          content,
+          "flags.break.ammoCheck": data
+        });
+      }
+    }]
+  }).render({force: true});
+}
+
+async function onApplyAttackDamageChatButton(event, message) {
+  event.preventDefault();
+  if(!game.user.isGM) {
+    ui.notifications.warn(game.i18n.localize("BREAK.OnlyGM"));
+    return;
+  }
+
+  const data = message.getFlag("break", "attackDamage");
+  if(!data || data.resolved) return;
+
+  const targetActor = await fromUuid(data.targetActorUuid);
+  if(!targetActor) {
+    ui.notifications.warn(game.i18n.localize("BREAK.TargetMissing"));
+    return;
+  }
+
+  await targetActor.modifyHp?.(-Math.abs(Number(data.damage) || 0));
+  data.resolved = true;
+  const content = await foundry.applications.handlebars.renderTemplate("systems/break/templates/chat/attack-damage.html", data);
+  await message.update({
+    content,
+    "flags.break.attackDamage": data
+  });
+}
 
 //Fix issue where if you use Enter key in a input it trigger a click on the next button
 window.addEventListener('keydown', function (e) {

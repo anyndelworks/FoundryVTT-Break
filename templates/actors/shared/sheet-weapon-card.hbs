@@ -1,4 +1,4 @@
-<div style="display:flex;align-items:center;border-bottom: 1px solid grey;padding-bottom:6px;column-gap:12px;">
+<div data-weapon-card data-weapon-id="{{weapon.id}}" style="display:flex;align-items:center;border-bottom: 1px solid grey;padding-bottom:6px;column-gap:12px;">
     <div class="weapon-card-column weapon-name" style="align-items: center;">
         <label style="font-size:16px;font-weight:700;">{{weapon.name}}</label>
         <label style="font-size:12px;">{{weapon.type}}</label>
@@ -33,6 +33,12 @@
     </div>
     <div style="margin-left: auto;display:flex;column-gap:18px;padding-right:12px;">
         {{#if weapon.isRanged}}
+            <select data-ammo-select data-action="selectAmmo" style="max-width: 140px;">
+                <option value="" {{#unless weapon.selectedAmmo}}selected="selected"{{/unless}}>{{localize "BREAK.AMMO.NoAmmo"}}</option>
+                {{#each weapon.ammo as |ammo|}}
+                    <option value="{{ammo.id}}" {{#when ammo.id 'eq' ../weapon.selectedAmmo}}selected="selected"{{/when}}>{{ammo.name}}</option>
+                {{/each}}
+            </select>
             <i class="fas fa-bow-arrow clickable" data-name="{{weapon.name}}"
             style="font-size:24px;" data-bonus="{{weapon.rangedAttackBonus}}" 
             data-extradamage="{{weapon.rangedExtraDamage}}" data-action="rollAttack"></i>

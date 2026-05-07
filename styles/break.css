@@ -139,6 +139,102 @@
   object-fit: contain;
   animation: none;
 }
+.break-area-config {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 6px 2px 0;
+}
+.break-area-config:not(.active) {
+  display: none;
+}
+.break-area-config .break-area-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 160px) 1fr;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+.break-area-config .break-area-row > span {
+  font-weight: 700;
+}
+.break-area-config .break-area-row input[type="checkbox"] {
+  justify-self: end;
+  margin: 0;
+}
+.break-area-config .break-area-row input[type="number"] {
+  justify-self: end;
+  width: 134px;
+}
+.break-area-config > .hint {
+  margin: -8px 0 0;
+}
+.break-area-config .break-area-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 2px 0 0;
+  padding: 16px;
+  border: 1px solid var(--color-border-light-tertiary);
+  border-radius: 4px;
+}
+.break-area-config .break-area-group legend {
+  padding: 0 8px;
+  font-weight: 700;
+}
+.break-area-config .break-area-group .hint {
+  margin: 0;
+}
+.break-area-config .break-area-connections {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.break-area-config .break-area-neighbors {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px 16px;
+}
+.break-area-config .break-area-conditions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 84px;
+}
+.break-area-config .break-area-condition-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.break-area-config .break-area-condition {
+  display: grid;
+  grid-template-columns: auto 24px 1fr auto;
+  align-items: center;
+  gap: 8px;
+}
+.break-area-config .break-area-condition img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  border: none;
+}
+.break-area-config .break-area-condition button {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  line-height: 1;
+}
+.break-area-config .break-area-neighbor {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.break-area-config .break-area-neighbor span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .break.sheet.calling .profile-img {
   border: 2px solid #AA3D9E;
 }

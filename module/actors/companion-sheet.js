@@ -3,7 +3,7 @@ import { FeatureSelectionDialog } from "../dialogs/feature-selection-dialog.js";
 import { BreakCompanionDataModel } from "../models/companion.js";
 import { BreakActorSheet } from "./actor-sheet.js";
 
-const allowedItemTypes = ["ability", "accessory", "armor", "outfit", "shield", "item", "weapon"];
+const allowedItemTypes = ["ability", "accessory", "ammo", "armor", "outfit", "shield", "item", "weapon"];
 
 export class BreakCompanionSheet extends BreakActorSheet {
   _viewOnly = true;

@@ -1,0 +1,15 @@
+<div class="break chat-item">
+    <div class="border">
+        <div class="chat-item-header">
+            <div class="chat-item-header-infos">
+                <h5 class="item-name">{{weaponName}}</h5>
+                <p class="item-type">{{localize "BREAK.ACTION.EFFECT.Damage"}}</p>
+            </div>
+        </div>
+        <p>{{localize "BREAK.AttackDamagePrompt" target=targetName damage=damage}}</p>
+        <button type="button" data-action="applyAttackDamage" {{#if resolved}}disabled{{/if}}>
+            <i class="fa-solid fa-heart-crack"></i>
+            <span>{{#if resolved}}{{localize "BREAK.DamageApplied"}}{{else}}{{localize "BREAK.ApplyDamage"}}{{/if}}</span>
+        </button>
+    </div>
+</div>

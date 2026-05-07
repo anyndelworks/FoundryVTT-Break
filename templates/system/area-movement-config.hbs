@@ -1,0 +1,58 @@
+<section class="tab break-area-config {{tabs.breakArea.cssClass}}" data-group="sheet" data-tab="breakArea">
+    <label class="form-group break-area-row">
+        <span>{{localize "BREAK.AREA.Enabled"}}</span>
+        <input type="hidden" name="flags.break.area.enabled" value="false" />
+        <input type="checkbox" name="flags.break.area.enabled" value="true" {{checked area.enabled}} />
+    </label>
+    <p class="hint">{{localize "BREAK.AREA.ConfigHint"}}</p>
+
+    <label class="form-group break-area-row">
+        <span>{{localize "BREAK.AREA.MovementCost"}}</span>
+        <input type="number" name="flags.break.area.movementCost" value="{{area.movementCost}}" min="0" step="0.25" />
+    </label>
+
+    <fieldset class="break-area-group">
+        <legend>{{localize "BREAK.AREA.Connections"}}</legend>
+        <div class="break-area-connections">
+            <div class="break-area-neighbors">
+                {{#if neighbors.length}}
+                    {{#each neighbors as |neighbor|}}
+                        <label class="break-area-neighbor">
+                            <input type="hidden" name="flags.break.area.neighbors.{{neighbor.id}}" value="false" />
+                            <input type="checkbox" name="flags.break.area.neighbors.{{neighbor.id}}" value="true" {{checked neighbor.checked}} />
+                            <span>{{neighbor.name}}</span>
+                        </label>
+                    {{/each}}
+                {{else}}
+                    <p class="hint">{{localize "BREAK.AREA.NoOtherAreas"}}</p>
+                {{/if}}
+            </div>
+        </div>
+    </fieldset>
+
+    <fieldset class="break-area-group" data-break-area-condition-drop>
+        <legend>{{localize "BREAK.AREA.Conditions"}}</legend>
+        <div class="break-area-conditions">
+            <p class="hint">{{localize "BREAK.AREA.ConditionDropHint"}}</p>
+
+            {{#if conditions.length}}
+                <div class="break-area-condition-list">
+                    {{#each conditions as |condition index|}}
+                        <div class="break-area-condition" data-uuid="{{condition.uuid}}">
+                            <input type="hidden" name="flags.break.area.conditions.{{index}}.uuid" value="{{condition.uuid}}" />
+                            <input type="hidden" name="flags.break.area.conditions.{{index}}.enabled" value="false" />
+                            <input type="checkbox" name="flags.break.area.conditions.{{index}}.enabled" value="true" {{checked condition.enabled}} />
+                            <img src="{{condition.img}}" title="{{condition.name}}" />
+                            <span>{{condition.name}}</span>
+                            <button type="button" data-break-area-remove-condition data-uuid="{{condition.uuid}}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    {{/each}}
+                </div>
+            {{else}}
+                <p class="hint">{{localize "BREAK.AREA.NoConditions"}}</p>
+            {{/if}}
+        </div>
+    </fieldset>
+</section>

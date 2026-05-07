@@ -1,0 +1,15 @@
+<div class="break chat-item">
+    <div class="border">
+        <div class="chat-item-header">
+            <div class="chat-item-header-infos">
+                <h5 class="item-name">{{ammoName}}</h5>
+                <p class="item-type">{{localize "BREAK.AMMO.ForceCheck"}}</p>
+            </div>
+        </div>
+        <p>{{localize "BREAK.AMMO.ForceCheckPrompt" target=targetName aptitude=aptitudeLabel}}</p>
+        <button type="button" data-action="ammoCheck" {{#if resolved}}disabled{{/if}}>
+            <i class="fa-solid fa-dice-d20"></i>
+            <span>{{#if resolved}}{{localize "BREAK.AMMO.CheckResolved"}}{{else}}{{localize "BREAK.AMMO.RollCheck"}}{{/if}}</span>
+        </button>
+    </div>
+</div>

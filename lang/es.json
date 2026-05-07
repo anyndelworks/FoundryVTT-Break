@@ -33,7 +33,9 @@
       "history": "Historia",
       "quirk": "Peculiaridad",
       "ability": "Habilidad",
+      "area-condition": "Condicion de area",
       "advancement": "Avance",
+      "ammo": "Municion",
       "item": "Objeto",
       "material": "Material",
       "additive": "Aditivo"
@@ -66,6 +68,41 @@
     "Select": "Seleccionar",
     "Adversary": "Adversario",
     "Companion": "Compañero",
+    "AREA": {
+      "Tab": "BREAK!!",
+      "ConfigHint": "Usa esta region como area de movimiento. Los modificadores especiales deben configurarse como Active Effects de la Region.",
+      "Enabled": "Area de movimiento",
+      "MovementCost": "Coste base de movimiento",
+      "Connections": "Areas conectadas",
+      "NoOtherAreas": "No hay otras regiones en esta escena.",
+      "Conditions": "Condiciones de area",
+      "ConditionDropHint": "Arrastra aqui items de condicion de area para asignarlos a esta Region.",
+      "NoConditions": "No hay condiciones de area asignadas."
+    },
+    "AREA_CONDITION": {
+      "ApplyEffectsWhileInside": "Aplicar los Active Effects de esta condicion mientras un token este dentro del area"
+    },
+    "AMMO": {
+      "Properties": "Propiedades de municion",
+      "WeaponType": "Tipo de arma",
+      "Special": "Municion especial",
+      "AttackModifier": "Modificador de ataque",
+      "DamageModifier": "Modificador de dano",
+      "ForceCheck": "Forzar prueba al objetivo al impactar",
+      "CheckModifier": "Modificador de la prueba",
+      "NoAmmo": "Sin municion",
+      "Consumed": "Usada 1 unidad de {ammo}. Restantes: {quantity}.",
+      "ForceCheckPrompt": "{target} debe realizar una prueba de {aptitude}.",
+      "RollCheck": "Tirar prueba",
+      "CheckResolved": "Prueba resuelta",
+      "OnlyGM": "Solo el DJ puede tirar esta prueba de municion.",
+      "TargetMissing": "No se ha encontrado el actor objetivo para esta prueba de municion.",
+      "TARGET": {
+        "None": "Sin objetivo",
+        "Target": "Objetivo",
+        "Area": "Area"
+      }
+    },
     "ACTION": {
       "TargetSelf": "Uno mismo",
       "TargetSelected": "Objetivo seleccionado",
@@ -399,6 +436,11 @@
     "Attack": "Atacar",
     "Attacks": "Ataca",
     "ActorAttacksActor":"{name} ataca a {target}",
+    "AttackDamagePrompt": "{target} recibe {damage} de dano.",
+    "ApplyDamage": "Aplicar dano",
+    "DamageApplied": "Dano aplicado",
+    "OnlyGM": "Solo el DJ puede usar este boton.",
+    "TargetMissing": "No se ha encontrado el actor objetivo.",
     "Slots": "Huecos",
     "Details": "Detalles",
     "Range": "Rango",

@@ -1,7 +1,7 @@
 import { BreakItem } from "../items/item.js";
 import { BreakActorSheet } from "./actor-sheet.js";
 
-const allowedItemTypes = ["ability", "accessory", "armor", "otherworld", "outfit", "shield", "item", "weapon"]
+const allowedItemTypes = ["ability", "accessory", "ammo", "armor", "otherworld", "outfit", "shield", "item", "weapon"]
 
 export class BreakAdversarySheet extends BreakActorSheet {
   _viewOnly = true;

@@ -8,6 +8,7 @@ const allowedItemTypes = [
   "shield",
 // Inventory
   "accessory",
+  "ammo",
   "item",
   "outfit"
 ]
@@ -19,6 +20,7 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
   freeHands;
   _headerCollapsed = false;
+  _selectedAmmo = {};
 
   //#region DocumentV2 initialization and setup
   static DEFAULT_OPTIONS = {
@@ -45,7 +47,8 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       linkItem: this.#onLinkItem,
       addCustomItem: this.#onAddCustomItem,
       adjustItemQuantity: this.#onAdjustItemQuantity,
-      useAction: this.#onUseAction
+      useAction: this.#onUseAction,
+      selectAmmo: this.#onSelectAmmo
     }
   }
 
@@ -57,6 +60,7 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     if ( !this.isEditable ) return;
 
     html.find("input.item-quantity").on("change", this._onChangeItemInput.bind(this));
+    html.find("[data-ammo-select]").on("change", this._onSelectAmmo.bind(this));
   }
 
   _toggleSheetControls(disabled) {
@@ -90,6 +94,18 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     const weaponTypes = foundry.utils.deepClone(game.settings.get("break", "weaponTypes"));
     context.weapons = context.document.items.filter(i => i.type === "weapon");
     context.weapons = context.document.system.equipment.weapon.map(w => {
+      const weaponTypeKeys = [w.system.weaponType1, w.system.weaponType2].filter(t => t);
+      const ammo = context.document.items.filter(i => i.type === "ammo"
+        && i.system.weaponType
+        && weaponTypeKeys.includes(i.system.weaponType)
+        && i.system.quantity > 0).map(i => ({
+          id: i._id,
+          name: i.name,
+          special: i.system.special,
+          attackModifier: i.system.attackModifier,
+          damageModifier: i.system.damageModifier
+        }));
+      const selectedAmmo = ammo.some(a => a.id === this._selectedAmmo[w._id]) ? this._selectedAmmo[w._id] : "";
       return {
         id: w._id,
         name: w.name,
@@ -99,7 +115,9 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         rangedExtraDamage: w.system.rangedExtraDamage,
         extraDamage: w.system.extraDamage,
         rangedAttackBonus: w.system.rangedAttackBonus,
-        attackBonus: w.system.attackBonus
+        attackBonus: w.system.attackBonus,
+        ammo,
+        selectedAmmo
       }
     });
   }
@@ -165,7 +183,14 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     const button = event.target;
     const bonus = button.dataset.bonus ?? 0;
     const extraDamage = button.dataset.extradamage ?? 0;
-    this.actor.rollAttack(bonus, extraDamage, null, button.dataset.name);
+    const ammoId = button.closest("[data-weapon-card]")?.querySelector("[data-ammo-select]")?.value;
+    const ammo = ammoId ? this.actor.items.get(ammoId) : null;
+    if(ammo?.system.targetMode === "none") {
+      await ammo.sendToChat();
+      await this.actor.consumeAmmo(ammo);
+      return;
+    }
+    this.actor.rollAttack(bonus, extraDamage, null, button.dataset.name, ammo);
   }
 
   static async #onEditImage(event, target) {
@@ -220,6 +245,7 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         "shield",
         "outfit",
         "accessory",
+        "ammo",
         "item",
       ]
     });
@@ -244,6 +270,17 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     const button = event.target;
     const {itemId, actionId} = button.dataset;
     this.actor.useAction(itemId, actionId);
+  }
+
+  static #onSelectAmmo(event) {
+    event.preventDefault();
+    this._onSelectAmmo(event);
+  }
+
+  _onSelectAmmo(event) {
+    const weaponId = event.target.closest("[data-weapon-card]")?.dataset.weaponId;
+    if(!weaponId) return;
+    this._selectedAmmo[weaponId] = event.target.value;
   }
 
   static #onToggleHeader(event) {

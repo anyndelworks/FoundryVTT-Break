@@ -165,23 +165,29 @@ export async function roll(flavor, rollType, targetValue, advantageType, bonusTy
     }
 
     let resultText = "";
+    let hit = null;
+    let extraDamageHit = null;
     if(rollType === RollType.ATTACK) {
         const rollResult = definitiveRoll.total+statBonus+bonusTotal+customBonusResult
         if(targetValue >= 0) {
-            if(rollResult >= targetValue) {
+            hit = rollResult >= targetValue;
+            if(hit) {
                 resultText = game.i18n.format("BREAK.Hit");
             } else {
                 resultText = game.i18n.format("BREAK.Miss");
             }
-            if(extraDamage >= 0 && rollResult >= extraDamage) {
+            extraDamageHit = extraDamage >= 0 && rollResult >= extraDamage;
+            if(extraDamageHit) {
                 resultText += "\n" + game.i18n.format("BREAK.ExtraAttackRollResult")
             }
         }
     } else {
-        resultText = getResultText(calculateRollResult(targetValue, definitiveRoll.total, definitiveRoll.total + statBonus + bonusTotal + customBonusResult));
+        const result = calculateRollResult(targetValue, definitiveRoll.total, definitiveRoll.total + statBonus + bonusTotal + customBonusResult);
+        hit = result === RollResults.SUCCESS || result === RollResults.SPECIAL_SUCCESS;
+        resultText = getResultText(result);
     }
     
-    return definitiveRoll.toMessage({
+    const message = await definitiveRoll.toMessage({
         user: game.user.id,
         speaker: ChatMessage.getSpeaker({ actor: this }),
         content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-check.hbs", 
@@ -195,4 +201,5 @@ export async function roll(flavor, rollType, targetValue, advantageType, bonusTy
         }),
         flavor,
     });
+    return { message, hit, extraDamageHit };
 }

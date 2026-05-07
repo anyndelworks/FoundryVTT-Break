@@ -44,6 +44,58 @@ BREAK.item_types = {
     additive: "TYPES.Item.additive"
 }
 
+BREAK.ammo_target_modes = {
+    none: {
+        key: "none",
+        label: "BREAK.AMMO.TARGET.None"
+    },
+    target: {
+        key: "target",
+        label: "BREAK.AMMO.TARGET.Target"
+    },
+    area: {
+        key: "area",
+        label: "BREAK.AMMO.TARGET.Area"
+    }
+}
+
+BREAK.ammo_attack_modifiers = {
+    none: {
+        key: "",
+        label: "BREAK.None"
+    },
+    minorBonus: {
+        key: "minorBonus",
+        bonus: "2",
+        label: "BREAK.MinorBonus"
+    },
+    majorBonus: {
+        key: "majorBonus",
+        bonus: "4",
+        label: "BREAK.MajorBonus"
+    },
+    minorPenalty: {
+        key: "minorPenalty",
+        bonus: "-2",
+        label: "BREAK.MinorPenalty"
+    },
+    majorPenalty: {
+        key: "majorPenalty",
+        bonus: "-4",
+        label: "BREAK.MajorPenalty"
+    },
+    edge: {
+        key: "edge",
+        edge: "1",
+        label: "BREAK.Edge"
+    },
+    snag: {
+        key: "snag",
+        edge: "2",
+        label: "BREAK.Snag"
+    }
+}
+
 BREAK.quirk_categories = {
     spirit: "BREAK.QUIRKS.CATEGORIES.Spirit",
     physiology: "BREAK.QUIRKS.CATEGORIES.Physiology",

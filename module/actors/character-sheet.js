@@ -9,6 +9,7 @@ const allowedItemTypes = [
   "shield",
 // Inventory
   "accessory",
+  "ammo",
   "item",
   "outfit",
 // Status

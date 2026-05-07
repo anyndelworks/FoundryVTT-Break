@@ -32,7 +32,9 @@
       "history": "History",
       "quirk": "Quirk",
       "ability": "Ability",
+      "area-condition": "Area Condition",
       "advancement": "Advancement",
+      "ammo": "Ammo",
       "item": "Item",
       "material": "Material",
       "additive": "Additive"
@@ -66,6 +68,41 @@
     "Select": "Select",
     "Adversary": "Adversary",
     "Companion": "Companion",
+    "AREA": {
+      "Tab": "BREAK!!",
+      "ConfigHint": "Use this Region as a movement area. Special modifiers should be configured as Region Active Effects.",
+      "Enabled": "Movement area",
+      "MovementCost": "Base movement cost",
+      "Connections": "Connected areas",
+      "NoOtherAreas": "No other regions in this scene.",
+      "Conditions": "Area conditions",
+      "ConditionDropHint": "Drop area condition items here to assign them to this Region.",
+      "NoConditions": "No area conditions assigned."
+    },
+    "AREA_CONDITION": {
+      "ApplyEffectsWhileInside": "Apply this condition's Active Effects while a token is inside the area"
+    },
+    "AMMO": {
+      "Properties": "Ammo properties",
+      "WeaponType": "Weapon type",
+      "Special": "Special ammo",
+      "AttackModifier": "Attack modifier",
+      "DamageModifier": "Damage modifier",
+      "ForceCheck": "Force target check on hit",
+      "CheckModifier": "Check modifier",
+      "NoAmmo": "No ammo",
+      "Consumed": "Used 1 {ammo}. Remaining: {quantity}.",
+      "ForceCheckPrompt": "{target} must make a {aptitude} Check.",
+      "RollCheck": "Roll Check",
+      "CheckResolved": "Check resolved",
+      "OnlyGM": "Only the GM can roll this ammo Check.",
+      "TargetMissing": "The target actor for this ammo Check could not be found.",
+      "TARGET": {
+        "None": "No target",
+        "Target": "Target",
+        "Area": "Area"
+      }
+    },
     "ACTION": {
       "TargetSelf": "Self",
       "TargetSelected": "Selected Target",
@@ -399,6 +436,11 @@
     "Attack": "Attack",
     "Attacks": "Attacks",
     "ActorAttacksActor":"{name} attacks {target}",
+    "AttackDamagePrompt": "{target} takes {damage} damage.",
+    "ApplyDamage": "Apply damage",
+    "DamageApplied": "Damage applied",
+    "OnlyGM": "Only the GM can use this button.",
+    "TargetMissing": "The target actor could not be found.",
     "Slots": "Slots",
     "Details": "Details",
     "Range": "Range",

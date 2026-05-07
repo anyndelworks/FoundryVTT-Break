@@ -1,0 +1,64 @@
+<section class="tab properties scrollable {{tabs.properties.cssClass}}" data-group="primary" data-tab="properties" style="height: 100%;">
+    <div style="display:flex;column-gap: 24px; flex: 1;">
+        <div class="flexcol" style="flex: 1;">
+            <p style="flex: 0;font-weight:600;font-size:14px;">{{localize "BREAK.AMMO.Properties"}}</p>
+            <div style="display:flex; align-items: center; flex: 0; margin-bottom:6px;">
+                <label>{{localize "BREAK.AMMO.WeaponType"}}</label>
+                <select name="system.weaponType" style="max-width: 220px; margin-left: auto;">
+                    <option value="">{{localize "BREAK.None"}}</option>
+                    {{#each itemTypes as |type|}}
+                        <option value="{{type.key}}" {{#if type.active}}selected="selected"{{/if}}>{{type.label}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <label style="flex: 0; margin-bottom:10px;">
+                <input type="checkbox" name="system.special" {{checked document.system.special}} />
+                {{localize "BREAK.AMMO.Special"}}
+            </label>
+            {{#if document.system.special}}
+                <div style="display:flex; align-items: center; flex: 0; margin-bottom:6px;">
+                    <label>{{localize "BREAK.AMMO.AttackModifier"}}</label>
+                    <select name="system.attackModifier" style="max-width: 180px; margin-left: auto;">
+                        {{#each attackModifiers as |modifier|}}
+                            <option value="{{modifier.key}}" {{#if modifier.active}}selected="selected"{{/if}}>{{modifier.label}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div style="display:flex; align-items: center; flex: 0; margin-bottom:6px;">
+                    <label>{{localize "BREAK.AMMO.DamageModifier"}}</label>
+                    <input name="system.damageModifier" value="{{document.system.damageModifier}}" placeholder="0" type="number" style="width:42px; text-align:center;margin-left: auto;"/>
+                </div>
+                <div style="display:flex; align-items: center; flex: 0; margin-bottom:6px;">
+                    <label>{{localize "BREAK.Target"}}</label>
+                    <select name="system.targetMode" style="max-width: 180px; margin-left: auto;">
+                        {{#each targetModes as |mode|}}
+                            <option value="{{mode.key}}" {{#if mode.active}}selected="selected"{{/if}}>{{mode.label}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <label style="flex: 0; margin-top:10px;">
+                    <input type="checkbox" name="system.check.enabled" {{checked document.system.check.enabled}} />
+                    {{localize "BREAK.AMMO.ForceCheck"}}
+                </label>
+                {{#if document.system.check.enabled}}
+                    <div style="display:flex; align-items: center; flex: 0; margin-bottom:6px;">
+                        <label>{{localize "BREAK.Aptitude"}}</label>
+                        <select name="system.check.aptitude" style="max-width: 180px; margin-left: auto;">
+                            {{#each aptitudes as |aptitude|}}
+                                <option value="{{aptitude.key}}" {{#if aptitude.active}}selected="selected"{{/if}}>{{aptitude.label}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div style="display:flex; align-items: center; flex: 0;">
+                        <label>{{localize "BREAK.AMMO.CheckModifier"}}</label>
+                        <select name="system.check.modifier" style="max-width: 180px; margin-left: auto;">
+                            {{#each checkModifiers as |modifier|}}
+                                <option value="{{modifier.key}}" {{#if modifier.active}}selected="selected"{{/if}}>{{modifier.label}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                {{/if}}
+            {{/if}}
+        </div>
+    </div>
+</section>

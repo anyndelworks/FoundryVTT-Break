@@ -26,6 +26,10 @@
                 {{#if isAbility}}
                 <p class="item-type">{{localize (concat 'TYPES.Item.' subtype)}}</p>
                 {{/if}}
+
+                {{#if isAmmo}}
+                <p class="item-type">{{weaponTypeLabel}}</p>
+                {{/if}}
             </div>
         </div>
 
@@ -83,6 +87,18 @@
         {{{advantages}}}
         <h6 class="title-section">{{localize "BREAK.Disadvantages"}}:</h6>
         {{{disadvantages}}}
+        {{/if}}
+
+        {{#if isAmmo}}
+        <h6 class="title-section">{{localize "BREAK.AMMO.Properties"}}</h6>
+        <p><span class="property-label">{{localize "BREAK.AMMO.WeaponType"}}: </span>{{weaponTypeLabel}}</p>
+        {{#if special}}
+        <p><span class="property-label">{{localize "BREAK.AMMO.AttackModifier"}}: </span>{{attackModifierLabel}}</p>
+        <p><span class="property-label">{{localize "BREAK.AMMO.DamageModifier"}}: </span>{{damageModifier}}</p>
+        {{#if check.enabled}}
+        <p><span class="property-label">{{localize "BREAK.AMMO.ForceCheck"}}: </span>{{checkAptitudeLabel}} {{checkModifierLabel}}</p>
+        {{/if}}
+        {{/if}}
         {{/if}}
 
         <!-- Description -->
