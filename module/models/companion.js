@@ -93,7 +93,7 @@ export class BreakCompanionDataModel extends BreakBaseActorDataModel {
     return this.CATEGORY_DEFAULTS[category] ?? this.CATEGORY_DEFAULTS.pet;
   }
 
-  computeDerivedData(actor) {
+  computeBaseData(actor) {
     const categoryDefaults = BreakCompanionDataModel.getCategoryDefaults(this.category);
 
     this.hands.value = categoryDefaults.hands;
@@ -101,7 +101,10 @@ export class BreakCompanionDataModel extends BreakBaseActorDataModel {
     if (!this.slots.value) {
       this.slots.value = categoryDefaults.slots;
     }
+    super.computeBaseData(actor);
+  }
 
+  computeDerivedData(actor) {
     super.computeDerivedData(actor);
     this.inventorySlots = this.slots.total;
   }

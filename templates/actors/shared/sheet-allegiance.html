@@ -5,24 +5,28 @@
             <div style="display: flex; align-items: center;">
                 <div class="aptitude-value-circle">
                     <div class="aptitude-value-inner-circle">
-                        <input class="aptitude-base-value circle-input" name="system.allegiance.dark" value="{{document.system.allegiance.dark}}" />
+                        <p class="aptitude-base-value">{{document.system.allegiance.dark}}</p>
                     </div>
                 </div>
                 <div style="margin-left: 8px;">
                     <div style="margin-top: 4px;">
                         <p class="aptitude-name">{{localize "BREAK.DarkAllegiancePoints"}}</p>
+                        <label class="aptitude-bon-label">{{localize "BREAK.Base"}}</label>
+                        <input name="system.allegiance.dark" value="{{document.system.allegiance.base.dark}}" type="number" style="width: 42px; text-align: center;" />
                     </div>
                 </div>
             </div>
             <div style="display: flex; align-items: center;">
                 <div class="aptitude-value-circle">
                     <div class="aptitude-value-inner-circle">
-                        <input class="aptitude-base-value circle-input" name="system.allegiance.bright" value="{{document.system.allegiance.bright}}" />
+                        <p class="aptitude-base-value">{{document.system.allegiance.bright}}</p>
                     </div>
                 </div>
                 <div style="margin-left: 8px;">
                     <div style="margin-top: 4px;">
                         <p class="aptitude-name">{{localize "BREAK.BrightAllegiancePoints"}}</p>
+                        <label class="aptitude-bon-label">{{localize "BREAK.Base"}}</label>
+                        <input name="system.allegiance.bright" value="{{document.system.allegiance.base.bright}}" type="number" style="width: 42px; text-align: center;" />
                     </div>
                 </div>
             </div>

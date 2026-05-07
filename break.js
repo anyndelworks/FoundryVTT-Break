@@ -60,6 +60,30 @@ import { AdditiveDataModel } from './module/models/additive.js';
 
 const {Actors, Items} = foundry.documents.collections;
 
+function getNormalizedSizeSettings(configured = {}) {
+  const defaults = CONFIG.BREAK.sizes ?? {};
+  const normalized = {};
+  for (const [key, size] of Object.entries(defaults)) {
+    normalized[key] = {
+      ...foundry.utils.deepClone(size),
+      ...foundry.utils.deepClone(configured[key] ?? {})
+    };
+  }
+  for (const [key, size] of Object.entries(configured)) {
+    if (!normalized[key]) normalized[key] = foundry.utils.deepClone(size);
+  }
+  return normalized;
+}
+
+async function normalizeSizeSettings() {
+  if (!game.user?.isGM) return;
+  const configured = game.settings.get("break", "sizes") ?? {};
+  const normalized = getNormalizedSizeSettings(configured);
+  if (JSON.stringify(configured) !== JSON.stringify(normalized)) {
+    await game.settings.set("break", "sizes", normalized);
+  }
+}
+
 /**
  * Init hook.
  */
@@ -444,6 +468,17 @@ Hooks.once("init", async function() {
   });
 
   CONFIG.BREAK.sizes = {
+    tiny: {
+      label: "Tiny",
+      inventorySize: 0,
+      slots: 0,
+      deftness: 0,
+      might: 0,
+      insight: 0,
+      aura: 0,
+      grit: 0,
+      defense: 0
+    },
     small: {
       label: "Small",
       inventorySize: 0,
@@ -468,6 +503,28 @@ Hooks.once("init", async function() {
     },
     large: {
       label: "Large",
+      inventorySize: 0,
+      slots: 0,
+      deftness: 0,
+      might: 0,
+      insight: 0,
+      aura: 0,
+      grit: 0,
+      defense: 0
+    },
+    massive: {
+      label: "Massive",
+      inventorySize: 0,
+      slots: 0,
+      deftness: 0,
+      might: 0,
+      insight: 0,
+      aura: 0,
+      grit: 0,
+      defense: 0
+    },
+    colossal: {
+      label: "Colossal",
       inventorySize: 0,
       slots: 0,
       deftness: 0,
@@ -528,8 +585,9 @@ Hooks.once("init", async function() {
     return value.slugify({strict: true});
   });
 
-  Handlebars.registerHelper('sum', function(value1, value2, value3) {
-    return value1+value2+value3
+  Handlebars.registerHelper('sum', function(...values) {
+    values.pop();
+    return values.reduce((total, value) => total + (Number(value) || 0), 0);
   });
 
   Handlebars.registerHelper('mul', function(value1, value2, options) {
@@ -579,6 +637,8 @@ Hooks.once("init", async function() {
   await preloadHandlebarsTemplates();
   registerAreaMovement();
 });
+
+Hooks.once("ready", normalizeSizeSettings);
 
 
 Hooks.once('canvasInit', (canvas) => {

@@ -4,19 +4,34 @@ export class BreakBaseActorDataModel extends foundry.abstract.DataModel {
         source = super.migrateData(source);
         if (typeof source.slots === "number") {
             source.slots = {
-                value: source.slots,
-                bon: 0,
-                total: source.slots,
-                modifier: 0,
-                override: null
+                value: source.slots
             };
         }
         if (typeof source.size === "string" || source.size === null) {
             source.size = {
-                value: source.size,
-                modifier: 0,
-                override: null,
-                effective: null
+                value: source.size
+            };
+        }
+        for (const key of ["attack", "defense", "speed", "hands", "slots"]) {
+            if (source[key] && typeof source[key] === "object") {
+                source[key] = { value: Number(source[key].value ?? source[key].total ?? 0) };
+            }
+        }
+        if (source.hearts && typeof source.hearts === "object") {
+            source.hearts = {
+                value: Number(source.hearts.value ?? 0),
+                max: Number(source.hearts.max ?? source.hearts.total ?? 0)
+            };
+        }
+        for (const key of ["might", "deftness", "grit", "insight", "aura"]) {
+            const aptitude = source.aptitudes?.[key];
+            if (!aptitude || typeof aptitude !== "object") continue;
+            source.aptitudes[key] = {
+                value: Number(aptitude.value ?? aptitude.total ?? 10),
+                trait: Math.clamp(Number(aptitude.trait ?? 0), -2, 2),
+                description: aptitude.description,
+                label: aptitude.label,
+                color: aptitude.color
             };
         }
         return source;
@@ -27,116 +42,69 @@ export class BreakBaseActorDataModel extends foundry.abstract.DataModel {
 
         return {
             attack: new fields.SchemaField({
-                value: new fields.NumberField({ initial: 0 }),
-                bon: new fields.NumberField({ initial: 0 }),
-                total: new fields.NumberField({ initial: 0 }),
-                modifier: new fields.NumberField({ initial: 0 }),
-                override: new fields.NumberField({ initial: null, nullable: true })
+                value: new fields.NumberField({ initial: 0 })
             }),
 
             defense: new fields.SchemaField({
-                value: new fields.NumberField({ initial: 0 }),
-                bon: new fields.NumberField({ initial: 0 }),
-                total: new fields.NumberField({ initial: 0 }),
-                modifier: new fields.NumberField({ initial: 0 }),
-                override: new fields.NumberField({ initial: null, nullable: true })
+                value: new fields.NumberField({ initial: 0 })
             }),
 
             speed: new fields.SchemaField({
-                value: new fields.NumberField({ initial: 1 }),
-                bon: new fields.NumberField({ initial: 0 }),
-                total: new fields.NumberField({ initial: 1 }),
-                modifier: new fields.NumberField({ initial: 0 }),
-                override: new fields.NumberField({ initial: null, nullable: true })
+                value: new fields.NumberField({ initial: 1, min: 0, max: 3, integer: true })
             }),
 
             hearts: new fields.SchemaField({
                 value: new fields.NumberField({ initial: 0 }),
-                max: new fields.NumberField({ initial: 0 }),
-                bon: new fields.NumberField({ initial: 0 }),
-                total: new fields.NumberField({ initial: 0 }),
-                modifier: new fields.NumberField({ initial: 0 }),
-                override: new fields.NumberField({ initial: null, nullable: true })
+                max: new fields.NumberField({ initial: 0 })
             }),
 
             hands: new fields.SchemaField({
-                value: new fields.NumberField({ initial: 2 }),
-                bon: new fields.NumberField({ initial: 0 }),
-                total: new fields.NumberField({ initial: 2 }),
-                modifier: new fields.NumberField({ initial: 0 }),
-                override: new fields.NumberField({ initial: null, nullable: true })
+                value: new fields.NumberField({ initial: 2 })
             }),
 
             slots: new fields.SchemaField({
-                value: new fields.NumberField({ initial: 0 }),
-                bon: new fields.NumberField({ initial: 0 }),
-                total: new fields.NumberField({ initial: 0 }),
-                modifier: new fields.NumberField({ initial: 0 }),
-                override: new fields.NumberField({ initial: null, nullable: true })
+                value: new fields.NumberField({ initial: 0 })
             }),
 
             size: new fields.SchemaField({
-                value: new fields.StringField({ nullable: true, initial: null }),
-                modifier: new fields.NumberField({ initial: 0 }),
-                override: new fields.StringField({ nullable: true, initial: null }),
-                effective: new fields.StringField({ nullable: true, initial: null })
+                value: new fields.StringField({ nullable: true, initial: null })
             }),
 
             aptitudes: new fields.SchemaField({
                 might: new fields.SchemaField({
                     value: new fields.NumberField({ initial: 10 }),
-                    bon: new fields.NumberField({ initial: 0 }),
-                    trait: new fields.NumberField({ initial: 0 }),
-                    total: new fields.NumberField({ initial: 10 }),
+                    trait: new fields.NumberField({ initial: 0, min: -2, max: 2, integer: true }),
                     description: new fields.StringField({ initial: "BREAK.APTITUDE.MightDesc" }),
                     label: new fields.StringField({ initial: "BREAK.APTITUDE.Might" }),
-                    color: new fields.StringField({ initial: "rgb(238, 61, 52) !important" }),
-                    modifier: new fields.NumberField({ initial: 0 }),
-                    override: new fields.NumberField({ initial: null, nullable: true })
+                    color: new fields.StringField({ initial: "rgb(238, 61, 52) !important" })
                 }),
                 deftness: new fields.SchemaField({
                     value: new fields.NumberField({ initial: 10 }),
-                    bon: new fields.NumberField({ initial: 0 }),
-                    trait: new fields.NumberField({ initial: 0 }),
-                    total: new fields.NumberField({ initial: 10 }),
+                    trait: new fields.NumberField({ initial: 0, min: -2, max: 2, integer: true }),
                     description: new fields.StringField({ initial: "BREAK.APTITUDE.DeftnessDesc" }),
                     label: new fields.StringField({ initial: "BREAK.APTITUDE.Deftness" }),
-                    color: new fields.StringField({ initial: "rgb(244, 127, 38) !important;" }),
-                    modifier: new fields.NumberField({ initial: 0 }),
-                    override: new fields.NumberField({ initial: null, nullable: true })
+                    color: new fields.StringField({ initial: "rgb(244, 127, 38) !important;" })
                 }),
                 grit: new fields.SchemaField({
                     value: new fields.NumberField({ initial: 10 }),
-                    bon: new fields.NumberField({ initial: 0 }),
-                    trait: new fields.NumberField({ initial: 0 }),
-                    total: new fields.NumberField({ initial: 10 }),
+                    trait: new fields.NumberField({ initial: 0, min: -2, max: 2, integer: true }),
                     description: new fields.StringField({ initial: "BREAK.APTITUDE.GritDesc" }),
                     label: new fields.StringField({ initial: "BREAK.APTITUDE.Grit" }),
-                    color: new fields.StringField({ initial: "rgb(93, 186, 72) !important" }),
-                    modifier: new fields.NumberField({ initial: 0 }),
-                    override: new fields.NumberField({ initial: null, nullable: true })
+                    color: new fields.StringField({ initial: "rgb(93, 186, 72) !important" })
                 }),
                 insight: new fields.SchemaField({
                     value: new fields.NumberField({ initial: 10 }),
-                    bon: new fields.NumberField({ initial: 0 }),
-                    trait: new fields.NumberField({ initial: 0 }),
-                    total: new fields.NumberField({ initial: 10 }),
+                    trait: new fields.NumberField({ initial: 0, min: -2, max: 2, integer: true }),
                     description: new fields.StringField({ initial: "BREAK.APTITUDE.InsightDesc" }),
                     label: new fields.StringField({ initial: "BREAK.APTITUDE.Insight" }),
-                    color: new fields.StringField({ initial: "rgb(23, 126, 194) !important" }),
-                    modifier: new fields.NumberField({ initial: 0 }),
-                    override: new fields.NumberField({ initial: null, nullable: true })
+                    color: new fields.StringField({ initial: "rgb(23, 126, 194) !important" })
                 }),
                 aura: new fields.SchemaField({
                     value: new fields.NumberField({ initial: 10 }),
-                    bon: new fields.NumberField({ initial: 0 }),
-                    trait: new fields.NumberField({ initial: 0 }),
-                    total: new fields.NumberField({ initial: 10 }),
+                    trait: new fields.NumberField({ initial: 0, min: -2, max: 2, integer: true }),
                     description: new fields.StringField({ initial: "BREAK.APTITUDE.AuraDesc" }),
                     label: new fields.StringField({ initial: "BREAK.APTITUDE.Aura" }),
-                    color: new fields.StringField({ initial: "rgb(108, 60, 148) !important" }),
-                    modifier: new fields.NumberField({ initial: 0 }),
-                    override: new fields.NumberField({ initial: null, nullable: true })
+                    color: new fields.StringField({ initial: "rgb(108, 60, 148) !important" })
                 })
             }),
 
@@ -157,60 +125,123 @@ export class BreakBaseActorDataModel extends foundry.abstract.DataModel {
         };
     }
 
-    static #resolveOverride(stat, fallback) {
-        return stat.override != null ? Number(stat.override) : fallback;
+    computeBaseData(actor) {
+        const sizes = BreakBaseActorDataModel.#getSizes();
+        const sizeData = this.size.value ? sizes[this.size.value] : null;
+        this.slots.value = sizeData?.inventorySize ?? this.slots.value;
+        this._baseStats = {
+            attack: Number(this.attack.value ?? 0),
+            defense: Number(this.defense.value ?? 0),
+            speed: Number(this.speed.value ?? 0),
+            hearts: Number(this.hearts.max ?? 0),
+            hands: Number(this.hands.value ?? 0),
+            slots: Number(this.slots.value ?? 0),
+            allegiance: {
+                dark: Number(this.allegiance.dark ?? 0),
+                bright: Number(this.allegiance.bright ?? 0)
+            },
+            aptitudes: {}
+        };
+        for (const k of ["might", "deftness", "grit", "insight", "aura"]) {
+            this._baseStats.aptitudes[k] = Number(this.aptitudes[k]?.value ?? 0);
+        }
     }
 
-    static #resolveSize(size, sizes) {
-        if (size.override) return size.override;
+    static #getActiveEffectChanges(actor, path) {
+        const effects = Array.from(actor?.appliedEffects ?? actor?.effects ?? []);
+        return effects.flatMap(effect => {
+            if (effect.disabled || effect.active === false) return [];
+            return (effect.changes ?? [])
+                .filter(change => change.key === path)
+                .map(change => `${effect.name}: ${BreakBaseActorDataModel.#formatEffectChange(change)}`);
+        }).join("\n");
+    }
 
-        const keys = Object.keys(sizes);
-        const baseIndex = keys.indexOf(size.value);
-        if (baseIndex < 0) return size.value;
-
-        const modifier = Number(size.modifier ?? 0);
-        const index = Math.min(Math.max(baseIndex + modifier, 0), keys.length - 1);
-        return keys[index];
+    static #formatEffectChange(change) {
+        const value = change.value ?? "";
+        switch (change.mode) {
+            case CONST.ACTIVE_EFFECT_MODES.ADD:
+                return `${Number(value) > 0 ? "+" : ""}${value}`;
+            case CONST.ACTIVE_EFFECT_MODES.SUBTRACT:
+                return `-${value}`;
+            case CONST.ACTIVE_EFFECT_MODES.MULTIPLY:
+                return `x${value}`;
+            case CONST.ACTIVE_EFFECT_MODES.OVERRIDE:
+                return `= ${value}`;
+            case CONST.ACTIVE_EFFECT_MODES.UPGRADE:
+                return `min ${value}`;
+            case CONST.ACTIVE_EFFECT_MODES.DOWNGRADE:
+                return `max ${value}`;
+            default:
+                return `${value}`;
+        }
     }
 
     computeDerivedData(actor) {
         const shield = this.equipment.shield;
         const armor = this.equipment.armor;
-        const sizes = game.settings.get("break", "sizes");
-        const sizeKey = BreakBaseActorDataModel.#resolveSize(this.size, sizes);
+        const sizes = BreakBaseActorDataModel.#getSizes();
+        const sizeKey = this.size.value;
 
         this.size.effective = sizeKey;
         this.sizeData = sizeKey ? sizes[sizeKey] : null;
-        this.slots.value = this.sizeData?.inventorySize ?? this.slots.value;
         
-        this.hearts.bon = this.hearts.modifier;
-        this.hearts.total = BreakBaseActorDataModel.#resolveOverride(this.hearts, this.hearts.max + this.hearts.bon);
+        this.hearts.base = Number(this._baseStats?.hearts ?? this.hearts.max ?? 0);
+        this.hearts.total = Number(this.hearts.max ?? 0);
+        this.hearts.bon = this.hearts.total - this.hearts.base;
+        this.hearts.effectsTooltip = BreakBaseActorDataModel.#getActiveEffectChanges(actor, "system.hearts.max");
         this.hearts.value = Math.min(this.hearts.value, this.hearts.total);
 
-        this.attack.bon = this.attack.modifier;
-        this.attack.total = BreakBaseActorDataModel.#resolveOverride(this.attack, this.attack.value + this.attack.bon);
+        this.attack.base = Number(this._baseStats?.attack ?? this.attack.value ?? 0);
+        this.attack.total = Number(this.attack.value ?? 0);
+        this.attack.bon = this.attack.total - this.attack.base;
+        this.attack.effectsTooltip = BreakBaseActorDataModel.#getActiveEffectChanges(actor, "system.attack.value");
 
-        this.speed.bon = Number(this.speed.modifier ?? 0) - Number(shield ? shield.system?.speedPenalty ?? 0 : 0);
         // Max speed is 3 (Very Fast), or if armor is worn then the armor's speed limit if it's less
         const maxSpeed = Math.min((armor?.system?.speedLimit != null ? +armor.system?.speedLimit ?? 3 : 3), 3);
-        const rawSpeed = this.speed.value + this.speed.bon;
-        this.speed.total = BreakBaseActorDataModel.#resolveOverride(this.speed, Math.min(rawSpeed, maxSpeed));
+        const shieldSpeedPenalty = Number(shield ? shield.system?.speedPenalty ?? 0 : 0);
+        const rawSpeed = Number(this.speed.value ?? 0) - shieldSpeedPenalty;
+        this.speed.base = Number(this._baseStats?.speed ?? this.speed.value ?? 0);
+        this.speed.total = Math.clamp(Math.min(rawSpeed, maxSpeed), 0, 3);
+        this.speed.bon = this.speed.total - this.speed.base;
+        this.speed.effectsTooltip = BreakBaseActorDataModel.#getActiveEffectChanges(actor, "system.speed.value");
 
-        this.defense.bon = this.defense.modifier;
-        this.defense.bon = (this.sizeData ? +this.sizeData.defense : 0) + (shield ? shield.system?.defenseBonus ?? 0 : 0) + (armor ? +armor.system?.defenseBonus ?? 0 : 0) + (this.speed.total == 2 ? 2 : +this.speed.total >= 3 ? 4 : 0) + (this.defense.modifier ?? 0);
-        this.defense.total = BreakBaseActorDataModel.#resolveOverride(this.defense, this.defense.value + this.defense.bon);
+        const defenseEquipmentBonus = (this.sizeData ? +this.sizeData.defense : 0)
+            + (shield ? shield.system?.defenseBonus ?? 0 : 0)
+            + (armor ? +armor.system?.defenseBonus ?? 0 : 0)
+            + (this.speed.total == 2 ? 2 : +this.speed.total >= 3 ? 4 : 0);
+        this.defense.base = Number(this._baseStats?.defense ?? this.defense.value ?? 0);
+        this.defense.total = Number(this.defense.value ?? 0) + defenseEquipmentBonus;
+        this.defense.bon = this.defense.total - this.defense.base;
+        this.defense.effectsTooltip = BreakBaseActorDataModel.#getActiveEffectChanges(actor, "system.defense.value");
 
-        this.hands.bon = this.hands.modifier;
-        this.hands.total = BreakBaseActorDataModel.#resolveOverride(this.hands, this.hands.value + this.hands.bon);
+        this.hands.base = Number(this._baseStats?.hands ?? this.hands.value ?? 0);
+        this.hands.total = Number(this.hands.value ?? 0);
+        this.hands.bon = this.hands.total - this.hands.base;
+        this.hands.effectsTooltip = BreakBaseActorDataModel.#getActiveEffectChanges(actor, "system.hands.value");
 
-        this.slots.bon = this.slots.modifier;
-        this.slots.total = BreakBaseActorDataModel.#resolveOverride(this.slots, this.slots.value + this.slots.bon);
+        this.slots.base = Number(this._baseStats?.slots ?? this.slots.value ?? 0);
+        this.slots.total = Number(this.slots.value ?? 0);
+        this.slots.bon = this.slots.total - this.slots.base;
+        this.slots.effectsTooltip = BreakBaseActorDataModel.#getActiveEffectChanges(actor, "system.slots.value");
+
+        this.allegiance.base = {
+            dark: Number(this._baseStats?.allegiance?.dark ?? this.allegiance.dark ?? 0),
+            bright: Number(this._baseStats?.allegiance?.bright ?? this.allegiance.bright ?? 0)
+        };
 
         const aptitudes = this.aptitudes;
         for (const k of ["might", "deftness", "grit", "insight", "aura"]) {
             const aptitude = aptitudes[k];
-            aptitude.bon = Number(aptitude.modifier ?? 0) + Number(aptitude.trait ?? 0) + Number(this.sizeData?.[k] ?? 0);
-            aptitude.total = Math.floor(BreakBaseActorDataModel.#resolveOverride(aptitude, aptitude.value + aptitude.bon));
+            aptitude.base = Number(this._baseStats?.aptitudes?.[k] ?? aptitude.value ?? 0);
+            aptitude.trait = Math.clamp(Number(aptitude.trait ?? 0), -2, 2);
+            aptitude.total = Math.floor(Number(aptitude.value ?? 0) + Number(aptitude.trait ?? 0) + Number(this.sizeData?.[k] ?? 0));
+            aptitude.bon = aptitude.total - aptitude.base;
+            aptitude.effectsTooltip = BreakBaseActorDataModel.#getActiveEffectChanges(actor, `system.aptitudes.${k}.value`);
         }
+    }
+
+    static #getSizes() {
+        return game.settings.get("break", "sizes");
     }
 }

@@ -197,16 +197,16 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
   #getActionContextOptions() {
     const options = [
       {
-        name: "BREAK.SendToChat",
+        label: "BREAK.SendToChat",
         icon: "<i class='fa-solid fa-fw fa-comment-alt'></i>",
-        condition: () => this.document.isOwner,
-        callback: li => this._onSendActionToChat(li)
+        visible: () => this.document.isOwner,
+        onClick: (event, target) => this._onSendActionToChat(target)
       },
       {
-        name: "BREAK.ContextMenuDelete",
+        label: "BREAK.ContextMenuDelete",
         icon: "<i class='fas fa-trash fa-fw'></i>",
-        condition: () => this.document.isOwner,
-        callback: li => this._onDeleteAction(li)
+        visible: () => this.document.isOwner,
+        onClick: (event, target) => this._onDeleteAction(target)
       }
     ];
     return options;
@@ -215,16 +215,16 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
   #getAbilityContextOptions() {
     const options = [
       {
-        name: "BREAK.SendToChat",
+        label: "BREAK.SendToChat",
         icon: "<i class='fa-solid fa-fw fa-comment-alt'></i>",
-        condition: () => this.document.isOwner,
-        callback: li => this._onSendAbilityToChat(li)
+        visible: () => this.document.isOwner,
+        onClick: (event, target) => this._onSendAbilityToChat(target)
       },
       {
-        name: "BREAK.ContextMenuDelete",
+        label: "BREAK.ContextMenuDelete",
         icon: "<i class='fas fa-trash fa-fw'></i>",
-        condition: () => this.document.isOwner,
-        callback: li => this._onDeleteAbility(li)
+        visible: () => this.document.isOwner,
+        onClick: (event, target) => this._onDeleteAbility(target)
       }
     ];
     return options;
@@ -234,10 +234,10 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     // Standard Options
     const options = [
       {
-        name: "BREAK.ContextMenuDelete",
+        label: "BREAK.ContextMenuDelete",
         icon: "<i class='fas fa-trash fa-fw'></i>",
-        condition: () => effect.isOwner,
-        callback: li => this._onDeleteEffect(li)
+        visible: () => effect.isOwner,
+        onClick: (event, target) => this._onDeleteEffect(target)
       }
     ];
 

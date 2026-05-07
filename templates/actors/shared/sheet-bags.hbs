@@ -3,6 +3,18 @@
     <div style="margin-left: 25%;">{{localize "BREAK.Used"}} / {{localize "BREAK.Total"}}</div>
     <div style="display: flex;align-items:center;column-gap:6px;border-bottom:1px solid grey;">
         <label style="width:25%;">{{localize "BREAK.Inventory"}}</label>
-        <p><span {{#when usedInventorySlots 'gt' inventorySlots}}style="color: red;"{{/when}}>{{usedInventorySlots}}</span> / <input name="system.slots.total" value="{{document.system.slots.total}}" placeholder="0" type="number" style="width:32px;text-align:center;" /> {{"BREAK.Slots"}}</p>
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <p style="margin:0;">
+                <span {{#when usedInventorySlots 'gt' inventorySlots}}style="color: red;"{{/when}}>{{usedInventorySlots}}</span>
+                /
+                <span>{{inventorySlots}}</span>
+                {{localize "BREAK.Slots"}}
+            </p>
+            <label style="display:flex; align-items:center; gap:4px;">
+                {{localize "BREAK.Base"}}
+                <input name="system.slots.value" value="{{document.system.slots.base}}" placeholder="0" type="number" style="width:32px;text-align:center;" {{#if document.system.size.value}}disabled{{/if}} />
+            </label>
+            <span title="{{document.system.slots.effectsTooltip}}">{{localize "BREAK.BonPen"}}: {{document.system.slots.bon}}</span>
+        </div>
     </div>
 </div>

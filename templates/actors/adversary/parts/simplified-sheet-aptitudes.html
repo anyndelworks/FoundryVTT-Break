@@ -12,12 +12,12 @@
                 <div class="aptitude-value-label" style="display: flex; margin-left: 8px; align-items: center;">
                     <p class="aptitude-name">{{localize attr.label}}</p>
                     <div style="display: flex; align-items: center; margin-left:auto">
-                        <label style="text-transform: uppercase;">{{localize "BREAK.BonPen"}}</label>
-                        <span style="margin-left: 8px;">{{attr.bon}}</span>
+                        <label style="text-transform: uppercase;" title="{{attr.effectsTooltip}}">{{localize "BREAK.BonPen"}}</label>
+                        <span style="margin-left: 8px;" title="{{attr.effectsTooltip}}">{{attr.bon}}</span>
                     </div>
                     <div class="aptitude-base-container" style="margin-left:8px;">
                         <label style="text-transform: uppercase;">{{localize "BREAK.Base"}}</label>
-                        <input name="system.aptitudes.{{key}}.value" type="number" class="aptitude-base-circle" style="text-align: center;" value="{{attr.value}}" placeholder="0" />
+                        <input name="system.aptitudes.{{key}}.value" type="number" class="aptitude-base-circle" style="text-align: center;" value="{{attr.base}}" placeholder="0" />
                     </div>
                 </div>
             </div>

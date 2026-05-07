@@ -5,10 +5,12 @@
             <div class="compact-summary-input" style="display:flex; align-items:center; justify-content:center;">{{attr.total}}</div>
             <label class="compact-summary-label">{{localize attr.label}}</label>
             <div class="compact-summary-aptitude-values" style="display:flex; align-items:center; justify-content:center; gap:8px; font-size:11px; line-height:1; margin-top:3px;">
+                {{#if @root.editable}}
                 <label>{{localize "BREAK.Base"}}:
-                    <input name="system.aptitudes.{{key}}.value" type="number" value="{{attr.value}}" placeholder="0" style="width:34px; text-align:center;"/>
+                    <input name="system.aptitudes.{{key}}.value" type="number" value="{{attr.base}}" placeholder="0" style="width:34px; text-align:center;" {{#if @root.document.system.hasCalling}}disabled{{/if}}/>
                 </label>
-                <span>{{localize "BREAK.BonPen"}}: {{attr.bon}}</span>
+                {{/if}}
+                <span title="{{attr.effectsTooltip}}">{{localize "BREAK.BonPen"}}: {{attr.bon}}</span>
             </div>
             <div class="compact-summary-aptitude-row">
                 <div class="compact-summary-bar-track">
@@ -27,10 +29,12 @@
             </div>
             <label class="compact-summary-label">{{localize "BREAK.Attack"}}</label>
             <div class="compact-summary-stat-values" style="display:flex; align-items:center; justify-content:center; gap:8px; font-size:11px; line-height:1; margin-top:3px;">
+                {{#if editable}}
                 <label>{{localize "BREAK.Base"}}:
-                    <input name="system.attack.value" type="number" value="{{document.system.attack.value}}" placeholder="0" style="width:34px; text-align:center;"/>
+                    <input name="system.attack.value" type="number" value="{{document.system.attack.base}}" placeholder="0" style="width:34px; text-align:center;" {{#if document.system.hasCalling}}disabled{{/if}}/>
                 </label>
-                <span>{{localize "BREAK.BonPen"}}: {{document.system.attack.bon}}</span>
+                {{/if}}
+                <span title="{{document.system.attack.effectsTooltip}}">{{localize "BREAK.BonPen"}}: {{document.system.attack.bon}}</span>
             </div>
         </div>
 
@@ -49,10 +53,12 @@
             </div>
             <label class="compact-summary-label">{{localize "BREAK.Hearts"}}</label>
             <div class="compact-summary-stat-values" style="display:flex; align-items:center; justify-content:center; gap:8px; font-size:11px; line-height:1; margin-top:3px;">
+                {{#if editable}}
                 <label>{{localize "BREAK.Base"}}:
-                    <input name="system.hearts.max" type="number" value="{{document.system.hearts.max}}" placeholder="0" style="width:34px; text-align:center;"/>
+                    <input name="system.hearts.max" type="number" value="{{document.system.hearts.base}}" placeholder="0" style="width:34px; text-align:center;" {{#if document.system.hasCalling}}disabled{{/if}}/>
                 </label>
-                <span>{{localize "BREAK.BonPen"}}: {{document.system.hearts.bon}}</span>
+                {{/if}}
+                <span title="{{document.system.hearts.effectsTooltip}}">{{localize "BREAK.BonPen"}}: {{document.system.hearts.bon}}</span>
             </div>
         </div>
 
@@ -63,29 +69,33 @@
             </div>
             <label class="compact-summary-label">{{localize "BREAK.Defense"}}</label>
             <div class="compact-summary-stat-values" style="display:flex; align-items:center; justify-content:center; gap:8px; font-size:11px; line-height:1; margin-top:3px;">
+                {{#if editable}}
                 <label>{{localize "BREAK.Base"}}:
-                    <input name="system.defense.value" type="number" value="{{document.system.defense.value}}" placeholder="0" style="width:34px; text-align:center;"/>
+                    <input name="system.defense.value" type="number" value="{{document.system.defense.base}}" placeholder="0" style="width:34px; text-align:center;" {{#if document.system.hasCalling}}disabled{{/if}}/>
                 </label>
-                <span>{{localize "BREAK.BonPen"}}: {{document.system.defense.bon}}</span>
+                {{/if}}
+                <span title="{{document.system.defense.effectsTooltip}}">{{localize "BREAK.BonPen"}}: {{document.system.defense.bon}}</span>
             </div>
         </div>
 
         <div class="compact-summary-stat">
             <div class="compact-summary-stat-top">
                 <span class="compact-summary-stat-icon"><i class="fas fa-person-running"></i></span>
-                <div class="compact-summary-stat-input" style="display:flex; align-items:center; justify-content:center;">{{document.system.speed.total}}</div>
+                <div class="compact-summary-stat-input" style="display:flex; align-items:center; justify-content:center;width:auto;">{{localize speedRatingLabel}}</div>
             </div>
             <label class="compact-summary-label">{{localize "BREAK.Speed"}}</label>
             <div class="compact-summary-stat-values" style="display:flex; align-items:center; justify-content:center; gap:8px; font-size:11px; line-height:1; margin-top:3px;">
+                {{#if editable}}
                 <label>{{localize "BREAK.Base"}}:
-                    <select name="system.speed.value" style="max-width:82px;">
-                        <option value="0" {{#when document.system.speed.value 'eq' 0}}selected="selected"{{/when}}>{{localize "BREAK.SLOW"}}</option>
-                        <option value="1" {{#when document.system.speed.value 'eq' 1}}selected="selected"{{/when}}>{{localize "BREAK.AVERAGE"}}</option>
-                        <option value="2" {{#when document.system.speed.value 'eq' 2}}selected="selected"{{/when}}>{{localize "BREAK.FAST"}}</option>
-                        <option value="3" {{#when document.system.speed.value 'eq' 3}}selected="selected"{{/when}}>{{localize "BREAK.VFAST"}}</option>
+                    <select name="system.speed.value" style="max-width:82px;" {{#if document.system.hasCalling}}disabled{{/if}}>
+                        <option value="0" {{#when document.system.speed.base 'eq' 0}}selected="selected"{{/when}}>{{localize "BREAK.SLOW"}}</option>
+                        <option value="1" {{#when document.system.speed.base 'eq' 1}}selected="selected"{{/when}}>{{localize "BREAK.AVERAGE"}}</option>
+                        <option value="2" {{#when document.system.speed.base 'eq' 2}}selected="selected"{{/when}}>{{localize "BREAK.FAST"}}</option>
+                        <option value="3" {{#when document.system.speed.base 'eq' 3}}selected="selected"{{/when}}>{{localize "BREAK.VFAST"}}</option>
                     </select>
                 </label>
-                <span>{{localize "BREAK.BonPen"}}: {{document.system.speed.bon}}</span>
+                {{/if}}
+                <span title="{{document.system.speed.effectsTooltip}}">{{localize "BREAK.BonPen"}}: {{document.system.speed.bon}}</span>
             </div>
         </div>
     </div>

@@ -24,8 +24,12 @@ export class BreakCharacterDataModel extends BreakBaseActorDataModel {
     };
   }
 
-  computeDerivedData(actor) {
+  computeBaseData(actor) {
     this.computeItemEffects(actor);
+    super.computeBaseData(actor);
+  }
+
+  computeDerivedData(actor) {
     super.computeDerivedData(actor);
     this.inventorySlots = this.slots.total;
   }

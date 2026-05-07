@@ -249,26 +249,26 @@ export class BreakCompanionSheet extends BreakActorSheet {
   _getContextOptions(item) {
     const options = [
       {
-        name: "BREAK.Equip",
+        label: "BREAK.Equip",
         icon: "<i class='fa-solid fa-shield'></i>",
-        condition: () => item.equippable === "true",
-        callback: li => {
-          const id = li.dataset?.id ?? li.target?.attributes?.getNamedItem("data-id")?.value;
+        visible: () => item.equippable === "true",
+        onClick: (event, target) => {
+          const id = target.dataset.id;
           const targetItem = this.document.items.get(id);
           this._onEquipItem(targetItem);
         }
       },
       {
-        name: "BREAK.SendToChat",
+        label: "BREAK.SendToChat",
         icon: "<i class='fa-solid fa-fw fa-comment-alt'></i>",
-        condition: () => item.isOwner,
-        callback: li => this._onSendToChat(li)
+        visible: () => item.isOwner,
+        onClick: (event, target) => this._onSendToChat(target)
       },
       {
-        name: "BREAK.ContextMenuDelete",
+        label: "BREAK.ContextMenuDelete",
         icon: "<i class='fas fa-trash fa-fw'></i>",
-        condition: () => item.isOwner,
-        callback: li => this._onDeleteItem(li)
+        visible: () => item.isOwner,
+        onClick: (event, target) => this._onDeleteItem(target)
       }
     ];
 

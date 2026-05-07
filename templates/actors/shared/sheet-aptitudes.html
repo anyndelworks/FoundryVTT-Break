@@ -9,7 +9,7 @@
             </div>
             <div class="aptitude-base-container">
                 <label style="text-transform: uppercase;">{{localize "BREAK.Base"}}</label>
-                <input name="system.aptitudes.{{key}}.value" type="number" class="aptitude-base-circle" style="text-align: center;" value="{{attr.value}}" placeholder="0"/>
+                <input name="system.aptitudes.{{key}}.value" type="number" class="aptitude-base-circle" style="text-align: center;" value="{{attr.base}}" placeholder="0" {{#if @root.document.system.hasCalling}}disabled{{/if}}/>
             </div>
         </div>
         <div style="display:flex;">
@@ -20,7 +20,7 @@
             </div>
             <div class="aptitude-bar-container">
                 <div class="aptitude-trait-picker">
-                    <input name="system.aptitudes.{{key}}.trait" type="number" style="display: none;" value="{{attr.trait}}" placeholder=""/>
+                    <input name="system.aptitudes.{{key}}.trait" type="number" min="-2" max="2" style="display: none;" value="{{attr.trait}}" placeholder=""/>
                     <label class="aptitude-trait-label" data-aptitude="{{key}}">{{localize "BREAK.Trait"}}</label>
                     {{#when attr.trait 'eq' -2}}
                         <label class="aptitude-picked-trait" data-option="-2">-2</label>
@@ -64,8 +64,8 @@
                     {{/for}}
                 </div>
                 <div style="display: flex; align-items: center; margin-left: 8px;">
-                    <label class="aptitude-bon-label">{{localize "BREAK.BonPen"}}</label>
-                    <span style="margin-top:2px;margin-left: 8px;">{{attr.bon}}</span>
+                    <label class="aptitude-bon-label" title="{{attr.effectsTooltip}}">{{localize "BREAK.BonPen"}}</label>
+                    <span style="margin-top:2px;margin-left: 8px;" title="{{attr.effectsTooltip}}">{{attr.bon}}</span>
                 </div>
             </div>
         </div>

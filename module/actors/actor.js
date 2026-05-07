@@ -12,10 +12,15 @@ const { DialogV2 } = foundry.applications.api;
 export class BreakActor extends Actor {
 
   /** @inheritdoc */
+  prepareBaseData() {
+    super.prepareBaseData();
+    this.system.computeBaseData?.(this);
+  }
+
+  /** @inheritdoc */
   prepareDerivedData() {
     super.prepareDerivedData();
     this.system.computeDerivedData(this);
-    this.system.updateSource(this.system.toObject());
   }
 
   async _preCreate(data, options, user) {
@@ -33,7 +38,6 @@ export class BreakActor extends Actor {
 
   prepareData(){
     super.prepareData();
-    console.log(this.system);
 
     if(canvas.ready) {
       const thisTokenIsControlled = canvas.tokens.controlled.some(
@@ -55,7 +59,7 @@ export class BreakActor extends Actor {
   async deleteItem(id) {
     const item = this.items.find(i => i._id == id);
     if(item) {
-      this.unequipItem(id, item.type);
+      await this.unequipItem(id, item.type);
       await this.deleteEmbeddedDocuments("Item", [id]);
     }
     return this
@@ -65,9 +69,7 @@ export class BreakActor extends Actor {
   {
     const updates = {};
     const item = this.items.get(id);
-    item?.effects?.forEach(effect => {
-      effect.update({disabled: true});
-    });
+    await Promise.all(item?.effects?.map(effect => effect.update({disabled: true})) ?? []);
     if (Array.isArray(this.system.equipment[type])) {
       var itemIndex = this.system.equipment[type].findIndex((element) => element._id == id);
       if (itemIndex != -1)
@@ -82,7 +84,9 @@ export class BreakActor extends Actor {
       }
     }
 
-    this.update(updates);
+    if(!foundry.utils.isEmpty(updates)) {
+      await this.update(updates);
+    }
   }
 
   async rollAptitude(aptitudeId) {

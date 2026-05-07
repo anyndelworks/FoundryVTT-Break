@@ -142,6 +142,7 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     
     context.attackBonus = context.document.system.attack.total;
     context.speedRating = context.document.system.speed.total;
+    context.speedRatingLabel = this.constructor.getSpeedRatingLabel(context.speedRating);
     const weaponHands = equipment.weapon.reduce((a, w) => a+(w.hands ?? 1), 0);
     this.freeHands = context.document.system.hands.total - weaponHands - (equipment.shield?.system.hands ?? 0);
     context.hands = context.document.system.hands.total;
@@ -157,6 +158,13 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   //#endregion
 
   //#region Drag&Drop
+  static getSpeedRatingLabel(speed) {
+    if (+speed <= 0) return "BREAK.SLOW";
+    if (+speed === 1) return "BREAK.AVERAGE";
+    if (+speed === 2) return "BREAK.FAST";
+    return "BREAK.VFAST";
+  }
+
   _onDragStart(event) {
     const data = event.target.closest(".bag-item")?.dataset ?? {};
     if ( !data.type ) return super._onDragStart(event);
@@ -175,7 +183,7 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
   async _onDeleteItem(element) {
     const id = element.dataset?.id ?? element.currentTarget?.attributes?.getNamedItem("data-id")?.value;
-    this.actor.deleteItem(id);
+    await this.actor.deleteItem(id);
   }
 
   static async #onRollAttack(event) {
