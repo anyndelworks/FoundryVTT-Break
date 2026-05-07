@@ -14,27 +14,47 @@ export class BreakBaseActorDataModel extends foundry.abstract.DataModel {
         }
         for (const key of ["attack", "defense", "speed", "hands", "slots"]) {
             if (source[key] && typeof source[key] === "object") {
-                source[key] = { value: Number(source[key].value ?? source[key].total ?? 0) };
+                BreakBaseActorDataModel.#migrateValueOnlyStat(source[key]);
             }
         }
         if (source.hearts && typeof source.hearts === "object") {
-            source.hearts = {
-                value: Number(source.hearts.value ?? 0),
-                max: Number(source.hearts.max ?? source.hearts.total ?? 0)
-            };
+            BreakBaseActorDataModel.#migrateHearts(source.hearts);
         }
         for (const key of ["might", "deftness", "grit", "insight", "aura"]) {
             const aptitude = source.aptitudes?.[key];
             if (!aptitude || typeof aptitude !== "object") continue;
-            source.aptitudes[key] = {
-                value: Number(aptitude.value ?? aptitude.total ?? 10),
-                trait: Math.clamp(Number(aptitude.trait ?? 0), -2, 2),
-                description: aptitude.description,
-                label: aptitude.label,
-                color: aptitude.color
-            };
+            BreakBaseActorDataModel.#migrateAptitude(aptitude);
         }
         return source;
+    }
+
+    static #migrateValueOnlyStat(stat) {
+        if (stat.value == null && stat.total != null) stat.value = Number(stat.total);
+        else if (stat.value != null) stat.value = Number(stat.value);
+        delete stat.bon;
+        delete stat.total;
+        delete stat.modifier;
+        delete stat.override;
+    }
+
+    static #migrateHearts(hearts) {
+        if (hearts.value != null) hearts.value = Number(hearts.value);
+        if (hearts.max == null && hearts.total != null) hearts.max = Number(hearts.total);
+        else if (hearts.max != null) hearts.max = Number(hearts.max);
+        delete hearts.bon;
+        delete hearts.total;
+        delete hearts.modifier;
+        delete hearts.override;
+    }
+
+    static #migrateAptitude(aptitude) {
+        if (aptitude.value == null && aptitude.total != null) aptitude.value = Number(aptitude.total);
+        else if (aptitude.value != null) aptitude.value = Number(aptitude.value);
+        if (aptitude.trait != null) aptitude.trait = Math.clamp(Number(aptitude.trait), -2, 2);
+        delete aptitude.bon;
+        delete aptitude.total;
+        delete aptitude.modifier;
+        delete aptitude.override;
     }
 
     static defineSchema() {
