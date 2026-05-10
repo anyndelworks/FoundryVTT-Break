@@ -135,6 +135,10 @@ BREAK.action_costs = {
 }
 
 BREAK.action_targets = {
+    none: {
+        key: "none",
+        label: "BREAK.ACTION.TargetNone"
+    },
     self: {
         key: "self",
         label: "BREAK.ACTION.TargetSelf"
@@ -142,6 +146,10 @@ BREAK.action_targets = {
     target: {
         key: "target",
         label: "BREAK.ACTION.TargetSelected"
+    },
+    area: {
+        key: "area",
+        label: "BREAK.ACTION.TargetArea"
     }
 }
 
@@ -158,9 +166,20 @@ BREAK.action_effects = {
         key: "damage",
         label: "BREAK.ACTION.EFFECT.Damage"
     },
-    applyItemEffects: {
-        key: "applyItemEffects",
-        label: "BREAK.ACTION.EFFECT.ApplyItemEffects"
+    applyActiveEffects: {
+        key: "applyActiveEffects",
+        label: "BREAK.ACTION.EFFECT.ApplyActiveEffects"
+    }
+}
+
+BREAK.action_check_effect_triggers = {
+    success: {
+        key: "success",
+        label: "BREAK.ACTION.CHECK_TRIGGER.Success"
+    },
+    failure: {
+        key: "failure",
+        label: "BREAK.ACTION.CHECK_TRIGGER.Failure"
     }
 }
 

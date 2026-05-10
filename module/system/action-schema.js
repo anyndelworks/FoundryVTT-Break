@@ -7,6 +7,7 @@ export function defineActionField(fields) {
         description: new fields.HTMLField({ initial: "" }),
         aptitude: new fields.StringField({ initial: "might" }),
         vs: new fields.StringField({ initial: "might" }),
+        checkEffectTrigger: new fields.StringField({ initial: "success" }),
         target: new fields.StringField({ initial: "self" }),
         requiredItemRef: new fields.StringField({ initial: "" }),
         requiredItemName: new fields.StringField({ initial: "" }),
@@ -16,5 +17,12 @@ export function defineActionField(fields) {
         consumeItemQuantity: new fields.NumberField({ initial: 1, min: 0 }),
         effectType: new fields.StringField({ initial: "none" }),
         effectAmount: new fields.NumberField({ initial: 0 }),
+        effects: new fields.ArrayField(new fields.ObjectField({
+            id: new fields.StringField({ initial: "" }),
+            type: new fields.StringField({ initial: "none" }),
+            amount: new fields.NumberField({ initial: 0 }),
+        })),
+        activeEffectRefs: new fields.ArrayField(new fields.StringField({ initial: "" })),
+        activeEffects: new fields.ArrayField(new fields.ObjectField({})),
     }));
 }

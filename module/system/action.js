@@ -17,6 +17,7 @@ export default class Action {
             description: "",
             aptitude: BREAK.aptitudes.might.key,
             vs: BREAK.aptitudes.might.key,
+            checkEffectTrigger: BREAK.action_check_effect_triggers.success.key,
             target: BREAK.action_targets.self.key,
             requiredItemRef: "",
             requiredItemName: "",
@@ -26,10 +27,39 @@ export default class Action {
             consumeItemQuantity: 1,
             effectType: BREAK.action_effects.none.key,
             effectAmount: 0,
+            effects: [],
+            activeEffectRefs: [],
+            activeEffects: [],
         }
     }
 
+    static normalize(action) {
+        const normalized = foundry.utils.deepClone(action ?? {});
+        if (!Array.isArray(normalized.effects)) normalized.effects = [];
+        if (!Array.isArray(normalized.activeEffectRefs)) normalized.activeEffectRefs = [];
+        if (!Array.isArray(normalized.activeEffects)) normalized.activeEffects = [];
+        normalized.checkEffectTrigger = normalized.checkEffectTrigger ?? BREAK.action_check_effect_triggers.success.key;
+        if (!normalized.effects.length && normalized.effectType && normalized.effectType !== BREAK.action_effects.none.key) {
+            const effectType = normalized.effectType === "applyItemEffects"
+                ? BREAK.action_effects.applyActiveEffects.key
+                : normalized.effectType;
+            normalized.effects.push({
+                id: crypto.randomUUID(),
+                type: effectType,
+                amount: Number(normalized.effectAmount) || 0
+            });
+        }
+        return normalized;
+    }
+
+    static async getActiveEffectDocuments(action) {
+        action = this.normalize(action);
+        const documents = await Promise.all(action.activeEffectRefs.map(ref => fromUuid(ref).catch(() => null)));
+        return documents.filter(effect => effect);
+    }
+
     static async sendToChat(action, character) {
+        action = this.normalize(action);
         const data = {...action};
         data.user = character;
         data.requiresRoll = action.rollType !== BREAK.roll_types.none.key;
@@ -57,9 +87,24 @@ export default class Action {
     }
 
     static getTargetActor(action, actor) {
+        if (action.target === BREAK.action_targets.none.key || action.target === BREAK.action_targets.area.key) return null;
         if (action.target === BREAK.action_targets.self.key) return actor;
         const target = game.user?.targets?.first?.() ?? game.users.get(game.userId)?.targets?.first?.();
         return target?.actor ?? null;
+    }
+
+    static getOwners(actor) {
+        return game.users.filter(user => actor.testUserPermission(user, "OWNER"));
+    }
+
+    static getOwnerOrGMRecipients(actor) {
+        const recipients = new Set(ChatMessage.getWhisperRecipients("GM").map(user => user.id));
+        this.getOwners(actor).forEach(user => recipients.add(user.id));
+        return Array.from(recipients);
+    }
+
+    static canRollForActor(actor) {
+        return game.user.isGM || actor.testUserPermission(game.user, "OWNER");
     }
 
     static itemMatchesReference(item, itemRef, itemName) {
@@ -120,45 +165,101 @@ export default class Action {
         return true;
     }
 
-    static async applyItemEffects(sourceItem, targetActor) {
-        if (!targetActor || !sourceItem?.effects?.size) return;
-        const effectData = sourceItem.effects.map(effect => {
-            const data = effect.toObject();
+    static async payCosts(actor, action) {
+        if (!this.checkRequirements(actor, action)) return false;
+        return this.consumeItem(actor, action.consumeItemRef, action.consumeItemName, action.consumeItemQuantity);
+    }
+
+    static shouldApplyCheckEffects(action, hit) {
+        const trigger = action.checkEffectTrigger ?? BREAK.action_check_effect_triggers.success.key;
+        return trigger === BREAK.action_check_effect_triggers.success.key ? hit : !hit;
+    }
+
+    static async notifyTargetCheck(actor, item, action, targetActor) {
+        const aptitude = targetActor.system.aptitudes[action.aptitude];
+        if(!aptitude) return;
+        const data = {
+            actionName: action.name,
+            actorName: actor.name,
+            actorUuid: actor.uuid,
+            itemUuid: item.uuid,
+            actionId: action.id,
+            targetName: targetActor.name,
+            targetActorUuid: targetActor.uuid,
+            aptitude: action.aptitude,
+            aptitudeLabel: game.i18n.localize(aptitude.label),
+            checkEffectTrigger: action.checkEffectTrigger ?? BREAK.action_check_effect_triggers.success.key,
+            resolved: false
+        };
+        const content = await foundry.applications.handlebars.renderTemplate("systems/break/templates/chat/action-check.html", data);
+        await ChatMessage.create({
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor }),
+            whisper: this.getOwnerOrGMRecipients(targetActor),
+            flavor: action.name,
+            content,
+            flags: {
+                break: {
+                    actionCheck: data
+                }
+            }
+        });
+    }
+
+    static async applyActiveEffects(action, item, targetActor) {
+        if (!targetActor) return;
+        const activeEffects = await this.getActiveEffectDocuments(action);
+        const effectData = activeEffects.length
+            ? activeEffects.map(effect => {
+                const data = effect.toObject();
+                delete data._id;
+                data.origin = effect.uuid;
+                return data;
+            })
+            : action.activeEffects.map(effect => {
+                const data = foundry.utils.deepClone(effect);
+                delete data._id;
+                data.origin = item.uuid;
+                return data;
+            });
+        effectData.forEach(data => {
             delete data._id;
-            data.origin = sourceItem.uuid;
-            return data;
         });
         if (!effectData.length) return;
         await ActiveEffect.implementation.createDocuments(effectData, { parent: targetActor });
     }
 
-    static async applyEffect(actor, item, action) {
-        if (action.effectType === BREAK.action_effects.none.key) return true;
+    static async applyEffect(actor, item, action, targetActor = null) {
+        action = this.normalize(action);
+        const effects = action.effects.filter(effect => effect.type !== BREAK.action_effects.none.key);
+        if (!effects.length) return true;
 
-        const targetActor = this.getTargetActor(action, actor);
+        targetActor = targetActor ?? this.getTargetActor(action, actor);
         if (!targetActor) {
             ui.notifications.warn(game.i18n.localize("BREAK.ACTION.TargetMissing"));
             return false;
         }
 
-        switch (action.effectType) {
-            case BREAK.action_effects.heal.key:
-                await targetActor.modifyHp?.(Math.abs(Number(action.effectAmount) || 0));
-                return true;
-            case BREAK.action_effects.damage.key:
-                await targetActor.modifyHp?.(-Math.abs(Number(action.effectAmount) || 0));
-                return true;
-            case BREAK.action_effects.applyItemEffects.key:
-                await this.applyItemEffects(item, targetActor);
-                return true;
+        for (const effect of effects) {
+            switch (effect.type) {
+                case BREAK.action_effects.heal.key:
+                    await targetActor.modifyHp?.(Math.abs(Number(effect.amount) || 0));
+                    break;
+                case BREAK.action_effects.damage.key:
+                    await targetActor.modifyHp?.(-Math.abs(Number(effect.amount) || 0));
+                    break;
+                case BREAK.action_effects.applyActiveEffects.key:
+                    await this.applyActiveEffects(action, item, targetActor);
+                    break;
+            }
         }
 
         return true;
     }
 
     static async resolve(actor, item, action) {
-        if (!this.checkRequirements(actor, action)) return false;
-        if (!await this.consumeItem(actor, action.consumeItemRef, action.consumeItemName, action.consumeItemQuantity)) return false;
+        action = this.normalize(action);
+        if (!await this.payCosts(actor, action)) return false;
         return this.applyEffect(actor, item, action);
     }
 }

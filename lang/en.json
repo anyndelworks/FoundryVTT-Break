@@ -96,6 +96,7 @@
       "RollCheck": "Roll Check",
       "CheckResolved": "Check resolved",
       "OnlyGM": "Only the GM can roll this ammo Check.",
+      "OnlyOwnerOrGM": "Only an owner of the target actor or the GM can roll this ammo Check.",
       "TargetMissing": "The target actor for this ammo Check could not be found.",
       "TARGET": {
         "None": "No target",
@@ -104,8 +105,20 @@
       }
     },
     "ACTION": {
+      "TargetNone": "No target",
       "TargetSelf": "Self",
       "TargetSelected": "Selected Target",
+      "TargetArea": "Area",
+      "ActiveEffects": "Active Effects",
+      "ActiveEffectDropHint": "Drop Active Effects here to attach them to this action.",
+      "ManualResolution": "This action must be resolved manually.",
+      "CheckEffectTrigger": "Apply effects on",
+      "CheckPromptType": "Action Check",
+      "CheckPrompt": "{target} must make a {aptitude} Check.",
+      "RollCheck": "Roll Check",
+      "CheckResolved": "Check resolved",
+      "OnlyOwnerOrGM": "Only an owner of the target actor or the GM can roll this Check.",
+      "SourceMissing": "The source action could not be found.",
       "Requirements": "Requirements",
       "Costs": "Resource Costs",
       "RequirementMissing": "{actor} does not have the required item: {item}.",
@@ -115,7 +128,11 @@
         "None": "No effect",
         "Heal": "Heal",
         "Damage": "Damage",
-        "ApplyItemEffects": "Apply this item's active effects"
+        "ApplyActiveEffects": "Apply Active Effects"
+      },
+      "CHECK_TRIGGER": {
+        "Success": "Success",
+        "Failure": "Failure"
       }
     },
     "COMPANION": {

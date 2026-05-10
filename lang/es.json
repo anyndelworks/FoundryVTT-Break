@@ -96,6 +96,7 @@
       "RollCheck": "Tirar prueba",
       "CheckResolved": "Prueba resuelta",
       "OnlyGM": "Solo el DJ puede tirar esta prueba de municion.",
+      "OnlyOwnerOrGM": "Solo un propietario del actor objetivo o el DJ puede tirar esta prueba de municion.",
       "TargetMissing": "No se ha encontrado el actor objetivo para esta prueba de municion.",
       "TARGET": {
         "None": "Sin objetivo",
@@ -104,8 +105,20 @@
       }
     },
     "ACTION": {
+      "TargetNone": "Sin objetivo",
       "TargetSelf": "Uno mismo",
       "TargetSelected": "Objetivo seleccionado",
+      "TargetArea": "Area",
+      "ActiveEffects": "Active Effects",
+      "ActiveEffectDropHint": "Arrastra Active Effects aqui para asignarlos a esta accion.",
+      "ManualResolution": "Esta accion debe resolverse manualmente.",
+      "CheckEffectTrigger": "Aplicar efectos al",
+      "CheckPromptType": "Prueba de accion",
+      "CheckPrompt": "{target} debe realizar una prueba de {aptitude}.",
+      "RollCheck": "Tirar prueba",
+      "CheckResolved": "Prueba resuelta",
+      "OnlyOwnerOrGM": "Solo un propietario del actor objetivo o el DJ puede tirar esta prueba.",
+      "SourceMissing": "No se ha encontrado la accion de origen.",
       "Requirements": "Requisitos",
       "Costs": "Costes de recurso",
       "RequirementMissing": "{actor} no tiene el objeto requerido: {item}.",
@@ -115,7 +128,11 @@
         "None": "Sin efecto",
         "Heal": "Curar",
         "Damage": "Daño",
-        "ApplyItemEffects": "Aplicar los efectos activos de este objeto"
+        "ApplyActiveEffects": "Aplicar Active Effects"
+      },
+      "CHECK_TRIGGER": {
+        "Success": "Exito",
+        "Failure": "Fallo"
       }
     },
     "COMPANION": {

@@ -36,6 +36,16 @@
                 {{/each}}
                 </select>
             </div>
+            <div class="form-group check-trigger-select" style="width:50%;display: none;">
+                <label>{{localize "BREAK.ACTION.CheckEffectTrigger"}}</label>
+                <select name="checkEffectTrigger">
+                {{#each checkEffectTriggers as |trigger key|}}
+                    <option value="{{trigger.key}}" {{#if (eq trigger.key ../action.checkEffectTrigger)}}selected{{/if}}>
+                    {{localize trigger.label}}
+                    </option>
+                {{/each}}
+                </select>
+            </div>
         </div>
         
         <div class="flexrow" style="column-gap: 12px;">
@@ -111,21 +121,47 @@
         </div>
 
         <fieldset>
-            <legend>{{localize "BREAK.Effects"}}</legend>
+            <legend style="display:flex;align-items:center;">
+                {{localize "BREAK.Effects"}}
+                <a data-action="addActionEffect" style="margin-left:auto;"><i class="fa-regular fa-plus"></i></a>
+            </legend>
+            {{#each action.effects as |actionEffect|}}
+            <div data-action-effect data-effect-id="{{actionEffect.id}}" style="display:flex;align-items:flex-end;column-gap:12px;border-bottom:1px dashed;margin-bottom:8px;padding-bottom:8px;">
+                <div class="form-group" style="flex:1;margin-bottom:0;">
+                    <label>{{localize "BREAK.Type"}}</label>
+                    <select name="effectType" class="effect-type-select">
+                    {{#each ../effects as |effect key|}}
+                        <option value="{{effect.key}}" {{#if (eq effect.key actionEffect.type)}}selected{{/if}}>
+                        {{localize effect.label}}
+                        </option>
+                    {{/each}}
+                    </select>
+                </div>
+                <div class="form-group effect-amount-group" style="display:none;flex:0 0 120px;margin-bottom:0;">
+                    <label>{{localize "BREAK.Amount"}}</label>
+                    <input type="number" class="action-effect-amount" name="effectAmount" value="{{actionEffect.amount}}">
+                </div>
+                <a data-action="deleteActionEffect" style="flex:0 0 auto;margin-bottom:8px;"><i class="fas fa-trash"></i></a>
+            </div>
+            {{/each}}
+
             <div class="form-group">
-                <label>{{localize "BREAK.Type"}}</label>
-                <select name="effectType" class="effect-type-select">
-                {{#each effects as |effect key|}}
-                    <option value="{{effect.key}}" {{#if (eq effect.key ../action.effectType)}}selected{{/if}}>
-                    {{localize effect.label}}
-                    </option>
+                <label>{{localize "BREAK.ACTION.ActiveEffects"}}</label>
+                <div class="action-active-effect-drop" style="display:flex;align-items:center;column-gap:8px;min-height:38px;border:1px dashed;padding:6px;">
+                    {{localize "BREAK.ACTION.ActiveEffectDropHint"}}
+                </div>
+            </div>
+            {{#if action.activeEffects.length}}
+            <div style="display:flex;flex-direction:column;row-gap:6px;">
+                {{#each action.activeEffects as |effect|}}
+                <div data-active-effect-index="{{effect._actionIndex}}" data-active-effect-ref="{{effect._actionRef}}" style="display:flex;align-items:center;column-gap:8px;">
+                    <img src="{{effect.img}}" style="width:24px;height:24px;border:0;">
+                    <span>{{effect.name}}</span>
+                    <a data-action="deleteActionActiveEffect" style="margin-left:auto;"><i class="fas fa-xmark"></i></a>
+                </div>
                 {{/each}}
-                </select>
             </div>
-            <div class="form-group effect-amount-group" style="display:none;">
-                <label>{{localize "BREAK.Amount"}}</label>
-                <input type="number" name="effectAmount" value="{{action.effectAmount}}">
-            </div>
+            {{/if}}
         </fieldset>
         
         <label>{{localize "BREAK.Description"}}</label>

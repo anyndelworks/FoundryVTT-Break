@@ -153,7 +153,7 @@ export class BreakActor extends Actor {
           }
           await this.consumeAmmo(ammo);
           if(resolveAction) {
-            resolveAction();
+            await resolveAction(result?.hit);
           }
         }
       }]
@@ -220,7 +220,7 @@ export class BreakActor extends Actor {
     await ChatMessage.create({
       user: game.user.id,
       speaker: ChatMessage.getSpeaker({ actor: this }),
-      whisper: ChatMessage.getWhisperRecipients("GM"),
+      whisper: Action.getOwnerOrGMRecipients(targetActor),
       flavor: ammo.name,
       content,
       flags: {
@@ -252,56 +252,36 @@ export class BreakActor extends Actor {
 
   async useAction(itemId, actionId) {
     const item = this.items.find(i => i._id == itemId);
-    const action = item.system.actions.find(a => a.id === actionId);
-    const aptitude = action.aptitude ? this.system.aptitudes[action.aptitude] : null;
-    const checkTargetValue = +aptitude?.total;
-    const resolveAction = async () => {
-      await Action.resolve(this, item, action);
+    const action = Action.normalize(item.system.actions.find(a => a.id === actionId));
+    const targetActor = Action.getTargetActor(action, this);
+    const resolveAction = async (applyEffects = true) => {
+      if (!await Action.payCosts(this, action)) return false;
+      if (applyEffects) return Action.applyEffect(this, item, action);
+      return true;
     };
-    console.log(action);
     Action.sendToChat(action, this.name);
+    if(action.target === BREAK.action_targets.area.key || action.rollType === BREAK.roll_types.contest.key) {
+      ui.notifications.info(game.i18n.localize("BREAK.ACTION.ManualResolution"));
+      return;
+    }
     switch(action.rollType){
       case BREAK.roll_types.none.key:
         await resolveAction();
         break;
-      case BREAK.roll_types.contest.key:
-        new DialogV2({
-          window: { title: action.name },
-          content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-dialog.hbs",{bonuses: RollBonuses, aptitude: true, limited: true, defaultContest: true}),
-          buttons: [{
-            action: "roll",
-            label: "BREAK.Roll",
-            icon: "fa-solid fa-dice-d20",
-            default: true,
-            callback: async (event, button) => {
-              const form = button.form.elements;
-              const flavor = `${action.name} ${game.i18n.format("BREAK.AptitudeContest", {aptitude:  game.i18n.localize(aptitude.label)})}`;
-              await roll(flavor, form.rollType.value, checkTargetValue, form.edge.value, form.bonus.value, form.customBonus.value);
-              return resolveAction();
-            }
-          }]
-        }).render({force: true});
-        break;
       case BREAK.roll_types.attack.key:
+        if(action.target === BREAK.action_targets.target.key && !targetActor) {
+          ui.notifications.warn(game.i18n.localize("BREAK.ACTION.TargetMissing"));
+          return;
+        }
         this.rollAttack(0, 0, resolveAction, action.name);
         break;
       case BREAK.roll_types.check.key:
-        new DialogV2({
-          window: { title: action.name },
-          content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-dialog.hbs",{bonuses: RollBonuses, aptitude: true, limited: true, defaultCheck: true}),
-          buttons: [{
-            action: "roll",
-            label: "BREAK.Roll",
-            icon: "fa-solid fa-dice-d20",
-            default: true,
-            callback: async (event, button) => {
-              const form = button.form.elements;
-              const flavor = `${action.name} ${game.i18n.format("BREAK.AptitudeCheck", {aptitude:  game.i18n.localize(aptitude.label)})}`;
-              await roll(flavor, form.rollType.value, checkTargetValue, form.edge.value, form.bonus.value, form.customBonus.value);
-              return resolveAction();
-            }
-          }]
-        }).render({force: true});
+        if(!targetActor) {
+          ui.notifications.warn(game.i18n.localize("BREAK.ACTION.TargetMissing"));
+          return;
+        }
+        if(!Action.checkRequirements(this, action)) return;
+        await Action.notifyTargetCheck(this, item, action, targetActor);
         break;
     }
   }

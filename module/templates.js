@@ -24,6 +24,7 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/break/templates/actors/adversary/parts/simplified-sheet-aptitudes.html",
     "systems/break/templates/rolls/roll-check.hbs",
     "systems/break/templates/rolls/roll-dialog.hbs",
+    "systems/break/templates/chat/action-check.html",
     "systems/break/templates/items/shared/item-header.hbs",
     "systems/break/templates/items/shared/generic-header.hbs",
     "systems/break/templates/items/shared/item-abilities.hbs",

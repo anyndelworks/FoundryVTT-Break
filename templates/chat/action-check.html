@@ -1,0 +1,15 @@
+<div class="break chat-item">
+    <div class="border">
+        <div class="chat-item-header">
+            <div class="chat-item-header-infos">
+                <h5 class="item-name">{{actionName}}</h5>
+                <p class="item-type">{{localize "BREAK.ACTION.CheckPromptType"}}</p>
+            </div>
+        </div>
+        <p>{{localize "BREAK.ACTION.CheckPrompt" target=targetName aptitude=aptitudeLabel}}</p>
+        <button type="button" data-action="actionCheck" {{#if resolved}}disabled{{/if}}>
+            <i class="fa-solid fa-dice-d20"></i>
+            <span>{{#if resolved}}{{localize "BREAK.ACTION.CheckResolved"}}{{else}}{{localize "BREAK.ACTION.RollCheck"}}{{/if}}</span>
+        </button>
+    </div>
+</div>

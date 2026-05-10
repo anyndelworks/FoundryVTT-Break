@@ -5,6 +5,7 @@ import { preloadHandlebarsTemplates } from "./module/templates.js";
 import { BreakToken, BreakTokenDocument } from "./module/token.js";
 import { RollBonuses, RollType, roll } from "./utils/dice.js";
 import BREAK from "./module/constants.js";
+import Action from "./module/system/action.js";
 import { BreakCharacterSheet } from "./module/actors/character-sheet.js";
 import { BreakAdversarySheet } from "./module/actors/adversary-sheet.js";
 import { BreakCompanionSheet } from "./module/actors/companion-sheet.js";
@@ -735,8 +736,10 @@ Hooks.on("deleteActiveEffect", refreshAilmentStatusEffects);
 
 Hooks.on("renderChatMessageHTML", (message, html) => {
   const button = html.querySelector("[data-action='ammoCheck']");
+  const actionCheckButton = html.querySelector("[data-action='actionCheck']");
   const damageButton = html.querySelector("[data-action='applyAttackDamage']");
   if(button) bindAmmoCheckButton(message, button);
+  if(actionCheckButton) bindActionCheckButton(message, actionCheckButton);
   if(damageButton) bindAttackDamageButton(message, damageButton);
 });
 
@@ -758,12 +761,38 @@ function bindAttackDamageButton(message, button) {
   button.addEventListener("click", event => onApplyAttackDamageChatButton(event, message));
 }
 
+async function rollCheckFromChat({ targetActor, aptitudeKey, title, flavor, modifier = BREAK.ammo_attack_modifiers.none, beforeRoll = null, onResult }) {
+  const aptitude = targetActor.system.aptitudes[aptitudeKey];
+  if(!aptitude) return;
+
+  const { DialogV2 } = foundry.applications.api;
+  new DialogV2({
+    window: { title },
+    content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-dialog.hbs",{
+      bonuses: RollBonuses,
+      aptitude: true,
+      limited: true,
+      defaultCheck: true,
+      defaultEdge: modifier.edge,
+      defaultBonus: modifier.bonus
+    }),
+    buttons: [{
+      action: "roll",
+      label: "BREAK.Roll",
+      icon: "fa-solid fa-dice-d20",
+      default: true,
+      callback: async (event, button) => {
+        if(beforeRoll && !await beforeRoll()) return;
+        const form = button.form.elements;
+        const result = await roll.call(targetActor, flavor, RollType.CHECK, +aptitude.total, form.edge.value, form.bonus.value, form.customBonus.value);
+        return onResult?.(result);
+      }
+    }]
+  }).render({force: true});
+}
+
 async function onAmmoCheckChatButton(event, message) {
   event.preventDefault();
-  if(!game.user.isGM) {
-    ui.notifications.warn(game.i18n.localize("BREAK.AMMO.OnlyGM"));
-    return;
-  }
 
   const data = message.getFlag("break", "ammoCheck");
   if(!data || data.resolved) return;
@@ -773,43 +802,82 @@ async function onAmmoCheckChatButton(event, message) {
     ui.notifications.warn(game.i18n.localize("BREAK.AMMO.TargetMissing"));
     return;
   }
-
-  const aptitude = targetActor.system.aptitudes[data.aptitude];
-  if(!aptitude) return;
+  if(!Action.canRollForActor(targetActor)) {
+    ui.notifications.warn(game.i18n.localize("BREAK.AMMO.OnlyOwnerOrGM"));
+    return;
+  }
 
   const checkModifier = BREAK.ammo_attack_modifiers[data.modifier] ?? BREAK.ammo_attack_modifiers.none;
-  const { DialogV2 } = foundry.applications.api;
-  new DialogV2({
-    window: { title: game.i18n.format("BREAK.AptitudeCheck", {aptitude: data.aptitudeLabel}) },
-    content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-dialog.hbs",{
-      bonuses: RollBonuses,
-      aptitude: true,
-      limited: true,
-      defaultCheck: true,
-      defaultEdge: checkModifier.edge,
-      defaultBonus: checkModifier.bonus
-    }),
-    buttons: [{
-      action: "roll",
-      label: "BREAK.Roll",
-      icon: "fa-solid fa-dice-d20",
-      default: true,
-      callback: async (event, button) => {
-        const form = button.form.elements;
-        const flavor = `${data.ammoName} ${game.i18n.format("BREAK.AptitudeCheck", {aptitude: data.aptitudeLabel})}`;
-        const result = await roll.call(targetActor, flavor, RollType.CHECK, +aptitude.total, form.edge.value, form.bonus.value, form.customBonus.value);
-        if(!result?.hit && data.effectData?.length) {
-          await ActiveEffect.implementation.createDocuments(data.effectData, {parent: targetActor});
-        }
-        data.resolved = true;
-        const content = await foundry.applications.handlebars.renderTemplate("systems/break/templates/chat/ammo-check.html", data);
-        await message.update({
-          content,
-          "flags.break.ammoCheck": data
-        });
+  await rollCheckFromChat({
+    targetActor,
+    aptitudeKey: data.aptitude,
+    title: game.i18n.format("BREAK.AptitudeCheck", {aptitude: data.aptitudeLabel}),
+    flavor: `${data.ammoName} ${game.i18n.format("BREAK.AptitudeCheck", {aptitude: data.aptitudeLabel})}`,
+    modifier: checkModifier,
+    onResult: async (result) => {
+      if(!result?.hit && data.effectData?.length) {
+        await ActiveEffect.implementation.createDocuments(data.effectData, {parent: targetActor});
       }
-    }]
-  }).render({force: true});
+      data.resolved = true;
+      const content = await foundry.applications.handlebars.renderTemplate("systems/break/templates/chat/ammo-check.html", data);
+      await message.update({
+        content,
+        "flags.break.ammoCheck": data
+      });
+    }
+  });
+}
+
+function bindActionCheckButton(message, button) {
+  const data = message.getFlag("break", "actionCheck");
+  if(data?.resolved) {
+    button.disabled = true;
+    button.querySelector("span").textContent = game.i18n.localize("BREAK.ACTION.CheckResolved");
+  }
+  button.addEventListener("click", event => onActionCheckChatButton(event, message));
+}
+
+async function onActionCheckChatButton(event, message) {
+  event.preventDefault();
+  const data = message.getFlag("break", "actionCheck");
+  if(!data || data.resolved) return;
+
+  const targetActor = await fromUuid(data.targetActorUuid);
+  if(!targetActor) {
+    ui.notifications.warn(game.i18n.localize("BREAK.ACTION.TargetMissing"));
+    return;
+  }
+  if(!Action.canRollForActor(targetActor)) {
+    ui.notifications.warn(game.i18n.localize("BREAK.ACTION.OnlyOwnerOrGM"));
+    return;
+  }
+
+  const actor = await fromUuid(data.actorUuid);
+  const item = await fromUuid(data.itemUuid);
+  const action = Action.normalize(item?.system.actions?.find(action => action.id === data.actionId));
+  if(!actor || !item || !action?.id) {
+    ui.notifications.warn(game.i18n.localize("BREAK.ACTION.SourceMissing"));
+    return;
+  }
+
+  await rollCheckFromChat({
+    targetActor,
+    aptitudeKey: data.aptitude,
+    title: game.i18n.format("BREAK.AptitudeCheck", {aptitude: data.aptitudeLabel}),
+    flavor: `${data.actionName} ${game.i18n.format("BREAK.AptitudeCheck", {aptitude: data.aptitudeLabel})}`,
+    beforeRoll: () => Action.payCosts(actor, action),
+    onResult: async (result) => {
+      if(Action.shouldApplyCheckEffects(action, result?.hit)) {
+        await Action.applyEffect(actor, item, action, targetActor);
+      }
+      data.resolved = true;
+      const content = await foundry.applications.handlebars.renderTemplate("systems/break/templates/chat/action-check.html", data);
+      await message.update({
+        content,
+        "flags.break.actionCheck": data
+      });
+    }
+  });
 }
 
 async function onApplyAttackDamageChatButton(event, message) {
