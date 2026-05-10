@@ -1,7 +1,6 @@
-2026/05/10-16:58:49.287 52c8 Recovering log #137
-2026/05/10-16:58:49.299 52c8 Delete type=0 #137
-2026/05/10-16:58:49.299 52c8 Delete type=3 #135
-2026/05/10-16:59:36.612 551c Level-0 table #142: started
-2026/05/10-16:59:36.612 551c Level-0 table #142: 0 bytes OK
-2026/05/10-16:59:36.618 551c Delete type=0 #140
-2026/05/10-16:59:36.628 551c Manual compaction at level-0 from 'undefined' @ 72057594037927935 : 1 .. 'undefined' @ 0 : 0; will stop at (end)
+2026/05/10-17:30:25.459 b0c Log #144: 0 ops saved to Table #145 OK
+2026/05/10-17:30:25.459 b0c Archiving ..\Data\systems\break\packs\ailments/000144.log: OK
+2026/05/10-17:30:25.459 b0c Table #7: 2 entries OK
+2026/05/10-17:30:25.459 b0c Table #115: 2 entries OK
+2026/05/10-17:30:25.464 b0c Archiving ..\Data\systems\break\packs\ailments/MANIFEST-000143: OK
+2026/05/10-17:30:25.471 b0c **** Repaired leveldb ..\Data\systems\break\packs\ailments; recovered 2 files; 2678 bytes. Some data may have been lost. ****
