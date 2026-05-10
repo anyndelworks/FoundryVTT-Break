@@ -335,7 +335,7 @@ Hooks.once("init", async function() {
     },
     thrown: {
       label: "Thrown",
-      ranged: false,
+      ranged: true,
       extraDamage: 20,
       loadingTime: 1,
       hands: 1,
@@ -350,7 +350,7 @@ Hooks.once("init", async function() {
     },
     drawn: {
       label: "Drawn",
-      ranged: false,
+      ranged: true,
       extraDamage: 20,
       loadingTime: 1,
       hands: 1,
@@ -365,7 +365,7 @@ Hooks.once("init", async function() {
     },
     mechanicalSmall: {
       label: "Mechanical (Small)",
-      ranged: false,
+      ranged: true,
       extraDamage: 20,
       loadingTime: 1,
       hands: 1,

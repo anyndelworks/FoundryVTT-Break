@@ -116,12 +116,12 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
         const list = foundry.utils.duplicate(this.item.system.actions ?? []);
         const idx = list.findIndex(a => a.id === this.actionId);
         if (idx === -1) return;
-        list[idx] = foundry.utils.mergeObject(list[idx], this.#getFormUpdates());
+        list[idx] = foundry.utils.mergeObject(list[idx], this.getFormUpdates());
         await this.item.update({ "system.actions": list });
         this.action = list[idx];
     }
 
-    #getFormUpdates(form = this.element) {
+    getFormUpdates(form = this.element) {
         const formData = new FormData(form);
         const effects = this.#getEffectUpdates();
         const updates = {
@@ -319,7 +319,7 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
 
     static async _handleSubmit(event, form, formData) {
         event.preventDefault();
-        const updates = this.#getFormUpdates(form);
+        const updates = this.getFormUpdates(form);
 
         const list = foundry.utils.duplicate(this.item.system.actions ?? []);
         const idx = list.findIndex(a => a.id === this.actionId);

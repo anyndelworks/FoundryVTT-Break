@@ -79,9 +79,6 @@
       "ConditionDropHint": "Arrastra aqui items de condicion de area para asignarlos a esta Region.",
       "NoConditions": "No hay condiciones de area asignadas."
     },
-    "AREA_CONDITION": {
-      "ApplyEffectsWhileInside": "Aplicar los Active Effects de esta condicion mientras un token este dentro del area"
-    },
     "AMMO": {
       "Properties": "Propiedades de municion",
       "WeaponType": "Tipo de arma",

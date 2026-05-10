@@ -3,8 +3,7 @@ export class AreaConditionDataModel extends foundry.abstract.DataModel {
     const fields = foundry.data.fields;
 
     return {
-      description: new fields.HTMLField({ initial: "" }),
-      applyEffectsWhileInside: new fields.BooleanField({ initial: true })
+      description: new fields.HTMLField({ initial: "" })
     };
   }
 }

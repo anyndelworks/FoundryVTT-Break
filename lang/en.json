@@ -79,9 +79,6 @@
       "ConditionDropHint": "Drop area condition items here to assign them to this Region.",
       "NoConditions": "No area conditions assigned."
     },
-    "AREA_CONDITION": {
-      "ApplyEffectsWhileInside": "Apply this condition's Active Effects while a token is inside the area"
-    },
     "AMMO": {
       "Properties": "Ammo properties",
       "WeaponType": "Weapon type",

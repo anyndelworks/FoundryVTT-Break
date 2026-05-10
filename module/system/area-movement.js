@@ -1,6 +1,5 @@
 const AREA_FLAG_SCOPE = "break";
 const AREA_FLAG_KEY = "area";
-const AREA_CONDITION_EFFECT_FLAG = "areaCondition";
 const CONDITION_ICON_SIZE = 40;
 const CONDITION_ICON_GAP = 8;
 const CONDITION_ICON_PADDING = 4;
@@ -82,25 +81,9 @@ function testRegionPoint(region, point) {
   return object.bounds?.contains?.(point.x, point.y) ?? false;
 }
 
-function getAreasAtPoint(scene, point) {
-  const matchingRegions = [];
-  const regions = getAreaRegions(scene);
-  for (const region of regions) {
-    if (testRegionPoint(region, point)) matchingRegions.push(region);
-  }
-  return matchingRegions;
-}
-
-function getTokenAreas(token) {
-  const point = token.center ?? {
-    x: token.document.x + (token.document.width * canvas.dimensions.size / 2),
-    y: token.document.y + (token.document.height * canvas.dimensions.size / 2)
-  };
-  return getAreasAtPoint(token.scene ?? canvas.scene, point);
-}
 //#endregion
 
-//#region Condition effects
+//#region Area conditions
 async function resolveConditionEntry(entry) {
   const item = await fromUuid(entry.uuid);
   if (!item || item.type !== "area-condition") return null;
@@ -120,64 +103,6 @@ async function getRegionConditions(region) {
       .map(async condition => ({entry: condition, item: await fromUuid(condition.uuid)}))
   );
   return conditions.filter(condition => condition.item?.type === "area-condition");
-}
-
-function getAreaConditionEffectKey(region, item, token) {
-  return `${region.uuid}|${item.uuid}|${token.document.uuid}`;
-}
-
-function getAreaConditionEffects(actor) {
-  return actor?.effects?.filter(effect => effect.getFlag("break", AREA_CONDITION_EFFECT_FLAG)) ?? [];
-}
-
-function createEffectData(effect, region, item, token) {
-  const data = effect.toObject();
-  delete data._id;
-  data.disabled = false;
-  data.origin = item.uuid;
-  data.flags = foundry.utils.mergeObject(data.flags ?? {}, {
-    break: {
-      [AREA_CONDITION_EFFECT_FLAG]: {
-        key: getAreaConditionEffectKey(region, item, token),
-        regionUuid: region.uuid,
-        conditionUuid: item.uuid,
-        tokenUuid: token.document.uuid
-      }
-    }
-  });
-  return data;
-}
-
-async function syncTokenAreaConditions(token) {
-  if (!token?.actor) return;
-  const regions = getTokenAreas(token);
-  const activeKeys = new Set();
-  const effectsToCreate = [];
-
-  for (const region of regions) {
-    const conditions = await getRegionConditions(region);
-    for (const {item} of conditions) {
-      if (!item.system.applyEffectsWhileInside) continue;
-      const key = getAreaConditionEffectKey(region, item, token);
-      activeKeys.add(key);
-      if (getAreaConditionEffects(token.actor).some(effect => effect.getFlag("break", AREA_CONDITION_EFFECT_FLAG)?.key === key)) continue;
-      effectsToCreate.push(...item.effects.map(effect => createEffectData(effect, region, item, token)));
-    }
-  }
-
-  const staleEffects = getAreaConditionEffects(token.actor)
-    .filter(effect => effect.getFlag("break", AREA_CONDITION_EFFECT_FLAG)?.tokenUuid === token.document.uuid)
-    .filter(effect => !activeKeys.has(effect.getFlag("break", AREA_CONDITION_EFFECT_FLAG)?.key));
-
-  if (staleEffects.length) await token.actor.deleteEmbeddedDocuments("ActiveEffect", staleEffects.map(effect => effect.id));
-  if (effectsToCreate.length) await ActiveEffect.implementation.createDocuments(effectsToCreate, {parent: token.actor});
-}
-
-async function syncSceneAreaConditions() {
-  const tokens = canvas?.tokens?.placeables ?? [];
-  for (const token of tokens) {
-    await syncTokenAreaConditions(token);
-  }
 }
 //#endregion
 
@@ -462,33 +387,17 @@ function patchRegionConfig() {
 //#region Hooks
 export function registerAreaMovement() {
   patchRegionConfig();
-  Hooks.on("canvasReady", async () => {
-    await drawConditionIcons();
-    await syncSceneAreaConditions();
-  });
+  Hooks.on("canvasReady", drawConditionIcons);
   Hooks.on("createRegion", drawConditionIcons);
-  Hooks.on("updateRegion", async () => {
-    await drawConditionIcons();
-    await syncSceneAreaConditions();
-  });
-  Hooks.on("deleteRegion", async () => {
-    await drawConditionIcons();
-    await syncSceneAreaConditions();
-  });
-  Hooks.on("updateToken", async document => {
-    if (!canvas?.ready) return;
-    const token = document.object;
-    if (token) await syncTokenAreaConditions(token);
-  });
+  Hooks.on("updateRegion", drawConditionIcons);
+  Hooks.on("deleteRegion", drawConditionIcons);
   Hooks.on("updateItem", async item => {
     if (item.type !== "area-condition" || !canvas?.ready) return;
     await drawConditionIcons();
-    await syncSceneAreaConditions();
   });
   Hooks.on("deleteItem", async item => {
     if (item.type !== "area-condition" || !canvas?.ready) return;
     await drawConditionIcons();
-    await syncSceneAreaConditions();
   });
 }
 //#endregion
