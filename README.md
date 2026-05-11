@@ -11,6 +11,7 @@ You can keep up to date with future changes on the thread of the [official BREAK
 ### Settings
 The first thing you should do in order to play after creating a world is configuring the system-specific settings.
 ![Settings](https://github.com/user-attachments/assets/21074c49-d9be-4e44-8a9a-e67fabac121f)
+
 These settings will be used as template whenever a type is used during the creation of an item, however, non-standard values will not be overwritten. For example, "standard" weapons come preconfigured with a value of 10 coins. If you create a new weapon and set it to standard, the price will be adjusted to 10 coins. If you were to change the value of coins, it won't be adjusted anymore when changing types until it goes back to the proper value for the type. This will avoid overwriting customized content on your items.
 > Some of the weapon types come preconfigured, as they're included in
 > the preview PDF for free.
