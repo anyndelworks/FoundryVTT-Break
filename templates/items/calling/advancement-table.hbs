@@ -42,7 +42,7 @@
 
     {{#each advancementTable}}
         <div class="advancement-grid" style="grid-column: 1; grid-row: {{sum @index 3 0}};">
-            <label>{{this.rank}}</label>
+            <label>{{sum @index 1 0}}</label>
         </div>
         <div class="advancement-grid" style="grid-column: 2; grid-row: {{sum @index 3 0}};">
             <input name="system.advancementTable.{{@index}}.attack" class="advancement-input" id="attack-{{@index}}" type="number" min="0" step="1" value="{{this.attack}}" style="width: 42px; text-align: right;">
