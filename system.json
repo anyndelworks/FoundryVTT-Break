@@ -69,5 +69,16 @@
     "units": "area"
   },
   "primaryTokenAttribute": "hearts",
-  "secondaryTokenAttribute": "power"
+  "secondaryTokenAttribute": "power",
+  "relationships": {
+  "requires": [
+    {
+      "id": "break-shared-content",
+      "type": "module",
+      "compatibility": {
+        "minimum": "1.0.0"
+      }
+    }
+  ]
+}
 }
