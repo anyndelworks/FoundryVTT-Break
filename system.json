@@ -39,18 +39,6 @@
       "label": "Ailments",
       "path": "packs/ailments",
       "type": "ActiveEffect"
-    },
-    {
-      "name": "preview-content",
-      "label": "BREAK!! Preview content",
-      "path": "packs/preview-content",
-      "type": "Item"
-    },
-    {
-      "name": "preview-actors",
-      "label": "BREAK!! Preview actors",
-      "path": "packs/preview-actors",
-      "type": "Actor"
     }
   ],
   "documentTypes": {
@@ -71,14 +59,14 @@
   "primaryTokenAttribute": "hearts",
   "secondaryTokenAttribute": "power",
   "relationships": {
-  "requires": [
-    {
-      "id": "break-shared-content",
-      "type": "module",
-      "compatibility": {
-        "minimum": "1.0.0"
+      "requires": [
+      {
+        "id": "break-shared-content",
+        "type": "module",
+        "compatibility": {
+          "minimum": "1.0.0"
+        }
       }
-    }
-  ]
-}
+    ]
+  }
 }
