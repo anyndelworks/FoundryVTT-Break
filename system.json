@@ -44,7 +44,69 @@
   "documentTypes": {
     "Actor": {
       "character": {
-        "htmlFields": ["biography", "notes"]
+        "htmlFields": ["biography", "description", "notes"]
+      },
+      "gmc": {
+        "htmlFields": ["notes"]
+      },
+      "adversary": {
+        "htmlFields": ["notes"]
+      },
+      "companion": {
+        "htmlFields": ["notes"]
+      }
+    },
+    "Item": {
+      "accessory": {
+        "htmlFields": ["description", "actions.*.description"]
+      },
+      "armor": {
+        "htmlFields": ["description", "actions.*.description"]
+      },
+      "item": {
+        "htmlFields": ["description", "actions.*.description"]
+      },
+      "ammo": {
+        "htmlFields": ["description", "actions.*.description"]
+      },
+      "outfit": {
+        "htmlFields": ["description", "actions.*.description"]
+      },
+      "shield": {
+        "htmlFields": ["description", "actions.*.description"]
+      },
+      "calling": {
+        "htmlFields": ["description", "actions.*.description"]
+      },
+      "species": {
+        "htmlFields": ["description", "actions.*.description"]
+      },
+      "homeland": {
+        "htmlFields": ["description", "actions.*.description"]
+      },
+      "history": {
+        "htmlFields": ["description", "actions.*.description"]
+      },
+      "quirk": {
+        "htmlFields": ["description", "actions.*.description"]
+      },
+      "ability": {
+        "htmlFields": ["description", "rules", "actions.*.description"]
+      },
+      "area-condition": {
+        "htmlFields": ["description"]
+      },
+      "weapon": {
+        "htmlFields": ["description", "actions.*.description"]
+      },
+      "material": {
+        "htmlFields": ["description", "actions.*.description"]
+      },
+      "additive": {
+        "htmlFields": ["description", "actions.*.description"]
+      },
+      "gift": {
+        "htmlFields": ["description", "actions.*.description"]
       }
     }
   },

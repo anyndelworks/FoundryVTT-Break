@@ -1,12 +1,12 @@
 export function defineActionField(fields) {
-    return new fields.ArrayField(new fields.ObjectField({
+    return new fields.ArrayField(new fields.SchemaField({
         id: new fields.StringField({ initial: "" }),
         name: new fields.StringField({ initial: "" }),
         rollType: new fields.StringField({ initial: "none" }),
         cost: new fields.StringField({ initial: "free" }),
         description: new fields.HTMLField({ initial: "" }),
-        aptitude: new fields.StringField({ initial: "might" }),
-        vs: new fields.StringField({ initial: "might" }),
+        aptitude: new fields.StringField({ initial: "might", nullable: true }),
+        vs: new fields.StringField({ initial: "might", nullable: true }),
         checkEffectTrigger: new fields.StringField({ initial: "success" }),
         target: new fields.StringField({ initial: "self" }),
         requiredItemRef: new fields.StringField({ initial: "" }),
@@ -17,7 +17,7 @@ export function defineActionField(fields) {
         consumeItemQuantity: new fields.NumberField({ initial: 1, min: 0 }),
         effectType: new fields.StringField({ initial: "none" }),
         effectAmount: new fields.NumberField({ initial: 0 }),
-        effects: new fields.ArrayField(new fields.ObjectField({
+        effects: new fields.ArrayField(new fields.SchemaField({
             id: new fields.StringField({ initial: "" }),
             type: new fields.StringField({ initial: "none" }),
             amount: new fields.NumberField({ initial: 0 }),

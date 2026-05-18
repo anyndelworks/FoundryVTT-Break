@@ -116,25 +116,30 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
         const list = foundry.utils.duplicate(this.item.system.actions ?? []);
         const idx = list.findIndex(a => a.id === this.actionId);
         if (idx === -1) return;
-        list[idx] = foundry.utils.mergeObject(list[idx], this.getFormUpdates());
+        const effects = this.#getEffectUpdates();
+        list[idx] = foundry.utils.mergeObject(list[idx], {
+            effectType: effects[0]?.type ?? BREAK.action_effects.none.key,
+            effectAmount: effects[0]?.amount ?? 0,
+            effects,
+        });
         await this.item.update({ "system.actions": list });
         this.action = list[idx];
     }
 
-    getFormUpdates(form = this.element) {
-        const formData = new FormData(form);
+    getFormUpdates(formData) {
+        const data = foundry.utils.expandObject(formData.object ?? {});
         const effects = this.#getEffectUpdates();
         const updates = {
-            name: formData.get("name"),
-            rollType: formData.get("rollType"),
-            cost: formData.get("cost"),
-            description: formData.get("description") ?? "",
-            aptitude: formData.get("aptitude"),
-            vs: formData.get("vs"),
-            checkEffectTrigger: formData.get("checkEffectTrigger") ?? BREAK.action_check_effect_triggers.success.key,
-            target: formData.get("target"),
-            requiredItemQuantity: Number(formData.get("requiredItemQuantity") || 1),
-            consumeItemQuantity: Number(formData.get("consumeItemQuantity") || 1),
+            name: data.name,
+            rollType: data.rollType,
+            cost: data.cost,
+            description: data.description ?? "",
+            aptitude: data.aptitude,
+            vs: data.vs,
+            checkEffectTrigger: data.checkEffectTrigger ?? BREAK.action_check_effect_triggers.success.key,
+            target: data.target,
+            requiredItemQuantity: Number(data.requiredItemQuantity || 1),
+            consumeItemQuantity: Number(data.consumeItemQuantity || 1),
             effectType: effects[0]?.type ?? BREAK.action_effects.none.key,
             effectAmount: effects[0]?.amount ?? 0,
             effects,
@@ -319,7 +324,7 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
 
     static async _handleSubmit(event, form, formData) {
         event.preventDefault();
-        const updates = this.getFormUpdates(form);
+        const updates = this.getFormUpdates(formData);
 
         const list = foundry.utils.duplicate(this.item.system.actions ?? []);
         const idx = list.findIndex(a => a.id === this.actionId);

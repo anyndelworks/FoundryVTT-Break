@@ -120,6 +120,7 @@ Hooks.once("init", async function() {
   CONFIG.Item.dataModels["accessory"] = AccessoryDataModel;
   CONFIG.Item.dataModels["armor"] = ArmorDataModel;
   CONFIG.Item.dataModels["item"] = GenericItemDataModel;
+  CONFIG.Item.dataModels["gift"] = GenericItemDataModel;
   CONFIG.Item.dataModels["ammo"] = AmmoDataModel;
   CONFIG.Item.dataModels["outfit"] = OutfitDataModel;
   CONFIG.Item.dataModels["shield"] = ShieldDataModel;
