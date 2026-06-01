@@ -244,9 +244,20 @@ export class BreakActor extends Actor {
   }
 
   async modifyHp(amount) {
-    if(this.system.hearts.value + amount >= 0 && this.system.hearts.value + amount <= this.system.hearts.total) {
-      const updates = {"system.hearts.value": this.system.hearts.value+amount}
+    amount = Number(amount) || 0;
+    const oldValue = Number(this.system.hearts.value ?? 0);
+    const newValue = oldValue + amount;
+    if(newValue >= 0 && newValue <= this.system.hearts.total) {
+      const updates = {"system.hearts.value": newValue}
       await this.update(updates)
+      if(amount !== 0) {
+        window.setTimeout(() => {
+          this.getActiveTokens().forEach(token => {
+            if (amount < 0) token.animateHeartDamage?.(oldValue, newValue);
+            else token.animateHeartHealing?.(oldValue, newValue);
+          });
+        }, 75);
+      }
     }
     return this
   }
