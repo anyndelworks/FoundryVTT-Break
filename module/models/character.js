@@ -41,7 +41,7 @@ export class BreakCharacterDataModel extends BreakBaseActorDataModel {
     this._species = species ?? null;
     this.hasSpecies = !!species;
 
-    if (!this.size.value && species?.system.size) {
+    if (this.size.value == null && species?.system.size != null) {
       this.size.value = species.system.size;
     }
 

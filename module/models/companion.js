@@ -81,12 +81,20 @@ export class BreakCompanionDataModel extends BreakBaseActorDataModel {
       }),
 
       mount: new fields.SchemaField({
-        riderSize: new fields.StringField({ initial: null, nullable: true }),
+        riderSize: new fields.NumberField({ initial: null, nullable: true, integer: true }),
         riderSlots: new fields.NumberField({ initial: 0 })
       }),
 
       services: new fields.HTMLField({ initial: "" })
     };
+  }
+
+  static migrateData(source) {
+    source = super.migrateData(source);
+    if (typeof source.mount?.riderSize === "string") {
+      source.mount.riderSize = BreakBaseActorDataModel.normalizeSizeValue(source.mount.riderSize);
+    }
+    return source;
   }
 
   static getCategoryDefaults(category) {

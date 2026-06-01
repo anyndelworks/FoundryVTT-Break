@@ -1,4 +1,12 @@
 export class BreakBaseActorDataModel extends foundry.abstract.DataModel {
+    static LEGACY_SIZE_VALUES = {
+        tiny: 0,
+        small: 1,
+        medium: 2,
+        large: 3,
+        massive: 4,
+        colossal: 5
+    };
 
     static migrateData(source) {
         source = super.migrateData(source);
@@ -9,8 +17,11 @@ export class BreakBaseActorDataModel extends foundry.abstract.DataModel {
         }
         if (typeof source.size === "string" || source.size === null) {
             source.size = {
-                value: source.size
+                value: BreakBaseActorDataModel.normalizeSizeValue(source.size)
             };
+        }
+        else if (typeof source.size?.value === "string") {
+            source.size.value = BreakBaseActorDataModel.normalizeSizeValue(source.size.value);
         }
         for (const key of ["attack", "defense", "speed", "hands", "slots"]) {
             if (source[key] && typeof source[key] === "object") {
@@ -26,6 +37,36 @@ export class BreakBaseActorDataModel extends foundry.abstract.DataModel {
             BreakBaseActorDataModel.#migrateAptitude(aptitude);
         }
         return source;
+    }
+
+    static normalizeSizeValue(value) {
+        if (value == null || value === "") return null;
+        if (typeof value === "string" && value in BreakBaseActorDataModel.LEGACY_SIZE_VALUES) {
+            return BreakBaseActorDataModel.LEGACY_SIZE_VALUES[value];
+        }
+        const number = Number(value);
+        return Number.isFinite(number) ? Math.round(number) : null;
+    }
+
+    static getSizeEntries() {
+        const sizes = game.settings.get("break", "sizes") ?? {};
+        return Object.entries(sizes).map(([key, data], index) => ({
+            key,
+            value: BreakBaseActorDataModel.normalizeSizeValue(key) ?? BreakBaseActorDataModel.LEGACY_SIZE_VALUES[key] ?? index,
+            data
+        })).sort((a, b) => a.value - b.value);
+    }
+
+    static getSizeData(value) {
+        const entries = BreakBaseActorDataModel.getSizeEntries();
+        if (!entries.length) return { value: null, data: null };
+        const normalized = BreakBaseActorDataModel.normalizeSizeValue(value);
+        if (normalized == null) return { value: null, data: null };
+        const min = entries[0].value;
+        const max = entries[entries.length - 1].value;
+        const effective = Math.clamp(normalized, min, max);
+        const entry = entries.find(size => size.value === effective);
+        return { value: effective, data: entry?.data ?? null };
     }
 
     static #migrateValueOnlyStat(stat) {
@@ -87,7 +128,7 @@ export class BreakBaseActorDataModel extends foundry.abstract.DataModel {
             }),
 
             size: new fields.SchemaField({
-                value: new fields.StringField({ nullable: true, initial: null })
+                value: new fields.NumberField({ nullable: true, initial: null, integer: true })
             }),
 
             aptitudes: new fields.SchemaField({
@@ -146,9 +187,6 @@ export class BreakBaseActorDataModel extends foundry.abstract.DataModel {
     }
 
     computeBaseData(actor) {
-        const sizes = BreakBaseActorDataModel.#getSizes();
-        const sizeData = this.size.value ? sizes[this.size.value] : null;
-        this.slots.value = sizeData?.inventorySize ?? this.slots.value;
         this._baseStats = {
             attack: Number(this.attack.value ?? 0),
             defense: Number(this.defense.value ?? 0),
@@ -200,11 +238,10 @@ export class BreakBaseActorDataModel extends foundry.abstract.DataModel {
     computeDerivedData(actor) {
         const shield = this.equipment.shield;
         const armor = this.equipment.armor;
-        const sizes = BreakBaseActorDataModel.#getSizes();
-        const sizeKey = this.size.value;
+        const size = BreakBaseActorDataModel.getSizeData(this.size.value);
 
-        this.size.effective = sizeKey;
-        this.sizeData = sizeKey ? sizes[sizeKey] : null;
+        this.size.effective = size.value;
+        this.sizeData = size.data;
         
         this.hearts.base = Number(this._baseStats?.hearts ?? this.hearts.max ?? 0);
         this.hearts.total = Number(this.hearts.max ?? 0);
@@ -240,8 +277,10 @@ export class BreakBaseActorDataModel extends foundry.abstract.DataModel {
         this.hands.bon = this.hands.total - this.hands.base;
         this.hands.effectsTooltip = BreakBaseActorDataModel.#getActiveEffectChanges(actor, "system.hands.value");
 
-        this.slots.base = Number(this._baseStats?.slots ?? this.slots.value ?? 0);
-        this.slots.total = Number(this.slots.value ?? 0);
+        const manualSlotsBase = Number(this._baseStats?.slots ?? this.slots.value ?? 0);
+        this.slots.base = Number(this.sizeData?.inventorySize ?? manualSlotsBase);
+        const slotEffectDelta = Number(this.slots.value ?? 0) - manualSlotsBase;
+        this.slots.total = this.sizeData ? this.slots.base + slotEffectDelta : manualSlotsBase;
         this.slots.bon = this.slots.total - this.slots.base;
         this.slots.effectsTooltip = BreakBaseActorDataModel.#getActiveEffectChanges(actor, "system.slots.value");
 
@@ -259,9 +298,5 @@ export class BreakBaseActorDataModel extends foundry.abstract.DataModel {
             aptitude.bon = aptitude.total - aptitude.base;
             aptitude.effectsTooltip = BreakBaseActorDataModel.#getActiveEffectChanges(actor, `system.aptitudes.${k}.value`);
         }
-    }
-
-    static #getSizes() {
-        return game.settings.get("break", "sizes");
     }
 }

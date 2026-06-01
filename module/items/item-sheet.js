@@ -93,11 +93,22 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
   async _onDrop(event) {
     const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
+    if (data.type === "ActiveEffect") return this._onDropActiveEffect(event, data);
     if (data.type !== "Item") return;
     const draggedItem = await fromUuid(data.uuid);
 
     if (!this.allowedItemTypes.includes(draggedItem.type)) return;
     this._onDropValidItem(draggedItem);
+  }
+
+  async _onDropActiveEffect(event, data) {
+    if (!this.document.isOwner || !this._isSheetEditable()) return false;
+
+    const effect = await ActiveEffect.implementation.fromDropData(data);
+    if (!effect) return false;
+    const effectData = effect.toObject();
+    delete effectData._id;
+    return ActiveEffect.implementation.create(effectData, {parent: this.item});
   }
 
   _onDropValidItem(item) {

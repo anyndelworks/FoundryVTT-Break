@@ -61,16 +61,27 @@ import { AdditiveDataModel } from './module/models/additive.js';
 
 const {Actors, Items} = foundry.documents.collections;
 
+const LEGACY_SIZE_VALUES = {
+  tiny: 0,
+  small: 1,
+  medium: 2,
+  large: 3,
+  massive: 4,
+  colossal: 5
+};
+
 function getNormalizedSizeSettings(configured = {}) {
   const defaults = CONFIG.BREAK.sizes ?? {};
   const normalized = {};
   for (const [key, size] of Object.entries(defaults)) {
     normalized[key] = {
       ...foundry.utils.deepClone(size),
-      ...foundry.utils.deepClone(configured[key] ?? {})
+      ...foundry.utils.deepClone(configured[key] ?? {}),
+      ...foundry.utils.deepClone(configured[Object.keys(LEGACY_SIZE_VALUES).find(legacyKey => String(LEGACY_SIZE_VALUES[legacyKey]) === key)] ?? {})
     };
   }
   for (const [key, size] of Object.entries(configured)) {
+    if (key in LEGACY_SIZE_VALUES) continue;
     if (!normalized[key]) normalized[key] = foundry.utils.deepClone(size);
   }
   return normalized;
@@ -470,7 +481,7 @@ Hooks.once("init", async function() {
   });
 
   CONFIG.BREAK.sizes = {
-    tiny: {
+    0: {
       label: "Tiny",
       inventorySize: 0,
       slots: 0,
@@ -481,7 +492,7 @@ Hooks.once("init", async function() {
       grit: 0,
       defense: 0
     },
-    small: {
+    1: {
       label: "Small",
       inventorySize: 0,
       slots: 0,
@@ -492,7 +503,7 @@ Hooks.once("init", async function() {
       grit: 0,
       defense: 0
     },
-    medium: {
+    2: {
       label: "Medium",
       inventorySize: 0,
       slots: 0,
@@ -503,7 +514,7 @@ Hooks.once("init", async function() {
       grit: 0,
       defense: 0
     },
-    large: {
+    3: {
       label: "Large",
       inventorySize: 0,
       slots: 0,
@@ -514,7 +525,7 @@ Hooks.once("init", async function() {
       grit: 0,
       defense: 0
     },
-    massive: {
+    4: {
       label: "Massive",
       inventorySize: 0,
       slots: 0,
@@ -525,7 +536,7 @@ Hooks.once("init", async function() {
       grit: 0,
       defense: 0
     },
-    colossal: {
+    5: {
       label: "Colossal",
       inventorySize: 0,
       slots: 0,

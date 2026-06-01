@@ -110,7 +110,8 @@ export class BreakActor extends Actor {
     }).render({force: true});
   }
 
-  async rollAttack(bonus, extraDamage, resolveAction = null, weaponName = "", ammo = null) {
+  async rollAttack(bonus, extraDamage, resolveAction = null, weaponName = "", ammo = null, options = {}) {
+    const { notifyDamage = true } = options;
     const attackModifier = ammo?.system.special ? BREAK.ammo_attack_modifiers[ammo.system.attackModifier] : null;
     const damageModifier = ammo?.system.special ? ammo.system.damageModifier : 0;
     const attack = +this.system.attack.total + +bonus;
@@ -148,7 +149,7 @@ export class BreakActor extends Actor {
           if(result?.hit && target?.actor && ammo?.system.special && ammo.system.check?.enabled) {
             await this.#notifyAmmoTargetCheck(target.actor, ammo);
           }
-          if(result?.hit && target?.actor) {
+          if(notifyDamage && result?.hit && target?.actor) {
             await this.#notifyAttackDamage(target.actor, weaponName || game.i18n.localize("BREAK.Attack"), ammo, result.extraDamageHit);
           }
           await this.consumeAmmo(ammo);
@@ -273,7 +274,7 @@ export class BreakActor extends Actor {
           ui.notifications.warn(game.i18n.localize("BREAK.ACTION.TargetMissing"));
           return;
         }
-        this.rollAttack(0, 0, resolveAction, action.name);
+        this.rollAttack(0, 0, resolveAction, action.name, null, { notifyDamage: false });
         break;
       case BREAK.roll_types.check.key:
         if(!targetActor) {

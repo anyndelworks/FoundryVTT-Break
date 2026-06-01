@@ -1,5 +1,6 @@
 import { parseInputDelta } from "../../utils/utils.mjs";
 import BREAK from "../constants.js";
+import { BreakBaseActorDataModel } from "../models/base-actor.js";
 
 const allowedItemTypes = [
 // Equipment
@@ -350,6 +351,10 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
 
   getSizes() {
-    return foundry.utils.deepClone(game.settings.get("break", "sizes"));
+    return BreakBaseActorDataModel.getSizeEntries().map(size => ({
+      key: String(size.value),
+      value: size.value,
+      label: size.data.label
+    }));
   }
 }

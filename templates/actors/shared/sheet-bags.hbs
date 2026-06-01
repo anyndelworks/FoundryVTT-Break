@@ -12,7 +12,7 @@
             </p>
             <label style="display:flex; align-items:center; gap:4px;">
                 {{localize "BREAK.Base"}}
-                <input name="system.slots.value" value="{{document.system.slots.base}}" placeholder="0" type="number" style="width:32px;text-align:center;" {{#if document.system.size.value}}disabled{{/if}} />
+                <input name="system.slots.value" value="{{document.system.slots.base}}" placeholder="0" type="number" style="width:32px;text-align:center;" {{#if document.system.sizeData}}disabled{{/if}} />
             </label>
             <span title="{{document.system.slots.effectsTooltip}}">{{localize "BREAK.BonPen"}}: {{document.system.slots.bon}}</span>
         </div>

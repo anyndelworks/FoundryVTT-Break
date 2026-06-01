@@ -1,6 +1,7 @@
 import { BreakItemSheet } from "./item-sheet.js";
 import BREAK from "../constants.js";
 import { FeatureSelectionDialog } from "../dialogs/feature-selection-dialog.js";
+import { BreakBaseActorDataModel } from "../models/base-actor.js";
 
 export class BreakSpeciesSheet extends BreakItemSheet {
   allowedItemTypes = ["ability"];
@@ -50,11 +51,10 @@ export class BreakSpeciesSheet extends BreakItemSheet {
     context.hasInnateAbilities = context.innateAbilities.length > 0;
     context.maturativeAbility = this.item.system.maturativeAbility;
 
-    const sizes = foundry.utils.deepClone(game.settings.get("break", "sizes"));
-    context.sizes = Object.keys(sizes).map(k => ({
-      key: k,
-      label: sizes[k].label,
-      active: context.document.system.size === k
+    context.sizes = BreakBaseActorDataModel.getSizeEntries().map(size => ({
+      key: String(size.value),
+      label: size.data.label,
+      active: context.document.system.size === size.value
     }));
 
     context.quirkCategories = context.document.system.quirkCategories ?? [];

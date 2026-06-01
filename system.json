@@ -39,6 +39,42 @@
       "label": "Ailments",
       "path": "packs/ailments",
       "type": "ActiveEffect"
+    },
+    {
+      "name": "break-preview-content",
+      "label": "BREAK!! Preview content",
+      "path": "packs/break-preview-content",
+      "type": "Item"
+    },
+    {
+      "name": "break-preview-actors",
+      "label": "BREAK!! Preview actors",
+      "path": "packs/break-preview-actors",
+      "type": "Actor"
+    },
+    {
+      "name": "break-preview-rules",
+      "label": "Preview rules",
+      "path": "packs/break-preview-rules",
+      "type": "JournalEntry",
+      "system": "break",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    }
+  ],
+  "packFolders": [
+    {
+      "name": "BREAK!! Preview content",
+      "sorting": "a",
+      "color": "#ff5ea8",
+      "packs": [
+        "break-preview-content",
+        "break-preview-actors",
+        "break-preview-rules"
+      ]
     }
   ],
   "documentTypes": {

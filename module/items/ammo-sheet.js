@@ -85,18 +85,6 @@ export class BreakAmmoSheet extends BreakItemSheet {
   }
   //#endregion
 
-  async _onDrop(event) {
-    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
-    if(data.type !== "ActiveEffect") return super._onDrop(event);
-    if(!this.document.isOwner || !this._isSheetEditable()) return false;
-
-    const effect = await ActiveEffect.implementation.fromDropData(data);
-    if(!effect) return false;
-    const effectData = effect.toObject();
-    delete effectData._id;
-    return ActiveEffect.implementation.create(effectData, {parent: this.item});
-  }
-
   //#region DocumentV2 submit
   static async #onSubmit(event, form, formData) {
     event.preventDefault();

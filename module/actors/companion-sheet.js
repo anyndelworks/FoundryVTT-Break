@@ -103,17 +103,17 @@ export class BreakCompanionSheet extends BreakActorSheet {
       active: category === key
     }));
     context.ownerActor = context.document.system.owner ? await fromUuid(context.document.system.owner) : null;
-    context.sizes = Object.keys(sizes).map(k => ({
-      key: k,
-      label: sizes[k].label,
-      active: context.document.system.size.value === k
+    context.sizes = sizes.map(size => ({
+      key: size.key,
+      label: size.label,
+      active: context.document.system.size.value === size.value
     }));
     context.mountSizes = [
-      { key: "", label: game.i18n.localize("BREAK.None"), active: !context.document.system.mount.riderSize },
-      ...Object.keys(sizes).map(k => ({
-        key: k,
-        label: sizes[k].label,
-        active: context.document.system.mount.riderSize === k
+      { key: "", label: game.i18n.localize("BREAK.None"), active: context.document.system.mount.riderSize == null },
+      ...sizes.map(size => ({
+        key: size.key,
+        label: size.label,
+        active: context.document.system.mount.riderSize === size.value
       }))
     ];
 
@@ -192,6 +192,9 @@ export class BreakCompanionSheet extends BreakActorSheet {
     const updateData = foundry.utils.expandObject(formData.object);
     const newCategory = updateData.system?.category;
     const oldCategory = this.actor.system.category;
+    if (updateData.system?.mount?.riderSize === "") {
+      updateData.system.mount.riderSize = null;
+    }
 
     if (newCategory && newCategory !== oldCategory) {
       const defaults = BreakCompanionDataModel.getCategoryDefaults(newCategory);

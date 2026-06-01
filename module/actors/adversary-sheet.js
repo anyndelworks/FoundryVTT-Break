@@ -91,11 +91,10 @@ export class BreakAdversarySheet extends BreakActorSheet {
       context.speedRatingLabel = this.constructor.getSpeedRatingLabel(context.speedRating);
     }
 
-    const sizes = this.getSizes();
-    context.sizes = Object.keys(sizes).map(k => ({
-      key: k,
-      label: sizes[k].label,
-      active: context.document.system.size.value === k
+    context.sizes = this.getSizes().map(size => ({
+      key: size.key,
+      label: size.label,
+      active: context.document.system.size.value === size.value
     }));
 
     context.defenseRating = context.document.system.defense.total;
