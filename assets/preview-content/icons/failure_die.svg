@@ -1,0 +1,32 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 64 64"
+    fill="none"
+>
+    <path
+        d="
+            M32 6
+            L54 19
+            L54 45
+            L32 58
+            L10 45
+            L10 19
+            Z
+        "
+        fill="#F83831"
+    />
+
+    <path
+        d="M24 24 L40 40"
+        stroke="white"
+        stroke-width="5"
+        stroke-linecap="round"
+    />
+
+    <path
+        d="M40 24 L24 40"
+        stroke="white"
+        stroke-width="5"
+        stroke-linecap="round"
+    />
+</svg>

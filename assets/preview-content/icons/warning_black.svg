@@ -1,0 +1,39 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 64 64"
+    fill="none"
+>
+    <!-- Triangle -->
+    <path
+        d="
+            M32 8
+            Q34 8 35.5 10
+            L57 52
+            Q60 58 54 58
+            L10 58
+            Q4 58 7 52
+            L28.5 10
+            Q30 8 32 8
+            Z
+        "
+        fill="currentColor"
+    />
+
+    <!-- Exclamation line -->
+    <rect
+        x="29"
+        y="22"
+        width="6"
+        height="18"
+        rx="3"
+        fill="#FFFFFF"
+    />
+
+    <!-- Exclamation dot -->
+    <circle
+        cx="32"
+        cy="47"
+        r="3.5"
+        fill="#FFFFFF"
+    />
+</svg>

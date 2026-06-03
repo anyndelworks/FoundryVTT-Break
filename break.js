@@ -109,6 +109,31 @@ Hooks.once("init", async function() {
     decimals: 2
   };
 
+  CONFIG.TextEditor.enrichers.push({
+      pattern: /@BreakItem\[(.*?)\]\{(.*?)\}/g,
+      enricher: async (match) => {
+          const [, uuid, label] = match;
+          const link = document.createElement("a");
+          link.classList.add("break-item-link");
+          link.dataset.uuid = uuid;
+          link.textContent = label;
+          return link;
+      }
+  });
+  CONFIG.TextEditor.enrichers.push({
+      pattern: /@BreakPage\[(.*?)\]\{(.*?)\}/g,
+      enricher: async (match) => {
+          const [, pageRef, label] = match;
+          const [uuid, anchor] = pageRef.split("#");
+          const link = document.createElement("a");
+          link.classList.add("break-page-link");
+          link.dataset.uuid = uuid;
+          if (anchor) link.dataset.anchor = anchor;
+          link.textContent = label;
+          return link;
+      }
+  });
+
   if (document.querySelector("#ui-top") !== null) {
     // Template element for effects-panel
     const uiTop = document.querySelector("#ui-top");
@@ -651,7 +676,31 @@ Hooks.once("init", async function() {
   registerAreaMovement();
 });
 
-Hooks.once("ready", normalizeSizeSettings);
+Hooks.once("ready", () => {
+  document.addEventListener("click", async (event) => {
+      const link = event.target.closest(".break-item-link");
+      if (!link) return;
+      event.preventDefault();
+      const doc = await fromUuid(link.dataset.uuid);
+      if (!doc) return;
+      doc.sheet?.render(true);
+  });
+  document.addEventListener("click", async (event) => {
+      const link =
+          event.target.closest(".break-page-link");
+      if (!link) return;
+      event.preventDefault();
+      const page =
+          await fromUuid(link.dataset.uuid);
+      if (!page) return;
+      const journal = page.parent;
+      const anchorId = link.dataset.anchor;
+      const sheet = journal.sheet;
+      await sheet.render(true, { pageId: page.id });
+      if (anchorId) sheet.goToPage(page.id, { anchor: anchorId });
+  });
+  normalizeSizeSettings();
+});
 
 
 Hooks.once('canvasInit', (canvas) => {

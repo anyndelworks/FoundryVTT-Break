@@ -20,7 +20,7 @@
     }
   ],
   "esmodules": ["break.js"],
-  "styles": ["styles/break.css"],
+  "styles": ["styles/break.css", "styles/journal/common.css","styles/journal/callings.css", "styles/journal/species.css"],
   "languages": [
     {
       "lang": "en",
@@ -155,16 +155,5 @@
     "units": "area"
   },
   "primaryTokenAttribute": "hearts",
-  "secondaryTokenAttribute": "power",
-  "relationships": {
-      "requires": [
-      {
-        "id": "break-shared-content",
-        "type": "module",
-        "compatibility": {
-          "minimum": "1.0.0"
-        }
-      }
-    ]
-  }
+  "secondaryTokenAttribute": "power"
 }

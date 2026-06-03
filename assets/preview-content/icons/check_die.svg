@@ -1,0 +1,31 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 64 64"
+    fill="none"
+>
+    <path
+        d="
+            M32 6
+            L54 19
+            L54 45
+            L32 58
+            L10 45
+            L10 19
+            Z
+        "
+        fill="#3E43A1"
+    />
+
+    <text
+        x="50%"
+        y="55%"
+        dominant-baseline="middle"
+        text-anchor="middle"
+        font-size="2.25rem"
+        font-family="Montserrat, sans-serif"
+        font-weight="600"
+        fill="white"
+    >
+        ?
+    </text>
+</svg>

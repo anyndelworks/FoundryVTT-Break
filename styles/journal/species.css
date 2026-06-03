@@ -1,0 +1,39 @@
+.break-journal.species-section {
+    .header {
+        background: linear-gradient(90deg, #018AD0 0%, #00BFBE 100%);
+    }
+
+    h2, h3, h4 {
+        background: linear-gradient(90deg, #018AD0 0%, #00BFBE 100%);
+        color: white;
+    }
+
+    h2.light, h3.light, h4.light {
+        background: linear-gradient(90deg, #CCE6F3 0%, #CCF2F2 100%);
+        color: #018AD0;
+    }
+
+    li::before {
+        color: #018AD0;
+    }
+
+    li.warning-bullet::before {
+        background-image: url("../../assets/preview-content/icons/warning_purple.svg");
+    }
+
+    ol li::marker {
+        color: #018AD0;
+    }
+
+    .item-description {
+        .icon {
+            img {
+                border-color: #018AD0;
+            }
+        }
+    }
+
+    .break-ability-magic {
+        background-color: #0084C7;
+    }
+}

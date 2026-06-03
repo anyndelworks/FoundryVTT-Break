@@ -130,7 +130,16 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       && !equippedItemIds.includes(i._id) && i.bag == this.selectedBag).map(i => ({ ...i, _id: i._id, equippable: ["armor", "weapon", "outfit", "accessory", "shield"].includes(i.type) }));
     const precision = 2;
     const factor = Math.pow(10, precision);
-    context.usedInventorySlots = Math.round(context.bagContent.reduce((ac, cv) => ac + cv.system.slots * cv.system.quantity, 0) * factor) / factor;
+    const getItemSlots = item => Number(item?.system?.slots ?? 0) * Number(item?.system?.quantity ?? 1);
+    const equippedItems = [
+      equipment.armor,
+      equipment.shield,
+      ...equipment.weapon,
+      ...equipment.accessory
+    ].filter(i => i);
+    const bagContentSlots = context.bagContent.reduce((ac, cv) => ac + getItemSlots(cv), 0);
+    const equipmentSlots = equippedItems.reduce((ac, cv) => ac + getItemSlots(cv), 0);
+    context.usedInventorySlots = Math.round((bagContentSlots + equipmentSlots) * factor) / factor;
   }
 
   async _prepareContext(options) {
