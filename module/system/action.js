@@ -35,20 +35,32 @@ export default class Action {
 
     static normalize(action) {
         const normalized = foundry.utils.deepClone(action ?? {});
+        const hadEffectsArray = Array.isArray(normalized.effects);
         if (!Array.isArray(normalized.effects)) normalized.effects = [];
         if (!Array.isArray(normalized.activeEffectRefs)) normalized.activeEffectRefs = [];
         if (!Array.isArray(normalized.activeEffects)) normalized.activeEffects = [];
         normalized.checkEffectTrigger = normalized.checkEffectTrigger ?? BREAK.action_check_effect_triggers.success.key;
-        if (!normalized.effects.length && normalized.effectType && normalized.effectType !== BREAK.action_effects.none.key) {
+        if (!hadEffectsArray && normalized.effectType && normalized.effectType !== BREAK.action_effects.none.key) {
             const effectType = normalized.effectType === "applyItemEffects"
                 ? BREAK.action_effects.applyActiveEffects.key
                 : normalized.effectType;
-            normalized.effects.push({
-                id: crypto.randomUUID(),
-                type: effectType,
-                amount: Number(normalized.effectAmount) || 0
-            });
+            if (effectType !== BREAK.action_effects.applyActiveEffects.key) {
+                normalized.effects.push({
+                    id: crypto.randomUUID(),
+                    type: effectType,
+                    amount: Number(normalized.effectAmount) || 0,
+                    macroUuid: normalized.effectMacroUuid ?? "",
+                    macroName: normalized.effectMacroName ?? ""
+                });
+            }
         }
+        normalized.effects = normalized.effects.filter(effect => effect.type !== BREAK.action_effects.applyActiveEffects.key);
+        normalized.effects = normalized.effects.map(effect => ({
+            ...effect,
+            amount: Number(effect.amount) || 0,
+            macroUuid: effect.macroUuid ?? "",
+            macroName: effect.macroName ?? ""
+        }));
         return normalized;
     }
 
@@ -229,13 +241,42 @@ export default class Action {
         await ActiveEffect.implementation.createDocuments(effectData, { parent: targetActor });
     }
 
+    static async executeMacroEffect(actor, item, action, effect, targetActor = null) {
+        if (!effect.macroUuid) {
+            ui.notifications.warn(game.i18n.localize("BREAK.ACTION.MacroMissing"));
+            return false;
+        }
+        const macro = await fromUuid(effect.macroUuid).catch(() => null);
+        if (!macro) {
+            ui.notifications.warn(game.i18n.localize("BREAK.ACTION.MacroMissing"));
+            return false;
+        }
+        await macro.execute({
+            actor,
+            item,
+            action,
+            effect,
+            targetActor
+        });
+        return true;
+    }
+
+    static effectRequiresTarget(effect) {
+        return effect.type === BREAK.action_effects.heal.key
+            || effect.type === BREAK.action_effects.damage.key;
+    }
+
     static async applyEffect(actor, item, action, targetActor = null) {
         action = this.normalize(action);
         const effects = action.effects.filter(effect => effect.type !== BREAK.action_effects.none.key);
-        if (!effects.length) return true;
+        const hasActiveEffects = Boolean(action.activeEffectRefs?.length || action.activeEffects?.length);
+        if (!effects.length && !hasActiveEffects) return true;
 
         targetActor = targetActor ?? this.getTargetActor(action, actor);
-        if (!targetActor) {
+        const needsTarget = action.target === BREAK.action_targets.target.key
+            || hasActiveEffects
+            || effects.some(effect => this.effectRequiresTarget(effect));
+        if (needsTarget && !targetActor) {
             ui.notifications.warn(game.i18n.localize("BREAK.ACTION.TargetMissing"));
             return false;
         }
@@ -248,11 +289,12 @@ export default class Action {
                 case BREAK.action_effects.damage.key:
                     await targetActor.modifyHp?.(-Math.abs(Number(effect.amount) || 0));
                     break;
-                case BREAK.action_effects.applyActiveEffects.key:
-                    await this.applyActiveEffects(action, item, targetActor);
+                case BREAK.action_effects.executeMacro.key:
+                    if (!await this.executeMacroEffect(actor, item, action, effect, targetActor)) return false;
                     break;
             }
         }
+        if (hasActiveEffects) await this.applyActiveEffects(action, item, targetActor);
 
         return true;
     }

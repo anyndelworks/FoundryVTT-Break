@@ -21,6 +21,8 @@ export function defineActionField(fields) {
             id: new fields.StringField({ initial: "" }),
             type: new fields.StringField({ initial: "none" }),
             amount: new fields.NumberField({ initial: 0 }),
+            macroUuid: new fields.StringField({ initial: "" }),
+            macroName: new fields.StringField({ initial: "" }),
         })),
         activeEffectRefs: new fields.ArrayField(new fields.StringField({ initial: "" })),
         activeEffects: new fields.ArrayField(new fields.ObjectField({})),

@@ -125,8 +125,11 @@
         "None": "No effect",
         "Heal": "Heal",
         "Damage": "Damage",
+        "ExecuteMacro": "Execute Macro",
         "ApplyActiveEffects": "Apply Active Effects"
       },
+      "MacroDropHint": "Drop a Macro here.",
+      "MacroMissing": "The macro for this action effect could not be found.",
       "CHECK_TRIGGER": {
         "Success": "Success",
         "Failure": "Failure"

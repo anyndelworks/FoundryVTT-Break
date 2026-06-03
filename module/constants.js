@@ -166,6 +166,10 @@ BREAK.action_effects = {
         key: "damage",
         label: "BREAK.ACTION.EFFECT.Damage"
     },
+    executeMacro: {
+        key: "executeMacro",
+        label: "BREAK.ACTION.EFFECT.ExecuteMacro"
+    },
     applyActiveEffects: {
         key: "applyActiveEffects",
         label: "BREAK.ACTION.EFFECT.ApplyActiveEffects"

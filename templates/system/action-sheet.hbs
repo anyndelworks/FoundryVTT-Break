@@ -141,6 +141,19 @@
                     <label>{{localize "BREAK.Amount"}}</label>
                     <input type="number" class="action-effect-amount" name="effectAmount" value="{{actionEffect.amount}}">
                 </div>
+                <div class="form-group effect-macro-group" style="display:none;flex:1;margin-bottom:0;">
+                    <label>Macro</label>
+                    <div class="action-macro-drop" style="display:flex;align-items:center;column-gap:8px;min-height:32px;border:1px dashed;padding:4px 6px;">
+                        {{#if actionEffect.macroUuid}}
+                            <span>{{actionEffect.macroName}}</span>
+                            <a data-action="clearActionEffectMacro" style="margin-left:auto;"><i class="fas fa-xmark"></i></a>
+                        {{else}}
+                            <span>{{localize "BREAK.ACTION.MacroDropHint"}}</span>
+                        {{/if}}
+                    </div>
+                    <input type="hidden" name="macroUuid" value="{{actionEffect.macroUuid}}">
+                    <input type="hidden" name="macroName" value="{{actionEffect.macroName}}">
+                </div>
                 <a data-action="deleteActionEffect" style="flex:0 0 auto;margin-bottom:8px;"><i class="fas fa-trash"></i></a>
             </div>
             {{/each}}

@@ -23,6 +23,7 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
             openReference: this.#onOpenReference,
             addActionEffect: this.#onAddActionEffect,
             deleteActionEffect: this.#onDeleteActionEffect,
+            clearActionEffectMacro: this.#onClearActionEffectMacro,
             deleteActionActiveEffect: this.#onDeleteActionActiveEffect,
         }
     };
@@ -43,7 +44,8 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
             checkEffectTriggers: BREAK.action_check_effect_triggers,
             aptitudes: BREAK.aptitudes,
             targets: BREAK.action_targets,
-            effects: BREAK.action_effects,
+            effects: Object.fromEntries(Object.entries(BREAK.action_effects)
+                .filter(([, effect]) => effect.key !== BREAK.action_effects.applyActiveEffects.key)),
             requiredItemLabel: action.requiredItemName || game.i18n.localize("BREAK.None"),
             consumeItemLabel: action.consumeItemName || game.i18n.localize("BREAK.None"),
         };
@@ -59,6 +61,8 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
             await this._onEffectInputChange(event);
         });
         html.find(".action-effect-amount").on("change", this._onEffectInputChange.bind(this));
+        html.find(".action-macro-drop").on("dragover", event => event.preventDefault());
+        html.find(".action-macro-drop").on("drop", this._onDropMacro.bind(this));
         html.find(".action-item-drop").on("dragover", event => event.preventDefault());
         html.find(".action-item-drop").on("drop", this._onDropItemReference.bind(this));
         html.find(".action-active-effect-drop").on("dragover", event => event.preventDefault());
@@ -106,8 +110,13 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
         const effectType = event.currentTarget?.value ?? BREAK.action_effects.none.key;
         const effectRow = event.currentTarget.closest("[data-action-effect]");
         const showAmount = effectType === BREAK.action_effects.heal.key || effectType === BREAK.action_effects.damage.key;
+        const showMacro = effectType === BREAK.action_effects.executeMacro.key;
         $(effectRow ?? html).find('.effect-amount-group').each((i, el) => {
             if (showAmount) $(el).show();
+            else $(el).hide();
+        });
+        $(effectRow ?? html).find('.effect-macro-group').each((i, el) => {
+            if (showMacro) $(el).show();
             else $(el).hide();
         });
     }
@@ -155,7 +164,9 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
         return Array.from(this.element.querySelectorAll("[data-action-effect]")).map(row => ({
             id: row.dataset.effectId || crypto.randomUUID(),
             type: row.querySelector("[name='effectType']")?.value ?? BREAK.action_effects.none.key,
-            amount: Number(row.querySelector("[name='effectAmount']")?.value || 0)
+            amount: Number(row.querySelector("[name='effectAmount']")?.value || 0),
+            macroUuid: row.querySelector("[name='macroUuid']")?.value ?? "",
+            macroName: row.querySelector("[name='macroName']")?.value ?? ""
         }));
     }
 
@@ -215,6 +226,30 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
         this.render(true);
     }
 
+    async _onDropMacro(event) {
+        event.preventDefault();
+        const row = event.currentTarget.closest("[data-action-effect]");
+        const effectId = row?.dataset.effectId;
+        if (!effectId) return;
+        const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event.originalEvent ?? event);
+        if (data.type !== "Macro") return;
+        const macroUuid = data.uuid ?? data.documentUuid;
+        if (!macroUuid) return;
+        const macro = await fromUuid(macroUuid);
+        if (!macro) return;
+
+        const list = foundry.utils.duplicate(this.item.system.actions ?? []);
+        const idx = list.findIndex(a => a.id === this.actionId);
+        if (idx === -1) return;
+        const effect = (list[idx].effects ?? []).find(effect => effect.id === effectId);
+        if (!effect) return;
+        effect.macroUuid = macro.uuid;
+        effect.macroName = macro.name;
+        await this.item.update({ "system.actions": list });
+        this.action = list[idx];
+        this.render(true);
+    }
+
     static async #onSelectReference(event) {
         event.preventDefault();
         const fieldset = event.target.closest("[data-fieldset]")?.dataset.fieldset;
@@ -269,7 +304,9 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
         list[idx].effects.push({
             id: crypto.randomUUID(),
             type: BREAK.action_effects.none.key,
-            amount: 0
+            amount: 0,
+            macroUuid: "",
+            macroName: ""
         });
         await this.item.update({ "system.actions": list });
         this.action = list[idx];
@@ -285,6 +322,25 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
         const idx = list.findIndex(a => a.id === this.actionId);
         if (idx === -1) return;
         list[idx].effects = (list[idx].effects ?? []).filter(effect => effect.id !== effectId);
+        list[idx].effectType = list[idx].effects[0]?.type ?? BREAK.action_effects.none.key;
+        list[idx].effectAmount = list[idx].effects[0]?.amount ?? 0;
+        await this.item.update({ "system.actions": list });
+        this.action = list[idx];
+        this.render(true);
+    }
+
+    static async #onClearActionEffectMacro(event) {
+        event.preventDefault();
+        const row = event.target.closest("[data-action-effect]");
+        const effectId = row?.dataset.effectId;
+        if (!effectId) return;
+        const list = foundry.utils.duplicate(this.item.system.actions ?? []);
+        const idx = list.findIndex(a => a.id === this.actionId);
+        if (idx === -1) return;
+        const effect = (list[idx].effects ?? []).find(effect => effect.id === effectId);
+        if (!effect) return;
+        effect.macroUuid = "";
+        effect.macroName = "";
         await this.item.update({ "system.actions": list });
         this.action = list[idx];
         this.render(true);
