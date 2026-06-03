@@ -2,7 +2,7 @@
   "id": "break",
   "version": "1.2",
   "title": "BREAK!!",
-  "url": "https://github.com/Anyndol/FoundryVTT-Break",
+  "url": "https://github.com/anyndelworks/FoundryVTT-Break",
   "manifest": "https://github.com/anyndelworks/FoundryVTT-Break/releases/download/v1.2/system.json",
   "download": "https://github.com/anyndelworks/FoundryVTT-Break/releases/download/v1.2/v1.2.zip",
   "description": "A BREAK!! TTRPG game system",
@@ -10,13 +10,16 @@
   "license": "LICENSE",
   "authors": [
     {
-      "name": "Anyndol"
+      "name": "Anyndel"
     },
     {
-      "name": "Valkyrie"
+      "name": "Grey Wizard"
     },
     {
-      "name": "Nicolasra"
+      "name": "Reynaldo Madriñan"
+    },
+    {
+      "name": "BREAK!! Community"
     }
   ],
   "esmodules": ["break.js"],
