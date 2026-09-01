@@ -9,7 +9,7 @@ export class BreakAccessorySheet extends BreakItemSheet {
     classes: ["break", "sheet", "accesory"],
     position: {
       width: 600,
-      height: 480,
+      height: 615,
     },
     form: {
       handler: BreakAccessorySheet.#onSubmit,

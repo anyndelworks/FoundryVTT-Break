@@ -2,7 +2,7 @@ import { parseInputDelta } from "../../utils/utils.mjs";
 import BREAK from "../constants.js";
 import Action from "../system/action.js";
 import { BreakBaseActorDataModel } from "../models/base-actor.js";
-import { canStoreItem, getContainerUsedSlots, getItemSlots } from "../models/container-capable.js";
+import { canStoreItem, getContainerAccessCostLabel, getContainerUsedSlots, getItemSlots } from "../models/container-capable.js";
 
 const allowedItemTypes = [
 // Equipment
@@ -195,7 +195,7 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         img: container.img,
         usedSlots: Math.round(usedSlots * factor) / factor,
         capacity: container.system.container.capacity,
-        accessCostLabel: game.i18n.localize(`BREAK.CONTAINER.Access.${container.system.container.accessCost}`),
+        accessCostLabel: getContainerAccessCostLabel(container.system.container.accessCost),
         unrestricted: !allowedTypes.length && !allowedCategories.length,
         allowedLabels: [
           ...allowedTypes.map(type => game.i18n.localize(`TYPES.Item.${type}`)),
@@ -214,7 +214,7 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       icon: "fa-box-open",
       usedSlots: context.usedInventorySlots,
       capacity: context.inventorySlots,
-      accessCostLabel: game.i18n.localize("BREAK.CONTAINER.Access.free"),
+      accessCostLabel: getContainerAccessCostLabel(0),
       unrestricted: true,
       items: context.bagContent
     };

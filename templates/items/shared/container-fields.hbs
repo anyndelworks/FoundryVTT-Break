@@ -12,11 +12,7 @@
             </label>
             <label style="display:flex;align-items:center;gap:6px;flex:1;">
                 {{localize "BREAK.CONTAINER.AccessCost"}}
-                <select name="system.container.accessCost">
-                    {{#each containerAccessCosts as |cost|}}
-                        <option value="{{cost.key}}" {{#if cost.active}}selected{{/if}}>{{localize cost.label}}</option>
-                    {{/each}}
-                </select>
+                <input name="system.container.accessCost" type="number" min="0" step="1" value="{{document.system.container.accessCost}}" style="width:54px;text-align:center;" />
             </label>
         </div>
         <p style="margin:0;">{{localize "BREAK.CONTAINER.AllowedHint"}}</p>

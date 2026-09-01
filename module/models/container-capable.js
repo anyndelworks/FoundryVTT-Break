@@ -25,6 +25,14 @@ export const CONTAINER_ITEM_CATEGORIES = [
 ];
 
 export const ContainerCapableMixin = Base => class extends Base {
+    static migrateData(source) {
+        source = super.migrateData(source);
+        if (source.container && "accessCost" in source.container) {
+            source.container.accessCost = normalizeContainerAccessCost(source.container.accessCost);
+        }
+        return source;
+    }
+
     static defineSchema() {
         const fields = foundry.data.fields;
 
@@ -33,10 +41,7 @@ export const ContainerCapableMixin = Base => class extends Base {
             container: new fields.SchemaField({
                 enabled: new fields.BooleanField({ initial: false }),
                 capacity: new fields.NumberField({ initial: 0, min: 0 }),
-                accessCost: new fields.StringField({
-                    initial: "free",
-                    choices: ["free", "action"]
-                }),
+                accessCost: new fields.NumberField({ initial: 0, min: 0, integer: true }),
                 allowedItemTypes: new fields.ArrayField(new fields.StringField(), { initial: [] }),
                 allowedItemCategories: new fields.ArrayField(new fields.StringField(), { initial: [] })
             })
@@ -70,13 +75,21 @@ export function getContainerUsedSlots(actor, containerId, excludedItemId = null)
         .reduce((total, item) => total + getItemSlots(item), 0);
 }
 
+export function normalizeContainerAccessCost(value) {
+    if (value === "free") return 0;
+    if (value === "action") return 1;
+    return Math.max(0, Math.trunc(Number(value) || 0));
+}
+
+export function getContainerAccessCostLabel(value) {
+    const actions = normalizeContainerAccessCost(value);
+    if (actions === 0) return game.i18n.localize("BREAK.CONTAINER.Access.free");
+    if (actions === 1) return game.i18n.localize("BREAK.CONTAINER.Access.action");
+    return game.i18n.format("BREAK.CONTAINER.Access.actions", { actions });
+}
+
 export function prepareContainerContext(context) {
     context.canBeContainer = true;
-    context.containerAccessCosts = ["free", "action"].map(key => ({
-        key,
-        label: `BREAK.CONTAINER.Access.${key}`,
-        active: context.document.system.container.accessCost === key
-    }));
     context.containerItemTypes = CONTAINER_ITEM_TYPES.map(type => ({
         key: type,
         label: `TYPES.Item.${type}`,
@@ -95,6 +108,7 @@ export function prepareContainerSubmitData(updateData) {
 
     container.enabled = container.enabled === true || container.enabled === "true" || container.enabled === "on";
     if ("capacity" in container) container.capacity = Number(container.capacity ?? 0);
+    if ("accessCost" in container) container.accessCost = normalizeContainerAccessCost(container.accessCost);
     if ("allowedItemTypes" in container) {
         container.allowedItemTypes = normalizeSelection(container.allowedItemTypes);
     }

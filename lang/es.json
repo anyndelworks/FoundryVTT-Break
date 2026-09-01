@@ -550,12 +550,13 @@
       "DragHint": "Arrastra objetos entre el inventario y los contenedores equipados",
       "DragItem": "Arrastrar objeto",
       "AddItem": "Añadir objeto",
-      "Empty": "Esta ubicación está vacía",
+      "Empty": "Este contenedor está vacío",
       "DropHere": "Suelta aquí un objeto para guardarlo",
       "Available": "slots libres",
       "Access": {
         "free": "Gratis",
-        "action": "1 acción"
+        "action": "1 acción",
+        "actions": "{actions} acciones"
       }
     },
     "STATUS": {

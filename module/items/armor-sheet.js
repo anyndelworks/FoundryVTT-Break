@@ -10,7 +10,7 @@ export class BreakArmorSheet extends BreakItemSheet {
     classes: ["break", "sheet", "armor"],
     position: {
       width: 600,
-      height: 480,
+      height: 520,
     },
     form: {
       handler: BreakArmorSheet.#onSubmit,

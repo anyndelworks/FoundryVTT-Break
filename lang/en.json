@@ -550,12 +550,13 @@
       "DragHint": "Drag items between the inventory and equipped containers",
       "DragItem": "Drag item",
       "AddItem": "Add item",
-      "Empty": "This location is empty",
+      "Empty": "This container is empty",
       "DropHere": "Drop an item here to store it",
       "Available": "slots free",
       "Access": {
         "free": "Free",
-        "action": "1 action"
+        "action": "1 action",
+        "actions": "{actions} actions"
       }
     },
     "STATUS": {

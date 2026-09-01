@@ -4,7 +4,7 @@ import { parseLanguageList } from "../../utils/languages.mjs";
 export class BreakCharacterDataModel extends BreakBaseActorDataModel {
   static migrateData(source) {
     source = super.migrateData(source);
-    source.languages = parseLanguageList(source.languages);
+    if (!Array.isArray(source.languages)) source.languages = parseLanguageList(source.languages);
     return source;
   }
 
