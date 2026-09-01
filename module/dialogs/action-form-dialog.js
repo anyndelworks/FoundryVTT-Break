@@ -7,6 +7,7 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
         super(options);
         this.item = item;
         this.actionId = actionId;
+        this.selectedVariantId = options.rankVariantId ?? null;
         const actions = this.item.system.actions ?? [];
         this.action = actions.find(a => a.id === this.actionId);
     }
@@ -25,6 +26,9 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
             deleteActionEffect: this.#onDeleteActionEffect,
             clearActionEffectMacro: this.#onClearActionEffectMacro,
             deleteActionActiveEffect: this.#onDeleteActionActiveEffect,
+            selectRankVariant: this.#onSelectRankVariant,
+            addRankVariant: this.#onAddRankVariant,
+            deleteRankVariant: this.#onDeleteRankVariant,
         }
     };
 
@@ -36,6 +40,10 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
 
     async _prepareContext() {        
         const action = await this.#getNormalizedAction();
+        const baseAction = Action.normalize(this.action);
+        const usedRanks = new Set(baseAction.rankVariants.map(variant => Number(variant.minRank)));
+        const rankOptions = Array.from({ length: BREAK.max_rank - 1 }, (_, index) => index + 2)
+            .filter(rank => !usedRanks.has(rank));
         return {
             item: this.item,
             action,
@@ -48,6 +56,16 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
                 .filter(([, effect]) => effect.key !== BREAK.action_effects.applyActiveEffects.key)),
             requiredItemLabel: action.requiredItemName || game.i18n.localize("BREAK.None"),
             consumeItemLabel: action.consumeItemName || game.i18n.localize("BREAK.None"),
+            rankVariants: baseAction.rankVariants
+                .sort((a, b) => Number(a.minRank) - Number(b.minRank))
+                .map(variant => ({
+                    ...variant,
+                    active: variant.id === this.selectedVariantId,
+                })),
+            editingBase: !this.selectedVariantId,
+            selectedVariantId: this.selectedVariantId,
+            rankOptions,
+            canAddRankVariant: rankOptions.length > 0,
         };
     }
 
@@ -68,17 +86,17 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
         html.find(".action-active-effect-drop").on("dragover", event => event.preventDefault());
         html.find(".action-active-effect-drop").on("drop", this._onDropActiveEffect.bind(this));
         html.find('.aptitude-select').each((i, el) => {
-            const allowed = this.action.rollType === BREAK.roll_types.check.key || this.action.rollType === BREAK.roll_types.contest.key;
+            const allowed = context.action.rollType === BREAK.roll_types.check.key || context.action.rollType === BREAK.roll_types.contest.key;
             if (allowed) $(el).show();
             else $(el).hide();
         });
         html.find('.vs-select').each((i, el) => {
-            const allowed = this.action.rollType === BREAK.roll_types.contest.key;
+            const allowed = context.action.rollType === BREAK.roll_types.contest.key;
             if (allowed) $(el).show();
             else $(el).hide();
         });
         html.find('.check-trigger-select').each((i, el) => {
-            const allowed = this.action.rollType === BREAK.roll_types.check.key;
+            const allowed = context.action.rollType === BREAK.roll_types.check.key;
             if (allowed) $(el).show();
             else $(el).hide();
         });
@@ -121,18 +139,39 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
         });
     }
 
+    #getActionTarget(action) {
+        if (!this.selectedVariantId) return action;
+        return (action.rankVariants ?? []).find(variant => variant.id === this.selectedVariantId) ?? action;
+    }
+
+    #getListTarget(list) {
+        const action = list.find(candidate => candidate.id === this.actionId);
+        return action ? this.#getActionTarget(action) : null;
+    }
+
+    async #saveCurrentForm() {
+        if (!this.element) return;
+        const formData = new FormDataExtended(this.element);
+        const list = foundry.utils.duplicate(this.item.system.actions ?? []);
+        const target = this.#getListTarget(list);
+        if (!target) return;
+        foundry.utils.mergeObject(target, this.getFormUpdates(formData));
+        await this.item.update({ "system.actions": list });
+        this.action = list.find(action => action.id === this.actionId);
+    }
+
     async _onEffectInputChange(event) {
         const list = foundry.utils.duplicate(this.item.system.actions ?? []);
-        const idx = list.findIndex(a => a.id === this.actionId);
-        if (idx === -1) return;
+        const target = this.#getListTarget(list);
+        if (!target) return;
         const effects = this.#getEffectUpdates();
-        list[idx] = foundry.utils.mergeObject(list[idx], {
+        foundry.utils.mergeObject(target, {
             effectType: effects[0]?.type ?? BREAK.action_effects.none.key,
             effectAmount: effects[0]?.amount ?? 0,
             effects,
         });
         await this.item.update({ "system.actions": list });
-        this.action = list[idx];
+        this.action = list.find(action => action.id === this.actionId);
     }
 
     getFormUpdates(formData) {
@@ -171,7 +210,7 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
     }
 
     async #getNormalizedAction() {
-        const action = Action.normalize(this.action);
+        const action = Action.normalize(this.#getActionTarget(Action.normalize(this.action)));
         const activeEffectCopies = foundry.utils.deepClone(action.activeEffects ?? []);
         const activeEffectDocuments = await Action.getActiveEffectDocuments(action);
         action.activeEffects = activeEffectDocuments.map((effect, index) => ({
@@ -188,16 +227,6 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
             }));
         }
         return action;
-    }
-
-    async _onSubmit(event) {
-        event.preventDefault();
-        const updatedActions = foundry.utils.duplicate(this.item.system.actions ?? []);
-        const index = updatedActions.findIndex(a => a.id === this.actionId);
-        if (index === -1) return;
-
-        updatedActions[index] = foundry.utils.mergeObject(updatedActions[index], formData);
-        await this.item.update({ "system.actions": updatedActions });
     }
 
     async _onDropItemReference(event) {
@@ -217,12 +246,12 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
         if (!effect) return;
 
         const list = foundry.utils.duplicate(this.item.system.actions ?? []);
-        const idx = list.findIndex(a => a.id === this.actionId);
-        if (idx === -1) return;
-        list[idx].activeEffectRefs = list[idx].activeEffectRefs ?? [];
-        if (!list[idx].activeEffectRefs.includes(effect.uuid)) list[idx].activeEffectRefs.push(effect.uuid);
+        const target = this.#getListTarget(list);
+        if (!target) return;
+        target.activeEffectRefs = target.activeEffectRefs ?? [];
+        if (!target.activeEffectRefs.includes(effect.uuid)) target.activeEffectRefs.push(effect.uuid);
         await this.item.update({ "system.actions": list });
-        this.action = list[idx];
+        this.action = list.find(action => action.id === this.actionId);
         this.render(true);
     }
 
@@ -239,14 +268,14 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
         if (!macro) return;
 
         const list = foundry.utils.duplicate(this.item.system.actions ?? []);
-        const idx = list.findIndex(a => a.id === this.actionId);
-        if (idx === -1) return;
-        const effect = (list[idx].effects ?? []).find(effect => effect.id === effectId);
+        const target = this.#getListTarget(list);
+        if (!target) return;
+        const effect = (target.effects ?? []).find(effect => effect.id === effectId);
         if (!effect) return;
         effect.macroUuid = macro.uuid;
         effect.macroName = macro.name;
         await this.item.update({ "system.actions": list });
-        this.action = list[idx];
+        this.action = list.find(action => action.id === this.actionId);
         this.render(true);
     }
 
@@ -274,14 +303,14 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
         const fieldset = event.target.closest("[data-fieldset]")?.dataset.fieldset;
         if (!fieldset) return;
         const list = foundry.utils.duplicate(this.item.system.actions ?? []);
-        const idx = list.findIndex(a => a.id === this.actionId);
-        if (idx === -1) return;
+        const target = this.#getListTarget(list);
+        if (!target) return;
         const patch = fieldset === "required"
             ? { requiredItemRef: "", requiredItemName: "" }
             : { consumeItemRef: "", consumeItemName: "" };
-        list[idx] = foundry.utils.mergeObject(list[idx], patch);
+        foundry.utils.mergeObject(target, patch);
         await this.item.update({ "system.actions": list });
-        this.action = list[idx];
+        this.action = list.find(action => action.id === this.actionId);
         this.render(true);
     }
 
@@ -289,7 +318,8 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
         event.preventDefault();
         const fieldset = event.target.closest("[data-fieldset]")?.dataset.fieldset;
         if (!fieldset) return;
-        const itemRef = fieldset === "required" ? this.action.requiredItemRef : this.action.consumeItemRef;
+        const action = this.#getActionTarget(this.action);
+        const itemRef = fieldset === "required" ? action.requiredItemRef : action.consumeItemRef;
         if (!itemRef) return;
         const item = await fromUuid(itemRef);
         item?.sheet?.render(true, { editable: false });
@@ -298,10 +328,10 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
     static async #onAddActionEffect(event) {
         event.preventDefault();
         const list = foundry.utils.duplicate(this.item.system.actions ?? []);
-        const idx = list.findIndex(a => a.id === this.actionId);
-        if (idx === -1) return;
-        list[idx].effects = list[idx].effects ?? [];
-        list[idx].effects.push({
+        const target = this.#getListTarget(list);
+        if (!target) return;
+        target.effects = target.effects ?? [];
+        target.effects.push({
             id: crypto.randomUUID(),
             type: BREAK.action_effects.none.key,
             amount: 0,
@@ -309,7 +339,7 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
             macroName: ""
         });
         await this.item.update({ "system.actions": list });
-        this.action = list[idx];
+        this.action = list.find(action => action.id === this.actionId);
         this.render(true);
     }
 
@@ -319,13 +349,13 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
         const effectId = row?.dataset.effectId;
         if (!effectId) return;
         const list = foundry.utils.duplicate(this.item.system.actions ?? []);
-        const idx = list.findIndex(a => a.id === this.actionId);
-        if (idx === -1) return;
-        list[idx].effects = (list[idx].effects ?? []).filter(effect => effect.id !== effectId);
-        list[idx].effectType = list[idx].effects[0]?.type ?? BREAK.action_effects.none.key;
-        list[idx].effectAmount = list[idx].effects[0]?.amount ?? 0;
+        const target = this.#getListTarget(list);
+        if (!target) return;
+        target.effects = (target.effects ?? []).filter(effect => effect.id !== effectId);
+        target.effectType = target.effects[0]?.type ?? BREAK.action_effects.none.key;
+        target.effectAmount = target.effects[0]?.amount ?? 0;
         await this.item.update({ "system.actions": list });
-        this.action = list[idx];
+        this.action = list.find(action => action.id === this.actionId);
         this.render(true);
     }
 
@@ -335,14 +365,14 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
         const effectId = row?.dataset.effectId;
         if (!effectId) return;
         const list = foundry.utils.duplicate(this.item.system.actions ?? []);
-        const idx = list.findIndex(a => a.id === this.actionId);
-        if (idx === -1) return;
-        const effect = (list[idx].effects ?? []).find(effect => effect.id === effectId);
+        const target = this.#getListTarget(list);
+        if (!target) return;
+        const effect = (target.effects ?? []).find(effect => effect.id === effectId);
         if (!effect) return;
         effect.macroUuid = "";
         effect.macroName = "";
         await this.item.update({ "system.actions": list });
-        this.action = list[idx];
+        this.action = list.find(action => action.id === this.actionId);
         this.render(true);
     }
 
@@ -353,28 +383,73 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
         const ref = row?.dataset.activeEffectRef;
         if (Number.isNaN(index) && !ref) return;
         const list = foundry.utils.duplicate(this.item.system.actions ?? []);
-        const idx = list.findIndex(a => a.id === this.actionId);
-        if (idx === -1) return;
-        list[idx].activeEffectRefs = ref
-            ? (list[idx].activeEffectRefs ?? []).filter(effectRef => effectRef !== ref)
-            : (list[idx].activeEffectRefs ?? []).filter((effectRef, i) => i !== index);
-        list[idx].activeEffects = (list[idx].activeEffects ?? []).filter((effect, i) => i !== index);
+        const target = this.#getListTarget(list);
+        if (!target) return;
+        target.activeEffectRefs = ref
+            ? (target.activeEffectRefs ?? []).filter(effectRef => effectRef !== ref)
+            : (target.activeEffectRefs ?? []).filter((effectRef, i) => i !== index);
+        target.activeEffects = (target.activeEffects ?? []).filter((effect, i) => i !== index);
         await this.item.update({ "system.actions": list });
-        this.action = list[idx];
+        this.action = list.find(action => action.id === this.actionId);
         this.render(true);
     }
 
     async _updateItemReference(fieldset, item) {
         const list = foundry.utils.duplicate(this.item.system.actions ?? []);
-        const idx = list.findIndex(a => a.id === this.actionId);
-        if (idx === -1) return;
+        const target = this.#getListTarget(list);
+        if (!target) return;
         const itemRef = item.sourceId ?? item.flags?.core?.sourceId ?? item._stats?.compendiumSource ?? item.uuid;
         const patch = fieldset === "required"
             ? { requiredItemRef: itemRef, requiredItemName: item.name }
             : { consumeItemRef: itemRef, consumeItemName: item.name };
-        list[idx] = foundry.utils.mergeObject(list[idx], patch);
+        foundry.utils.mergeObject(target, patch);
         await this.item.update({ "system.actions": list });
-        this.action = list[idx];
+        this.action = list.find(action => action.id === this.actionId);
+        this.render(true);
+    }
+
+    static async #onSelectRankVariant(event, target) {
+        event.preventDefault();
+        await this.#saveCurrentForm();
+        this.selectedVariantId = (target ?? event.target).dataset.variantId || null;
+        this.render(true);
+    }
+
+    static async #onAddRankVariant(event) {
+        event.preventDefault();
+        const rank = Number(this.element.querySelector(".rank-variant-rank")?.value);
+        if (!Number.isInteger(rank) || rank < 2 || rank > BREAK.max_rank) return;
+
+        await this.#saveCurrentForm();
+        const list = foundry.utils.duplicate(this.item.system.actions ?? []);
+        const action = list.find(candidate => candidate.id === this.actionId);
+        if (!action) return;
+        action.rankVariants = action.rankVariants ?? [];
+        if (action.rankVariants.some(variant => Number(variant.minRank) === rank)) {
+            ui.notifications.warn(game.i18n.localize("BREAK.ACTION.RankAlreadyUsed"));
+            return;
+        }
+
+        const variant = Action.createRankVariant(action, rank);
+        action.rankVariants.push(variant);
+        action.rankVariants.sort((a, b) => Number(a.minRank) - Number(b.minRank));
+        await this.item.update({ "system.actions": list });
+        this.action = action;
+        this.selectedVariantId = variant.id;
+        this.render(true);
+    }
+
+    static async #onDeleteRankVariant(event) {
+        event.preventDefault();
+        if (!this.selectedVariantId) return;
+        const list = foundry.utils.duplicate(this.item.system.actions ?? []);
+        const action = list.find(candidate => candidate.id === this.actionId);
+        if (!action) return;
+        action.rankVariants = (action.rankVariants ?? [])
+            .filter(variant => variant.id !== this.selectedVariantId);
+        await this.item.update({ "system.actions": list });
+        this.action = action;
+        this.selectedVariantId = null;
         this.render(true);
     }
 
@@ -383,10 +458,10 @@ export default class ActionFormDialog extends HandlebarsApplicationMixin(Applica
         const updates = this.getFormUpdates(formData);
 
         const list = foundry.utils.duplicate(this.item.system.actions ?? []);
-        const idx = list.findIndex(a => a.id === this.actionId);
-        if (idx === -1) return;
+        const target = this.#getListTarget(list);
+        if (!target) return;
 
-        list[idx] = foundry.utils.mergeObject(list[idx], updates);
+        foundry.utils.mergeObject(target, updates);
         await this.item.update({ "system.actions": list });
     }
 }

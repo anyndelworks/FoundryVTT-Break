@@ -125,7 +125,7 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     const content = $(this.element).find(".window-content");
     const root = content.length ? content : $(this.element);
     root
-      .find("button, input, optgroup, option, select, textarea")
+      .find("button, input, multi-checkbox, multi-select, optgroup, option, select, textarea")
       .filter((i, element) => !element.closest(viewActions))
       .prop("disabled", disabled);
   }
@@ -303,7 +303,7 @@ export class BreakItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     const actions = this.document.system.actions ?? [];
     const action = actions.find(a => a.id === id);
     if(action)
-      Action.sendToChat(action);
+      Action.sendToChat(Action.resolveForActor(action, this.item.actor), this.item.actor?.name);
   }
 
   _onChatButton(ev) {

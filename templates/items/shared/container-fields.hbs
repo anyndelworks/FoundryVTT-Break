@@ -1,0 +1,42 @@
+<div class="section-header" style="margin-top:10px;">{{localize "BREAK.CONTAINER.Title"}}</div>
+<div class="flexcol" style="gap:8px;">
+    <label style="display:flex;align-items:center;gap:6px;">
+        <input name="system.container.enabled" type="checkbox" {{checked document.system.container.enabled}} />
+        {{localize "BREAK.CONTAINER.Enabled"}}
+    </label>
+    {{#if document.system.container.enabled}}
+        <div style="display:flex;gap:12px;align-items:center;">
+            <label style="display:flex;align-items:center;gap:6px;">
+                {{localize "BREAK.CONTAINER.Capacity"}}
+                <input name="system.container.capacity" type="number" min="0" value="{{document.system.container.capacity}}" style="width:54px;text-align:center;" />
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;flex:1;">
+                {{localize "BREAK.CONTAINER.AccessCost"}}
+                <select name="system.container.accessCost">
+                    {{#each containerAccessCosts as |cost|}}
+                        <option value="{{cost.key}}" {{#if cost.active}}selected{{/if}}>{{localize cost.label}}</option>
+                    {{/each}}
+                </select>
+            </label>
+        </div>
+        <p style="margin:0;">{{localize "BREAK.CONTAINER.AllowedHint"}}</p>
+        <div style="display:flex;gap:12px;">
+            <label style="flex:1;">
+                {{localize "BREAK.CONTAINER.ItemTypes"}}
+                <multi-select name="system.container.allowedItemTypes" style="width:100%;">
+                    {{#each containerItemTypes as |type|}}
+                        <option value="{{type.key}}" {{#if type.active}}selected{{/if}}>{{localize type.label}}</option>
+                    {{/each}}
+                </multi-select>
+            </label>
+            <label style="flex:1;">
+                {{localize "BREAK.CONTAINER.ItemCategories"}}
+                <multi-select name="system.container.allowedItemCategories" style="width:100%;">
+                    {{#each containerItemCategories as |category|}}
+                        <option value="{{category.key}}" {{#if category.active}}selected{{/if}}>{{localize category.label}}</option>
+                    {{/each}}
+                </multi-select>
+            </label>
+        </div>
+    {{/if}}
+</div>

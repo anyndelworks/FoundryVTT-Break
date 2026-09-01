@@ -218,6 +218,10 @@
         .icon.happy {
             background-image: url("../../assets/preview-content/icons/1up_happy.png");
         }
+
+        .icon.thinking {
+            background-image: url("../../assets/preview-content/icons/1up_thinking.jpg");
+        }
     }
 
     .content-box {

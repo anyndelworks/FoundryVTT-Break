@@ -7,13 +7,13 @@
         {{#if weapon.isMelee}}
             <div style="display:flex;">
                 <label>{{localize "BREAK.GEAR.ExtraDamage"}}</label>
-                <label style="margin-left: auto;">{{{weapon.extraDamage}}}</label>
+                <label style="margin-left: auto;">{{#if weapon.extraDamage}}{{weapon.extraDamage}}{{else}}—{{/if}}</label>
             </div>
         {{/if}}
         {{#if weapon.isRanged}}
             <div style="display:flex;">
                 <label>{{localize "BREAK.GEAR.TYPE.Ranged"}} {{localize "BREAK.GEAR.ExtraDamage"}}</label>
-                <label style="margin-left: auto;">{{{weapon.rangedExtraDamage}}}</label>
+                <label style="margin-left: auto;">{{#if weapon.rangedExtraDamage}}{{weapon.rangedExtraDamage}}{{else}}—{{/if}}</label>
             </div>
         {{/if}}
     </div>

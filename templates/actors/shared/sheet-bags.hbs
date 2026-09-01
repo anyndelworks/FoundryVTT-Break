@@ -1,8 +1,8 @@
 <div class="flexcol" style="width: 100%;">
-    <div class="section-header">{{localize "BREAK.Bags"}}</div>
+    <div class="section-header">{{localize "BREAK.CONTAINER.Storage"}}</div>
     <div style="margin-left: 25%;">{{localize "BREAK.Used"}} / {{localize "BREAK.Total"}}</div>
     <div style="display: flex;align-items:center;column-gap:6px;border-bottom:1px solid grey;">
-        <label style="width:25%;">{{localize "BREAK.Inventory"}}</label>
+        <label style="width:25%;">{{localize "BREAK.CONTAINER.BaseInventory"}}</label>
         <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <p style="margin:0;">
                 <span {{#when usedInventorySlots 'gt' inventorySlots}}style="color: red;"{{/when}}>{{usedInventorySlots}}</span>
@@ -17,4 +17,13 @@
             <span title="{{document.system.slots.effectsTooltip}}">{{localize "BREAK.BonPen"}}: {{document.system.slots.bon}}</span>
         </div>
     </div>
+    {{#each inventoryContainers as |container|}}
+        <div style="display:flex;align-items:center;column-gap:6px;border-bottom:1px solid grey;">
+            <label style="width:25%;">{{container.name}}</label>
+            <p style="margin:0;">
+                <span {{#when container.usedSlots 'gt' container.capacity}}style="color:red;"{{/when}}>{{container.usedSlots}}</span>
+                / {{container.capacity}} {{localize "BREAK.Slots"}} | {{container.accessCostLabel}}
+            </p>
+        </div>
+    {{/each}}
 </div>

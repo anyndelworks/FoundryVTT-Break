@@ -6,6 +6,33 @@ import BREAK from "../constants.js";
  */
 export class BreakItem extends Item {
 
+  async _preUpdate(changed, options, user) {
+    await super._preUpdate(changed, options, user);
+
+    const containerEnabled = foundry.utils.getProperty(changed, "system.container.enabled");
+    if (containerEnabled === true && this.system.containerId) {
+      foundry.utils.setProperty(changed, "system.containerId", null);
+    }
+    if (containerEnabled !== false || this.parent?.documentName !== "Actor") return;
+
+    await this.emptyContainer();
+  }
+
+  async _preDelete(options, user) {
+    await super._preDelete(options, user);
+    await this.emptyContainer();
+  }
+
+  async emptyContainer() {
+    if (this.parent?.documentName !== "Actor") return;
+    const containedItems = this.parent.items.filter(item => item.system.containerId === this.id);
+    if (!containedItems.length) return;
+    await this.parent.updateEmbeddedDocuments("Item", containedItems.map(item => ({
+      _id: item.id,
+      "system.containerId": null
+    })));
+  }
+
   /** @inheritdoc */
   prepareDerivedData() {
     super.prepareDerivedData();

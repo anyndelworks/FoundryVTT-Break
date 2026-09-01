@@ -30,10 +30,19 @@ export default class Action {
             effects: [],
             activeEffectRefs: [],
             activeEffects: [],
+            rankVariants: [],
         }
     }
 
     static normalize(action) {
+        const normalized = foundry.utils.deepClone(action ?? {});
+        normalized.rankVariants = Array.isArray(normalized.rankVariants)
+            ? normalized.rankVariants.map(variant => this.#normalizeData(variant))
+            : [];
+        return this.#normalizeData(normalized);
+    }
+
+    static #normalizeData(action) {
         const normalized = foundry.utils.deepClone(action ?? {});
         const hadEffectsArray = Array.isArray(normalized.effects);
         if (!Array.isArray(normalized.effects)) normalized.effects = [];
@@ -62,6 +71,41 @@ export default class Action {
             macroName: effect.macroName ?? ""
         }));
         return normalized;
+    }
+
+    static getActorRank(actor) {
+        return Number(actor?.system?.xp?.rank ?? actor?.system?.rank ?? 1) || 1;
+    }
+
+    static resolveForActor(action, actor) {
+        const normalized = this.normalize(action);
+        const rank = this.getActorRank(actor);
+        const variant = normalized.rankVariants
+            .filter(candidate => Number(candidate.minRank) <= rank)
+            .sort((a, b) => Number(b.minRank) - Number(a.minRank))[0];
+        if (!variant) return normalized;
+
+        return {
+            ...this.#normalizeData(variant),
+            id: normalized.id,
+            rankVariants: normalized.rankVariants,
+            resolvedMinRank: Number(variant.minRank),
+            resolvedVariantId: variant.id,
+        };
+    }
+
+    static createRankVariant(action, minRank) {
+        const source = this.normalize(action);
+        const previous = source.rankVariants
+            .filter(variant => Number(variant.minRank) < Number(minRank))
+            .sort((a, b) => Number(b.minRank) - Number(a.minRank))[0] ?? source;
+        const variant = this.#normalizeData(previous);
+        delete variant.rankVariants;
+        delete variant.resolvedMinRank;
+        delete variant.resolvedVariantId;
+        variant.id = crypto.randomUUID();
+        variant.minRank = Number(minRank);
+        return variant;
     }
 
     static async getActiveEffectDocuments(action) {
@@ -300,7 +344,7 @@ export default class Action {
     }
 
     static async resolve(actor, item, action) {
-        action = this.normalize(action);
+        action = this.resolveForActor(action, actor);
         if (!await this.payCosts(actor, action)) return false;
         return this.applyEffect(actor, item, action);
     }

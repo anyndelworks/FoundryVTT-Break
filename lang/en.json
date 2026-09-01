@@ -118,6 +118,14 @@
       "SourceMissing": "The source action could not be found.",
       "Requirements": "Requirements",
       "Costs": "Resource Costs",
+      "Progression": "Rank progression",
+      "Base": "Base",
+      "Rank": "Rank",
+      "AddRankVariant": "Add variant",
+      "DeleteRankVariant": "Delete rank variant",
+      "BaseHint": "The base action is used until the first rank variant is reached.",
+      "VariantHint": "This complete action configuration is used from the selected rank onward.",
+      "RankAlreadyUsed": "This action already has a variant for that rank.",
       "RequirementMissing": "{actor} does not have the required item: {item}.",
       "CostMissing": "{actor} cannot pay the required cost: {item}.",
       "TargetMissing": "Select a target for this action.",
@@ -522,6 +530,38 @@
     "Requires": "Requires",
     "PickOneItem": "Pick 1 item",
     "PickManyItems": "Pick {number} items",
+    "CONTAINER": {
+      "Title": "Container",
+      "Enabled": "This item is a container",
+      "Capacity": "Capacity",
+      "AccessCost": "Access cost",
+      "AllowedHint": "Leave both lists empty to allow any item. An item is accepted when it matches either list.",
+      "ItemTypes": "Item types",
+      "ItemCategories": "Item categories",
+      "Storage": "Storage",
+      "BaseInventory": "Base inventory",
+      "MoveTo": "Move to container",
+      "AnyItem": "Accepts any item",
+      "Allowed": "Accepts",
+      "InvalidItem": "That container cannot hold this type of item.",
+      "NotEnoughCapacity": "There is not enough room in that container.",
+      "EquipHint": "Drag equipment here to equip it",
+      "EmptyHands": "Nothing equipped",
+      "DragHint": "Drag items between the inventory and equipped containers",
+      "DragItem": "Drag item",
+      "AddItem": "Add item",
+      "Empty": "This location is empty",
+      "DropHere": "Drop an item here to store it",
+      "Available": "slots free",
+      "Access": {
+        "free": "Free",
+        "action": "1 action"
+      }
+    },
+    "STATUS": {
+      "ShowAsStatus": "Show as status",
+      "ShowAsStatusHint": "Include this Active Effect in the status list shown in the Token HUD."
+    },
     "VS": "vs"
   }
 }

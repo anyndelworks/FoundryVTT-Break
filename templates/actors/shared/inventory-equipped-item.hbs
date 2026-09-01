@@ -1,0 +1,9 @@
+<article class="equipment-item" data-id="{{item._id}}">
+    <div class="equipment-item-details">
+        <a class="item-link" data-action="linkItem">{{item.name}}</a>
+        {{#if item.system.typeLabel}}<span>{{item.system.typeLabel}}</span>{{/if}}
+    </div>
+    <button type="button" class="equipment-item-remove" data-action="unequipItem" data-type="{{equipmentType}}" data-item-id="{{item._id}}" title="{{localize 'BREAK.UnEquip'}}">
+        <i class="fas fa-xmark"></i>
+    </button>
+</article>

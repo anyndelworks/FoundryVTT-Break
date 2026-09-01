@@ -1,6 +1,17 @@
-export function defineActionField(fields) {
+import BREAK from "../constants.js";
+
+function defineActionEffectField(fields) {
     return new fields.ArrayField(new fields.SchemaField({
         id: new fields.StringField({ initial: "" }),
+        type: new fields.StringField({ initial: "none" }),
+        amount: new fields.NumberField({ initial: 0 }),
+        macroUuid: new fields.StringField({ initial: "" }),
+        macroName: new fields.StringField({ initial: "" }),
+    }));
+}
+
+function defineActionData(fields) {
+    return {
         name: new fields.StringField({ initial: "" }),
         rollType: new fields.StringField({ initial: "none" }),
         cost: new fields.StringField({ initial: "free" }),
@@ -17,14 +28,20 @@ export function defineActionField(fields) {
         consumeItemQuantity: new fields.NumberField({ initial: 1, min: 0 }),
         effectType: new fields.StringField({ initial: "none" }),
         effectAmount: new fields.NumberField({ initial: 0 }),
-        effects: new fields.ArrayField(new fields.SchemaField({
-            id: new fields.StringField({ initial: "" }),
-            type: new fields.StringField({ initial: "none" }),
-            amount: new fields.NumberField({ initial: 0 }),
-            macroUuid: new fields.StringField({ initial: "" }),
-            macroName: new fields.StringField({ initial: "" }),
-        })),
+        effects: defineActionEffectField(fields),
         activeEffectRefs: new fields.ArrayField(new fields.StringField({ initial: "" })),
         activeEffects: new fields.ArrayField(new fields.ObjectField({})),
+    };
+}
+
+export function defineActionField(fields) {
+    return new fields.ArrayField(new fields.SchemaField({
+        id: new fields.StringField({ initial: "" }),
+        ...defineActionData(fields),
+        rankVariants: new fields.ArrayField(new fields.SchemaField({
+            id: new fields.StringField({ initial: "" }),
+            minRank: new fields.NumberField({ initial: 2, min: 2, max: BREAK.max_rank, integer: true }),
+            ...defineActionData(fields),
+        })),
     }));
 }

@@ -1,0 +1,65 @@
+<section class="inventory-surface inventory-storage-surface">
+    <div class="section-header inventory-section-header">
+        <span>{{localize "BREAK.Inventory"}}</span>
+        <button type="button" class="inventory-add" data-action="addCustomItem" title="{{localize 'BREAK.CONTAINER.AddItem'}}"><i class="fas fa-plus"></i></button>
+    </div>
+
+    {{#if showCurrency}}
+        <div class="inventory-currency">
+            <span>{{localize "BREAK.Currency"}}</span>
+            <label><i class="fas fa-gem"></i><input name="system.currency.gems" value="{{document.system.currency.gems}}" placeholder="0" class="money-input" type="number" /></label>
+            <label><i class="fas fa-coins"></i><input name="system.currency.coins" value="{{document.system.currency.coins}}" placeholder="0" class="money-input" type="number" /></label>
+            <label><i class="fas fa-cubes-stacked"></i><input name="system.currency.stones" value="{{document.system.currency.stones}}" placeholder="0" class="money-input" type="number" /></label>
+        </div>
+    {{/if}}
+
+    <nav class="inventory-location-tabs">
+        {{#each inventoryLocations as |location|}}
+            <button type="button" class="inventory-location-tab {{#if location.active}}is-active{{/if}} {{#if location.overCapacity}}is-over-capacity{{/if}}" data-action="selectInventoryContainer" data-container-id="{{location.id}}" data-inventory-drop>
+                {{#if location.img}}
+                    <img src="{{location.img}}" alt="" />
+                {{else}}
+                    <span class="inventory-location-icon"><i class="fas {{location.icon}}"></i></span>
+                {{/if}}
+                <span class="inventory-location-name">{{location.name}}</span>
+                <span class="inventory-location-usage">{{location.remainingSlots}} {{localize "BREAK.CONTAINER.Available"}}</span>
+                <span class="inventory-location-bar"><span style="width: {{location.usedPercent}}%;"></span></span>
+            </button>
+        {{/each}}
+    </nav>
+
+    <div class="inventory-location-panel">
+        <div class="inventory-location-summary">
+            <div>
+                <h3>{{selectedInventoryLocation.name}}</h3>
+                {{#if selectedInventoryLocation.unrestricted}}
+                    <p>{{localize "BREAK.CONTAINER.AnyItem"}}</p>
+                {{else}}
+                    <p>{{localize "BREAK.CONTAINER.Allowed"}}: {{selectedInventoryLocation.allowedLabels}}</p>
+                {{/if}}
+            </div>
+            <div class="inventory-capacity {{#if selectedInventoryLocation.overCapacity}}is-over-capacity{{/if}}">
+                <strong>{{selectedInventoryLocation.usedSlots}} / {{selectedInventoryLocation.capacity}} {{localize "BREAK.Slots"}}</strong>
+                <span>{{selectedInventoryLocation.accessCostLabel}}</span>
+            </div>
+        </div>
+
+        {{#unless selectedInventoryLocation.id}}
+            <div class="inventory-base-controls">
+                <label>{{localize "BREAK.Base"}} <input name="system.slots.value" value="{{document.system.slots.base}}" placeholder="0" type="number" {{#if document.system.sizeData}}disabled{{/if}} /></label>
+                <span title="{{document.system.slots.effectsTooltip}}">{{localize "BREAK.BonPen"}}: {{document.system.slots.bon}}</span>
+            </div>
+        {{/unless}}
+
+        <div class="inventory-drop-zone" data-inventory-drop data-container-id="{{selectedInventoryLocation.id}}">
+            {{#each selectedInventoryLocation.items as |item|}}
+                {{> "systems/break/templates/actors/shared/inventory-row.hbs" item=item}}
+            {{else}}
+                <div class="inventory-empty-state">
+                    <strong>{{localize "BREAK.CONTAINER.Empty"}}</strong>
+                    <span>{{localize "BREAK.CONTAINER.DropHere"}}</span>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</section>

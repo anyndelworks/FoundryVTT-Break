@@ -1,6 +1,13 @@
 import { BreakBaseActorDataModel } from "./base-actor.js";
+import { parseLanguageList } from "../../utils/languages.mjs";
 
 export class BreakCharacterDataModel extends BreakBaseActorDataModel {
+  static migrateData(source) {
+    source = super.migrateData(source);
+    source.languages = parseLanguageList(source.languages);
+    return source;
+  }
+
   static defineSchema() {
     const fields = foundry.data.fields;
 
@@ -12,7 +19,7 @@ export class BreakCharacterDataModel extends BreakBaseActorDataModel {
         current: new fields.NumberField()
       }),
 
-      languages: new fields.StringField(),
+      languages: new fields.ArrayField(new fields.StringField(), { initial: [] }),
       description: new fields.StringField(),
       purviews: new fields.ArrayField(new fields.StringField()),
 

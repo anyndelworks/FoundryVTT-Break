@@ -8,7 +8,10 @@
     <div style="flex 1; display: flex; flex-direction:column;">
         {{#each actions as |action|}}
             <div style="margin-bottom: 6px;align-items: center;display:flex;border-bottom: 1px dashed; height:48px;" data-id="{{action.id}}" data-type="action">
-                <a style="cursor: pointer;flex: 1;" class="item-link" data-id="{{action.id}}" data-action="displayAction">{{action.name}}</a>
+                <a style="cursor: pointer;flex: 1;" class="item-link" data-id="{{action.id}}" data-action="displayAction">
+                    {{action.name}}
+                    {{#if action.rankVariants.length}}<i class="fas fa-chart-line" data-tooltip="{{localize 'BREAK.ACTION.Progression'}}"></i>{{/if}}
+                </a>
                 <span style="flex: 1">{{localize action.rollTypeLabel}}</span>
                 <span style="flex: 1">{{localize action.actionCostLabel}}</span>
                 <a class="item-control interface-only" style="margin-left: auto;" data-context-menu data-id="{{action.id}}" data-type="action">

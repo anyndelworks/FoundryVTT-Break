@@ -118,6 +118,14 @@
       "SourceMissing": "No se ha encontrado la accion de origen.",
       "Requirements": "Requisitos",
       "Costs": "Costes de recurso",
+      "Progression": "Progresión por rango",
+      "Base": "Base",
+      "Rank": "Rango",
+      "AddRankVariant": "Añadir variante",
+      "DeleteRankVariant": "Eliminar variante de rango",
+      "BaseHint": "La acción base se utiliza hasta alcanzar la primera variante de rango.",
+      "VariantHint": "Esta configuración completa se utiliza a partir del rango seleccionado.",
+      "RankAlreadyUsed": "Esta acción ya tiene una variante para ese rango.",
       "RequirementMissing": "{actor} no tiene el objeto requerido: {item}.",
       "CostMissing": "{actor} no puede pagar el coste requerido: {item}.",
       "TargetMissing": "Selecciona un objetivo para esta acción.",
@@ -522,6 +530,38 @@
     "Requires": "Requiere",
     "PickOneItem": "Pick 1 item",
     "PickManyItems": "Pick {number} items",
+    "CONTAINER": {
+      "Title": "Contenedor",
+      "Enabled": "Este objeto es un contenedor",
+      "Capacity": "Capacidad",
+      "AccessCost": "Coste de acceso",
+      "AllowedHint": "Deja ambas listas vacías para admitir cualquier objeto. Se aceptará si coincide con cualquiera de las dos listas.",
+      "ItemTypes": "Tipos de objeto",
+      "ItemCategories": "Categorías de objeto",
+      "Storage": "Almacenamiento",
+      "BaseInventory": "Inventario base",
+      "MoveTo": "Mover a un contenedor",
+      "AnyItem": "Admite cualquier objeto",
+      "Allowed": "Admite",
+      "InvalidItem": "Ese contenedor no admite este tipo de objeto.",
+      "NotEnoughCapacity": "No queda espacio suficiente en ese contenedor.",
+      "EquipHint": "Arrastra equipo aquí para equiparlo",
+      "EmptyHands": "Nada equipado",
+      "DragHint": "Arrastra objetos entre el inventario y los contenedores equipados",
+      "DragItem": "Arrastrar objeto",
+      "AddItem": "Añadir objeto",
+      "Empty": "Esta ubicación está vacía",
+      "DropHere": "Suelta aquí un objeto para guardarlo",
+      "Available": "slots libres",
+      "Access": {
+        "free": "Gratis",
+        "action": "1 acción"
+      }
+    },
+    "STATUS": {
+      "ShowAsStatus": "Mostrar como estado",
+      "ShowAsStatusHint": "Incluye este Efecto Activo en la lista de estados del HUD del token."
+    },
     "VS": "vs"
   }
 }

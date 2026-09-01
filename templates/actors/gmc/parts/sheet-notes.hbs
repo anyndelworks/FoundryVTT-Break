@@ -1,0 +1,10 @@
+<section class="gmc-notes">
+    <div class="section-header">{{localize "BREAK.Notes"}}</div>
+    {{#if editable}}
+        <prose-mirror name="system.notes" value="{{document.system.notes}}"></prose-mirror>
+    {{else}}
+        <div class="editor">
+            <div class="editor-content">{{{notesHTML}}}</div>
+        </div>
+    {{/if}}
+</section>

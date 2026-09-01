@@ -952,6 +952,685 @@
   color: var(--text-primary);
   background: white;
 }
+.break.sheet .inventory-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 2px 12px;
+}
+.break.sheet .inventory-surface {
+  flex: none;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--background-primary) 94%, #f3b8cb 6%);
+  box-shadow: 0 2px 8px rgba(66, 45, 54, 0.08);
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+.break.sheet .inventory-surface-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 54px;
+  padding: 10px 14px;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+  background: linear-gradient(90deg, rgba(243, 184, 203, 0.3), rgba(247, 215, 227, 0.12));
+}
+.break.sheet .inventory-surface-header > div:first-child {
+  min-width: 0;
+}
+.break.sheet .inventory-surface-header h2 {
+  margin: 0;
+  border: 0;
+  font-family: Montserrat;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.break.sheet .inventory-surface-header p {
+  margin: 2px 0 0;
+  color: color-mix(in srgb, currentColor 68%, transparent);
+  font-size: 11px;
+}
+.break.sheet .equipment-hands {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: auto;
+  padding: 5px 12px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--background-primary) 78%, transparent);
+}
+.break.sheet .equipment-hands span {
+  font-size: 14px;
+}
+.break.sheet .equipment-hands strong {
+  font-size: 19px;
+}
+.break.sheet .equipment-hands small {
+  opacity: 0.7;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+.break.sheet .equipment-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 10px;
+  padding: 12px;
+}
+.break.sheet .equipment-group {
+  min-width: 0;
+  padding: 9px;
+  border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--background-primary) 82%, transparent);
+}
+.break.sheet .equipment-group h3 {
+  margin: 0 0 8px;
+  border: 0;
+  font-family: Montserrat;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.break.sheet .equipment-group-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.break.sheet .equipment-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border: 1px dashed color-mix(in srgb, currentColor 24%, transparent);
+  border-radius: 6px;
+  opacity: 0.58;
+  font-size: 11px;
+}
+.break.sheet .equipment-item {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) 26px;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 5px;
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--background-primary) 90%, #f3b8cb 10%);
+}
+.break.sheet .equipment-item > img {
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 6px;
+  object-fit: cover;
+}
+.break.sheet .equipment-item-details,
+.break.sheet .inventory-item-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.break.sheet .equipment-item-details a,
+.break.sheet .inventory-item-details a {
+  overflow: hidden;
+  font-weight: 750;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.break.sheet .equipment-item-details span,
+.break.sheet .inventory-item-details span {
+  overflow: hidden;
+  opacity: 0.65;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.break.sheet .equipment-item-remove,
+.break.sheet .inventory-item-menu,
+.break.sheet .inventory-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: none;
+}
+.break.sheet .equipment-item-remove:hover,
+.break.sheet .inventory-item-menu:hover,
+.break.sheet .inventory-add:hover {
+  background: rgba(196, 60, 68, 0.12);
+  color: #b52f3a;
+}
+.break.sheet .equipment-surface.is-drop-target {
+  border-color: #cf4f78;
+  box-shadow: 0 0 0 3px rgba(207, 79, 120, 0.16);
+}
+.break.sheet .inventory-storage-header {
+  flex-wrap: wrap;
+}
+.break.sheet .inventory-currency {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+}
+.break.sheet .inventory-currency label {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.break.sheet .inventory-currency input {
+  width: 42px;
+  height: 26px;
+  padding: 2px 4px;
+  text-align: center;
+}
+.break.sheet .inventory-location-tabs {
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+  padding: 10px 12px 0;
+  scrollbar-width: thin;
+}
+.break.sheet .inventory-location-tab {
+  display: grid;
+  grid-template-columns: 30px minmax(70px, 1fr) auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 1px 7px;
+  min-width: 145px;
+  min-height: 52px;
+  padding: 6px 8px;
+  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  background: color-mix(in srgb, var(--background-primary) 86%, transparent);
+  box-shadow: none;
+  color: inherit;
+  text-align: left;
+}
+.break.sheet .inventory-location-tab > img,
+.break.sheet .inventory-location-tab .inventory-location-icon {
+  grid-row: 1 / 3;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 6px;
+  object-fit: cover;
+}
+.break.sheet .inventory-location-tab .inventory-location-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(207, 79, 120, 0.12);
+  color: #b83f67;
+}
+.break.sheet .inventory-location-tab .inventory-location-name {
+  overflow: hidden;
+  font-size: 11px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.break.sheet .inventory-location-tab .inventory-location-usage {
+  font-size: 11px;
+  font-weight: 800;
+}
+.break.sheet .inventory-location-tab small {
+  grid-column: 2 / 4;
+  opacity: 0.62;
+  font-size: 9px;
+}
+.break.sheet .inventory-location-tab.is-active {
+  border-color: rgba(207, 79, 120, 0.5);
+  background: rgba(243, 184, 203, 0.28);
+  color: #a9375d;
+}
+.break.sheet .inventory-location-tab.is-over-capacity {
+  color: #b52f3a;
+}
+.break.sheet .inventory-location-tab.is-drop-target {
+  border-color: #16a6a5;
+  background: rgba(22, 196, 195, 0.16);
+  box-shadow: inset 0 0 0 2px rgba(22, 196, 195, 0.34);
+}
+.break.sheet .inventory-location-panel {
+  margin: 0 12px 12px;
+  border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+  border-radius: 0 8px 8px 8px;
+  background: color-mix(in srgb, var(--background-primary) 88%, transparent);
+}
+.break.sheet .inventory-location-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 54px;
+  padding: 9px 12px;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+}
+.break.sheet .inventory-location-summary h3 {
+  margin: 0;
+  border: 0;
+  font-family: Montserrat;
+  font-size: 14px;
+  font-weight: 800;
+}
+.break.sheet .inventory-location-summary p {
+  margin: 2px 0 0;
+  opacity: 0.62;
+  font-size: 10px;
+}
+.break.sheet .inventory-capacity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-left: auto;
+}
+.break.sheet .inventory-capacity strong {
+  font-size: 17px;
+}
+.break.sheet .inventory-capacity span {
+  opacity: 0.62;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+.break.sheet .inventory-capacity.is-over-capacity {
+  color: #b52f3a;
+}
+.break.sheet .inventory-base-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 12px;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+  font-size: 10px;
+}
+.break.sheet .inventory-base-controls input {
+  width: 40px;
+  height: 24px;
+  text-align: center;
+}
+.break.sheet .inventory-drop-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-height: 104px;
+  padding: 8px;
+  transition: background 120ms ease, box-shadow 120ms ease;
+}
+.break.sheet .inventory-drop-zone.is-drop-target {
+  background: rgba(22, 196, 195, 0.08);
+  box-shadow: inset 0 0 0 2px rgba(22, 196, 195, 0.28);
+}
+.break.sheet .inventory-item {
+  display: grid;
+  grid-template-columns: 14px 40px minmax(110px, 1fr) auto auto 28px;
+  align-items: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 5px 7px;
+  border: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--background-primary) 94%, transparent);
+  cursor: grab;
+  transition: opacity 120ms ease, transform 120ms ease, border-color 120ms ease;
+}
+.break.sheet .inventory-item:hover {
+  border-color: rgba(207, 79, 120, 0.42);
+}
+.break.sheet .inventory-item.is-dragging {
+  opacity: 0.4;
+  transform: scale(0.99);
+}
+.break.sheet .inventory-item > img {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 6px;
+  object-fit: cover;
+}
+.break.sheet .inventory-drag-handle {
+  opacity: 0.38;
+  font-size: 12px;
+}
+.break.sheet .inventory-quantity {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.break.sheet .inventory-quantity button {
+  width: 22px;
+  height: 22px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: 9px;
+}
+.break.sheet .inventory-quantity input {
+  width: 32px;
+  height: 24px;
+  padding: 2px;
+  text-align: center;
+}
+.break.sheet .inventory-slot-cost {
+  min-width: 54px;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: rgba(207, 79, 120, 0.1);
+  font-size: 9px;
+  text-align: center;
+  white-space: nowrap;
+}
+.break.sheet .inventory-slot-cost strong {
+  font-size: 12px;
+}
+.break.sheet .inventory-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 88px;
+  opacity: 0.48;
+  text-align: center;
+}
+.break.sheet .inventory-empty-state i {
+  margin-bottom: 5px;
+  font-size: 18px;
+}
+.break.sheet .inventory-empty-state strong {
+  font-size: 12px;
+}
+.break.sheet .inventory-empty-state span {
+  font-size: 10px;
+}
+.break.sheet .inventory-workspace-simple {
+  gap: 18px;
+  height: 100%;
+  min-height: 0;
+  padding: 0 0 12px;
+}
+.break.sheet .inventory-workspace-simple .inventory-surface {
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.break.sheet .inventory-workspace-simple .inventory-section-header {
+  gap: 8px;
+}
+.break.sheet .inventory-workspace-simple .inventory-section-header .inventory-section-meta,
+.break.sheet .inventory-workspace-simple .inventory-section-header .inventory-add {
+  margin-left: auto;
+}
+.break.sheet .inventory-workspace-simple .inventory-section-meta {
+  font-size: 12px;
+  font-weight: 400;
+}
+.break.sheet .inventory-workspace-simple .equipment-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 24px;
+  padding: 4px 0 8px;
+  border-bottom: 1px solid grey;
+}
+.break.sheet .inventory-workspace-simple .equipment-group {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.break.sheet .inventory-workspace-simple .equipment-group h3 {
+  margin: 0 0 4px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid currentColor;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.break.sheet .inventory-workspace-simple .equipment-group-content {
+  gap: 0;
+}
+.break.sheet .inventory-workspace-simple .equipment-empty {
+  justify-content: flex-start;
+  min-height: 30px;
+  border: 0;
+  border-radius: 0;
+  font-size: 13px;
+}
+.break.sheet .inventory-workspace-simple .equipment-item {
+  grid-template-columns: minmax(0, 1fr) 24px;
+  gap: 8px;
+  min-height: 38px;
+  padding: 4px 0;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+  border-radius: 0;
+  background: transparent;
+}
+.break.sheet .inventory-workspace-simple .equipment-surface.is-drop-target {
+  background: rgba(22, 196, 195, 0.08);
+  box-shadow: inset 0 0 0 1px #16a6a5;
+}
+.break.sheet .inventory-workspace-simple .equipment-item-details a,
+.break.sheet .inventory-workspace-simple .inventory-item-details a {
+  font-size: 15px;
+  font-weight: 700;
+}
+.break.sheet .inventory-workspace-simple .equipment-item-details span,
+.break.sheet .inventory-workspace-simple .inventory-item-details span {
+  opacity: 0.75;
+  font-size: 12px;
+}
+.break.sheet .inventory-workspace-simple .equipment-item-remove,
+.break.sheet .inventory-workspace-simple .inventory-item-menu,
+.break.sheet .inventory-workspace-simple .inventory-add {
+  width: 24px;
+  height: 24px;
+  border-radius: 0;
+  color: inherit;
+}
+.break.sheet .inventory-workspace-simple .inventory-currency {
+  justify-content: flex-end;
+  gap: 8px;
+  margin: 2px 0 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid grey;
+}
+.break.sheet .inventory-workspace-simple .inventory-currency > span {
+  margin-right: auto;
+  font-weight: 700;
+}
+.break.sheet .inventory-workspace-simple .inventory-currency input {
+  width: 46px;
+  height: 24px;
+  border: 0;
+  background: transparent;
+}
+.break.sheet .inventory-workspace-simple .inventory-storage-surface {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+.break.sheet .inventory-workspace-simple .inventory-location-tabs {
+  gap: 0;
+  padding: 0;
+  border-bottom: 1px solid currentColor;
+}
+.break.sheet .inventory-workspace-simple .inventory-location-tab {
+  display: grid;
+  grid-template-columns: 24px minmax(76px, auto);
+  grid-template-rows: auto auto 4px;
+  gap: 0 6px;
+  min-width: 132px;
+  min-height: 50px;
+  padding: 4px 10px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+}
+.break.sheet .inventory-workspace-simple .inventory-location-tab > img,
+.break.sheet .inventory-workspace-simple .inventory-location-tab .inventory-location-icon {
+  grid-row: 1 / 4;
+  width: 24px;
+  height: 24px;
+  border-radius: 0;
+}
+.break.sheet .inventory-workspace-simple .inventory-location-tab .inventory-location-icon {
+  background: transparent;
+  color: inherit;
+}
+.break.sheet .inventory-workspace-simple .inventory-location-tab .inventory-location-name,
+.break.sheet .inventory-workspace-simple .inventory-location-tab .inventory-location-usage {
+  font-size: 12px;
+}
+.break.sheet .inventory-workspace-simple .inventory-location-tab .inventory-location-bar {
+  grid-column: 2;
+  width: 100%;
+  height: 4px;
+  border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+}
+.break.sheet .inventory-workspace-simple .inventory-location-tab .inventory-location-bar > span {
+  display: block;
+  height: 100%;
+  background: currentColor;
+}
+.break.sheet .inventory-workspace-simple .inventory-location-tab.is-active {
+  border-color: currentColor;
+  background: color-mix(in srgb, currentColor 8%, transparent);
+  color: inherit;
+}
+.break.sheet .inventory-workspace-simple .inventory-location-tab.is-drop-target {
+  border-color: #16a6a5;
+  background: rgba(22, 196, 195, 0.12);
+  box-shadow: none;
+}
+.break.sheet .inventory-workspace-simple .inventory-location-tab.is-over-capacity .inventory-location-bar {
+  border-color: #b52f3a;
+}
+.break.sheet .inventory-workspace-simple .inventory-location-tab.is-over-capacity .inventory-location-bar > span {
+  background: #b52f3a;
+}
+.break.sheet .inventory-workspace-simple .inventory-location-panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.break.sheet .inventory-workspace-simple .inventory-location-summary {
+  min-height: 50px;
+  padding: 8px 4px;
+  border-bottom: 1px solid grey;
+}
+.break.sheet .inventory-workspace-simple .inventory-location-summary h3 {
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+}
+.break.sheet .inventory-workspace-simple .inventory-location-summary p {
+  font-size: 12px;
+}
+.break.sheet .inventory-workspace-simple .inventory-capacity strong {
+  font-size: 14px;
+}
+.break.sheet .inventory-workspace-simple .inventory-capacity span {
+  font-size: 11px;
+  text-transform: none;
+}
+.break.sheet .inventory-workspace-simple .inventory-base-controls {
+  padding: 6px 4px;
+  font-size: 12px;
+}
+.break.sheet .inventory-workspace-simple .inventory-drop-zone {
+  flex: 1;
+  gap: 0;
+  min-height: 76px;
+  overflow-y: auto;
+  padding: 0;
+}
+.break.sheet .inventory-workspace-simple .inventory-item {
+  grid-template-columns: 14px minmax(150px, 1fr) auto auto 24px;
+  gap: 10px;
+  min-height: 48px;
+  padding: 5px 4px;
+  border: 0;
+  border-bottom: 1px solid grey;
+  border-radius: 0;
+  background: transparent;
+}
+.break.sheet .inventory-workspace-simple .inventory-item:hover {
+  border-color: currentColor;
+  background: color-mix(in srgb, currentColor 5%, transparent);
+}
+.break.sheet .inventory-workspace-simple .inventory-drag-handle {
+  opacity: 0.65;
+}
+.break.sheet .inventory-workspace-simple .inventory-slot-cost {
+  min-width: 64px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 11px;
+}
+.break.sheet .inventory-workspace-simple .inventory-slot-cost strong {
+  font-size: 13px;
+}
+.break.sheet .inventory-workspace-simple .inventory-empty-state {
+  min-height: 76px;
+}
+.break.sheet .inventory-workspace-simple .inventory-empty-state strong {
+  font-size: 14px;
+}
+.break.sheet .inventory-workspace-simple .inventory-empty-state span {
+  font-size: 12px;
+}
+.break.sheet .inventory-tab {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+.break.sheet.gmc form {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.break.sheet.gmc .gmc-header {
+  flex: none;
+}
+.break.sheet.gmc .gmc-description {
+  align-items: stretch;
+  gap: 12px;
+  min-height: 120px;
+}
+.break.sheet.gmc .gmc-notes {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  margin-top: 12px;
+}
+.break.sheet.gmc .gmc-notes prose-mirror,
+.break.sheet.gmc .gmc-notes .editor {
+  flex: 1;
+  min-height: 0;
+}
 .break.sheet.adversary form {
   display: flex;
   flex-direction: row;
@@ -1159,4 +1838,16 @@
 #active-effects-panel > hr {
   margin-right: 0;
   width: 48px;
+}
+#action-form-dialog .action-progression .rank-variant-tab {
+  border: 1px solid var(--color-border-light-primary);
+  border-radius: 4px;
+}
+#action-form-dialog .action-progression .rank-variant-tab.active {
+  background: var(--color-warm-2);
+  color: var(--color-light-1);
+}
+#action-form-dialog .action-progression .hint {
+  color: var(--color-text-subtle);
+  font-size: var(--font-size-12);
 }

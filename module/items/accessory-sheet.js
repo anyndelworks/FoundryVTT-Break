@@ -1,4 +1,5 @@
 import { BreakItemSheet } from "./item-sheet.js";
+import { prepareContainerContext, prepareContainerSubmitData } from "../models/container-capable.js";
 
 export class BreakAccessorySheet extends BreakItemSheet {
 
@@ -41,6 +42,7 @@ export class BreakAccessorySheet extends BreakItemSheet {
       async: true
     });
     context.isAccessory = true;
+    prepareContainerContext(context);
     return context;
   }
   //#endregion
@@ -54,6 +56,7 @@ export class BreakAccessorySheet extends BreakItemSheet {
   static async #onSubmit(event, form, formData) {
     event.preventDefault();
     const updateData = foundry.utils.expandObject(formData.object);
+    prepareContainerSubmitData(updateData);
     await this.item.update(updateData);
   }
   //#endregion

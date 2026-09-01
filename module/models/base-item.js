@@ -7,6 +7,7 @@ export class BaseItemDataModel extends foundry.abstract.DataModel {
         return {
             description: new fields.HTMLField({ initial: "" }),
             slots: new fields.NumberField({ initial: 1, min: 0 }),
+            containerId: new fields.StringField({ initial: null, nullable: true }),
             value: new fields.SchemaField({
                 gems: new fields.NumberField({ initial: 0, min: 0 }),
                 coins: new fields.NumberField({ initial: 0, min: 0 }),

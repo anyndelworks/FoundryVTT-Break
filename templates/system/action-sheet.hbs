@@ -1,4 +1,40 @@
 <section style="display:flex;flex-direction:column;height:100%;min-height:0;">
+    <fieldset class="action-progression" style="flex:0 0 auto;margin-bottom:10px;">
+        <legend>{{localize "BREAK.ACTION.Progression"}}</legend>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            <button type="button" data-action="selectRankVariant" data-variant-id="" class="rank-variant-tab {{#if editingBase}}active{{/if}}" style="flex:0 0 auto;">
+                {{localize "BREAK.ACTION.Base"}}
+            </button>
+            {{#each rankVariants as |variant|}}
+                <button type="button" data-action="selectRankVariant" data-variant-id="{{variant.id}}" class="rank-variant-tab {{#if variant.active}}active{{/if}}" style="flex:0 0 auto;">
+                    {{localize "BREAK.ACTION.Rank"}} {{variant.minRank}}+
+                </button>
+            {{/each}}
+            <span style="flex:1;"></span>
+            {{#if canAddRankVariant}}
+            <select class="rank-variant-rank" style="flex:0 0 72px;">
+                {{#each rankOptions as |rank|}}
+                    <option value="{{rank}}">{{rank}}+</option>
+                {{/each}}
+            </select>
+            <button type="button" data-action="addRankVariant" style="flex:0 0 auto;">
+                <i class="fa-regular fa-plus"></i> {{localize "BREAK.ACTION.AddRankVariant"}}
+            </button>
+            {{/if}}
+            {{#unless editingBase}}
+                <button type="button" data-action="deleteRankVariant" class="icon" data-tooltip="{{localize 'BREAK.ACTION.DeleteRankVariant'}}" style="flex:0 0 32px;">
+                    <i class="fas fa-trash"></i>
+                </button>
+            {{/unless}}
+        </div>
+        <p class="hint" style="margin:6px 0 0;">
+            {{#if editingBase}}
+                {{localize "BREAK.ACTION.BaseHint"}}
+            {{else}}
+                {{localize "BREAK.ACTION.VariantHint"}}
+            {{/if}}
+        </p>
+    </fieldset>
     <div style="flex:1;min-height:0;overflow-y:auto;padding-right:6px;display:flex;flex-direction:column;">
         <div class="form-group">
             <label>{{localize "BREAK.Name"}}</label>

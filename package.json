@@ -6,7 +6,7 @@
     "build": "npm run build:code && npm run build:css && npm run build:db",
     "build:db": "node ./utils/packs.mjs package pack",
     "build:code": "rollup break.js -f es -o break-compiled.js -p node-resolve -m --sourcemapFile break.js",
-    "build:css": "lessc styles/break.less break.css",
+    "build:css": "lessc styles/break.less styles/break.css",
     "build:json": "node ./utils/packs.mjs package unpack"
   },
   "browserslist": [

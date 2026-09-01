@@ -67,7 +67,11 @@ export class BreakAdversarySheet extends BreakActorSheet {
       });
     })
 
-    new foundry.applications.ux.ContextMenu.implementation(html[0], "[data-id]", [], { onOpen: this._onOpenContextMenu.bind(this), jQuery: false });
+    new foundry.applications.ux.ContextMenu.implementation(html[0], "[data-id]", [], {
+      onOpen: this._onOpenContextMenu.bind(this),
+      jQuery: false,
+      fixed: true
+    });
   }
 
   async _prepareContext(options) {

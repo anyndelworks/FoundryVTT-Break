@@ -1,0 +1,22 @@
+<header class="gmc-header">
+    <div class="flexrow" style="margin-bottom: 10px;">
+        <div class="name-banner">
+            <input name="name" type="text" value="{{document.name}}" placeholder="{{localize 'BREAK.Name'}}" />
+        </div>
+        <a class="clickable" data-action="toggleEditable" style="display:flex;align-items:center;justify-content:center;width:32px;margin-left:8px;flex:0;">
+            <i class="fas {{#if editable}}fa-lock-open{{else}}fa-lock{{/if}}"></i>
+        </a>
+    </div>
+
+    <div class="section-header">{{localize "BREAK.Description"}}</div>
+    <div class="flexrow gmc-description">
+        {{#if editable}}
+            <prose-mirror name="system.description" value="{{document.system.description}}"></prose-mirror>
+        {{else}}
+            <div class="editor">
+                <div class="editor-content">{{{descriptionHTML}}}</div>
+            </div>
+        {{/if}}
+        <img class="profile-img" src="{{document.img}}" title="{{document.name}}" data-action="editImage" data-field="img" style="flex:0;" />
+    </div>
+</header>

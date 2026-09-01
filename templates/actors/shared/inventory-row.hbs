@@ -1,0 +1,14 @@
+<article class="inventory-item bag-item" draggable="true" data-inventory-item data-id="{{item._id}}" data-item-id="{{item._id}}" data-type="{{item.type}}" data-equippable="{{item.equippable}}">
+    <span class="inventory-drag-handle" title="{{localize 'BREAK.CONTAINER.DragItem'}}"><i class="fas fa-grip-vertical"></i></span>
+    <div class="inventory-item-details">
+        <a class="item-link" data-action="linkItem">{{item.name}}</a>
+        <span>{{item.system.typeLabel}} {{localize (concat "TYPES.Item." item.type)}}</span>
+    </div>
+    <div class="inventory-quantity">
+        <button type="button" data-action="adjustItemQuantity" data-type="decrease" data-property="system.quantity"><i class="fas fa-minus"></i></button>
+        <input class="item-quantity" value="{{item.system.quantity}}" data-name="system.quantity" inputmode="numeric" pattern="[0-9+=\-]*" min="1" type="text" placeholder="0" data-dtype="Number" aria-label="{{localize 'BREAK.Quantity'}}" />
+        <button type="button" data-action="adjustItemQuantity" data-type="increase" data-property="system.quantity"><i class="fas fa-plus"></i></button>
+    </div>
+    <span class="inventory-slot-cost"><strong>{{mul item.system.slots item.system.quantity precision=2}}</strong> {{localize "BREAK.Slots"}}</span>
+    <button type="button" class="inventory-item-menu interface-only" data-context-menu title="{{localize 'BREAK.ContextMenuEdit'}}"><i class="fas fa-ellipsis-vertical"></i></button>
+</article>

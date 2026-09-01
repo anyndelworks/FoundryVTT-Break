@@ -57,4 +57,9 @@
         <i class="fas fa-cubes-stacked"></i>
         <input name="system.value.stones" value="{{document.system.value.stones}}" placeholder="0" class="money-input" type="number"/>
     </div>
+    {{#if canBeContainer}}
+        {{#unless isArmor}}
+            {{> "systems/break/templates/items/shared/container-fields.hbs"}}
+        {{/unless}}
+    {{/if}}
 </section>

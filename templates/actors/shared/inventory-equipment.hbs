@@ -1,0 +1,58 @@
+<section class="inventory-surface equipment-surface" data-equipment-drop>
+    <div class="section-header inventory-section-header">
+        <span>{{localize "BREAK.Equipment"}}</span>
+        <span class="inventory-section-meta">{{freeHands}} / {{hands}} {{localize "BREAK.FreeHand"}}</span>
+    </div>
+
+    <div class="equipment-grid">
+        <div class="equipment-group equipment-group-hands">
+            <h3>{{localize "BREAK.Hands"}}</h3>
+            <div class="equipment-group-content">
+                {{#each document.system.equipment.weapon as |weapon|}}
+                    {{> "systems/break/templates/actors/shared/inventory-equipped-item.hbs" item=weapon equipmentType="weapon"}}
+                {{/each}}
+                {{#if document.system.equipment.shield}}
+                    {{> "systems/break/templates/actors/shared/inventory-equipped-item.hbs" item=document.system.equipment.shield equipmentType="shield"}}
+                {{/if}}
+                {{#unless document.system.equipment.weapon.length}}
+                    {{#unless document.system.equipment.shield}}
+                        <div class="equipment-empty">{{localize "BREAK.CONTAINER.EmptyHands"}}</div>
+                    {{/unless}}
+                {{/unless}}
+            </div>
+        </div>
+
+        <div class="equipment-group">
+            <h3>{{localize "BREAK.GEAR.TYPE.Armor"}}</h3>
+            <div class="equipment-group-content">
+                {{#if document.system.equipment.armor}}
+                    {{> "systems/break/templates/actors/shared/inventory-equipped-item.hbs" item=document.system.equipment.armor equipmentType="armor"}}
+                {{else}}
+                    <div class="equipment-empty">{{localize "BREAK.None"}}</div>
+                {{/if}}
+            </div>
+        </div>
+
+        <div class="equipment-group">
+            <h3>{{localize "BREAK.Outfit"}}</h3>
+            <div class="equipment-group-content">
+                {{#if document.system.equipment.outfit}}
+                    {{> "systems/break/templates/actors/shared/inventory-equipped-item.hbs" item=document.system.equipment.outfit equipmentType="outfit"}}
+                {{else}}
+                    <div class="equipment-empty">{{localize "BREAK.None"}}</div>
+                {{/if}}
+            </div>
+        </div>
+
+        <div class="equipment-group equipment-group-accessories">
+            <h3>{{localize "BREAK.Accessories"}}</h3>
+            <div class="equipment-group-content">
+                {{#each document.system.equipment.accessory as |accessory|}}
+                    {{> "systems/break/templates/actors/shared/inventory-equipped-item.hbs" item=accessory equipmentType="accessory"}}
+                {{else}}
+                    <div class="equipment-empty">{{localize "BREAK.None"}}</div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</section>

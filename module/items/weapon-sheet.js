@@ -91,7 +91,7 @@ export class BreakWeaponSheet extends BreakItemSheet {
     const checkValues = (type) => {
       if(type) {
         if (type.ranged) {
-          if (type.extraDamage < lowerRangedExtraDamage || lowerRangedExtraDamage == 0)
+          if (type.extraDamage > 0 && (type.extraDamage < lowerRangedExtraDamage || lowerRangedExtraDamage == 0))
             lowerRangedExtraDamage = type.extraDamage
           if (type.range > higherRange)
             higherRange = type.range
@@ -100,7 +100,7 @@ export class BreakWeaponSheet extends BreakItemSheet {
           ranged = true;
         }
         else {
-          if (type.extraDamage < lowerExtraDamage || lowerExtraDamage == 0)
+          if (type.extraDamage > 0 && (type.extraDamage < lowerExtraDamage || lowerExtraDamage == 0))
             lowerExtraDamage = type.extraDamage
           melee = true;
         }

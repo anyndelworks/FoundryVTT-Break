@@ -1,6 +1,8 @@
 import { parseInputDelta } from "../../utils/utils.mjs";
 import BREAK from "../constants.js";
+import Action from "../system/action.js";
 import { BreakBaseActorDataModel } from "../models/base-actor.js";
+import { canStoreItem, getContainerUsedSlots, getItemSlots } from "../models/container-capable.js";
 
 const allowedItemTypes = [
 // Equipment
@@ -22,6 +24,7 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   freeHands;
   _headerCollapsed = false;
   _selectedAmmo = {};
+  _selectedInventoryContainerId = "";
 
   //#region DocumentV2 initialization and setup
   static DEFAULT_OPTIONS = {
@@ -49,7 +52,8 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       addCustomItem: this.#onAddCustomItem,
       adjustItemQuantity: this.#onAdjustItemQuantity,
       useAction: this.#onUseAction,
-      selectAmmo: this.#onSelectAmmo
+      selectAmmo: this.#onSelectAmmo,
+      selectInventoryContainer: this.#onSelectInventoryContainer
     }
   }
 
@@ -58,14 +62,29 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     const html = $(this.element);
 
     // Everything below here is only needed if the sheet is editable
-    if ( !this.isEditable ) return;
+    if (!this.isEditable || this._viewOnly) return;
 
     html.find("input.item-quantity").on("change", this._onChangeItemInput.bind(this));
     html.find("[data-ammo-select]").on("change", this._onSelectAmmo.bind(this));
+
+    this.element.querySelectorAll("[data-inventory-item]").forEach(item => {
+      item.addEventListener("dragstart", this._onInventoryDragStart.bind(this));
+      item.addEventListener("dragend", this._clearInventoryDragState.bind(this));
+    });
+    this.element.querySelectorAll("[data-inventory-drop]").forEach(target => {
+      target.addEventListener("dragover", this._onInventoryDragOver.bind(this));
+      target.addEventListener("dragleave", this._onInventoryDragLeave.bind(this));
+      target.addEventListener("drop", this._onInventoryDrop.bind(this));
+    });
+    this.element.querySelectorAll("[data-equipment-drop]").forEach(target => {
+      target.addEventListener("dragover", this._onInventoryDragOver.bind(this));
+      target.addEventListener("dragleave", this._onInventoryDragLeave.bind(this));
+      target.addEventListener("drop", this._onEquipmentDrop.bind(this));
+    });
   }
 
   _toggleSheetControls(disabled) {
-    const viewActions = "[data-action='toggleEditable'], [data-action='toggleHeader'], [data-action='tab']";
+    const viewActions = "[data-action='toggleEditable'], [data-action='toggleHeader'], [data-action='tab'], [data-action='selectInventoryContainer']";
     const content = $(this.element).find(".window-content");
     const root = content.length ? content : $(this.element);
     root
@@ -79,12 +98,13 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     context.document.items.forEach(i => {
       if(i.system.actions) {
         i.system.actions.forEach(action => {
+          const resolvedAction = Action.resolveForActor(action, context.document);
           context.actions.push({
             itemId: i._id,
             itemName: i.name,
-            ...action,
-            rollTypeName: game.i18n.localize(BREAK.roll_types[action.rollType].label),
-            actionCostName: game.i18n.localize(BREAK.action_costs[action.cost].label)
+            ...resolvedAction,
+            rollTypeName: game.i18n.localize(BREAK.roll_types[resolvedAction.rollType].label),
+            actionCostName: game.i18n.localize(BREAK.action_costs[resolvedAction.cost].label)
           });
         });
       }
@@ -125,21 +145,92 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
   prepareInventory(context) {
     const equipment = context.document.system.equipment;
-    const equippedItemIds = [equipment.armor?._id, equipment.outfit?._id, equipment.shield?._id, ...equipment.weapon.map(i => i._id), ...equipment.accessory.map(i => i._id)];
-    context.bagContent = context.document.items.filter(i => !["ability", "quirk", "gift", "calling", "history", "homeland", "species"].includes(i.type)
-      && !equippedItemIds.includes(i._id) && i.bag == this.selectedBag).map(i => ({ ...i, _id: i._id, equippable: ["armor", "weapon", "outfit", "accessory", "shield"].includes(i.type) }));
+    const equippedItemIds = new Set([
+      equipment.armor?._id,
+      equipment.outfit?._id,
+      equipment.shield?._id,
+      ...(equipment.weapon ?? []).map(item => item._id),
+      ...(equipment.accessory ?? []).map(item => item._id)
+    ].filter(id => id));
+    const excludedItemTypes = ["ability", "quirk", "gift", "calling", "history", "homeland", "species"];
+    const equippableItemTypes = ["armor", "weapon", "outfit", "accessory", "shield"];
+    const allContainers = context.document.items.filter(item => item.system.container?.enabled);
+    const allContainerIds = new Set(allContainers.map(container => container.id));
+    const containers = allContainers.filter(container => equippedItemIds.has(container.id));
+    const inventoryItems = context.document.items.filter(item => !excludedItemTypes.includes(item.type)
+      && !equippedItemIds.has(item.id));
     const precision = 2;
     const factor = Math.pow(10, precision);
-    const getItemSlots = item => Number(item?.system?.slots ?? 0) * Number(item?.system?.quantity ?? 1);
+    const prepareItem = item => ({
+      ...item,
+      _id: item.id,
+      equippable: equippableItemTypes.includes(item.type)
+    });
+
+    context.bagContent = inventoryItems
+      .filter(item => !allContainerIds.has(item.system.containerId))
+      .map(prepareItem);
     const equippedItems = [
       equipment.armor,
       equipment.shield,
-      ...equipment.weapon,
-      ...equipment.accessory
-    ].filter(i => i);
-    const bagContentSlots = context.bagContent.reduce((ac, cv) => ac + getItemSlots(cv), 0);
-    const equipmentSlots = equippedItems.reduce((ac, cv) => ac + getItemSlots(cv), 0);
+      ...(equipment.weapon ?? []),
+      ...(equipment.accessory ?? [])
+    ].filter(item => item);
+    const bagContentSlots = context.bagContent.reduce((total, item) => total + getItemSlots(item), 0);
+    const equipmentSlots = equippedItems.reduce((total, item) => total + getItemSlots(item), 0);
     context.usedInventorySlots = Math.round((bagContentSlots + equipmentSlots) * factor) / factor;
+    context.inventorySlots = context.document.system.inventorySlots ?? context.document.system.slots.total;
+
+    context.inventoryContainers = containers.map(container => {
+      const items = inventoryItems
+        .filter(item => item.system.containerId === container.id)
+        .map(prepareItem);
+      const usedSlots = getContainerUsedSlots(this.actor, container.id);
+      const allowedTypes = container.system.container.allowedItemTypes ?? [];
+      const allowedCategories = container.system.container.allowedItemCategories ?? [];
+
+      return {
+        id: container.id,
+        name: container.name,
+        img: container.img,
+        usedSlots: Math.round(usedSlots * factor) / factor,
+        capacity: container.system.container.capacity,
+        accessCostLabel: game.i18n.localize(`BREAK.CONTAINER.Access.${container.system.container.accessCost}`),
+        unrestricted: !allowedTypes.length && !allowedCategories.length,
+        allowedLabels: [
+          ...allowedTypes.map(type => game.i18n.localize(`TYPES.Item.${type}`)),
+          ...allowedCategories.map(category => game.i18n.localize(BREAK.item_types[category] ?? category))
+        ].join(", "),
+        items
+      };
+    });
+
+    if (!containers.some(container => container.id === this._selectedInventoryContainerId)) {
+      this._selectedInventoryContainerId = "";
+    }
+    const baseLocation = {
+      id: "",
+      name: game.i18n.localize("BREAK.CONTAINER.BaseInventory"),
+      icon: "fa-box-open",
+      usedSlots: context.usedInventorySlots,
+      capacity: context.inventorySlots,
+      accessCostLabel: game.i18n.localize("BREAK.CONTAINER.Access.free"),
+      unrestricted: true,
+      items: context.bagContent
+    };
+    context.inventoryLocations = [baseLocation, ...context.inventoryContainers].map(location => ({
+      ...location,
+      active: location.id === this._selectedInventoryContainerId,
+      overCapacity: location.usedSlots > location.capacity,
+      remainingSlots: Math.round(Math.max(location.capacity - location.usedSlots, 0) * factor) / factor,
+      usedPercent: location.capacity > 0
+        ? Math.min(Math.round((location.usedSlots / location.capacity) * 100), 100)
+        : location.usedSlots > 0 ? 100 : 0
+    }));
+    context.selectedInventoryLocation = context.inventoryLocations.find(location => location.active) ?? baseLocation;
+    context.showCurrency = context.document.system.currency != null;
+    context.showEquipmentSection = true;
+    context.showInventorySection = true;
   }
 
   async _prepareContext(options) {
@@ -237,9 +328,9 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     this.actor.modifyHp(+amount);
   }
 
-  static async #onUnequipItem(event) {
+  static async #onUnequipItem(event, target) {
     event.preventDefault();
-    const button = event.target;
+    const button = target ?? event.target.closest("[data-action='unequipItem']");
     const id = button.dataset.itemId;
     const type = button.dataset.type;
 
@@ -319,37 +410,185 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     if ( result !== undefined ) item.update({ [input.dataset.name]: result });
   }
 
-  async _onEquipItem(item) {
-    item?.effects?.forEach(effect => {
-      effect.update({disabled: false});
+  static #onSelectInventoryContainer(event, target) {
+    event.preventDefault();
+    const button = target ?? event.target.closest("[data-action='selectInventoryContainer']");
+    this._selectedInventoryContainerId = button?.dataset.containerId ?? "";
+    this.render(true);
+  }
+
+  _onInventoryDragStart(event) {
+    const item = this.actor.items.get(event.currentTarget.dataset.itemId);
+    if (!item) return;
+
+    event.stopPropagation();
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("application/json", JSON.stringify({
+      type: "Item",
+      id: item.id,
+      uuid: item.uuid
+    }));
+    event.currentTarget.classList.add("is-dragging");
+    this.element.classList.add("is-moving-inventory-item");
+  }
+
+  _onInventoryDragOver(event) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+    event.currentTarget.classList.add("is-drop-target");
+  }
+
+  _onInventoryDragLeave(event) {
+    if (event.currentTarget.contains(event.relatedTarget)) return;
+    event.currentTarget.classList.remove("is-drop-target");
+  }
+
+  async _onInventoryDrop(event) {
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
+    const item = this._getInventoryDragItem(event);
+    if (!item && data.type !== "Item") return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    const containerId = event.currentTarget.dataset.containerId || null;
+    this._clearInventoryDragState();
+
+    if (!item) {
+      await this._onDropExternalInventoryItem(event, data, containerId);
+      return;
+    }
+
+    const previousContainerId = this._selectedInventoryContainerId;
+    this._selectedInventoryContainerId = containerId ?? "";
+    const moved = await this._moveItemToContainer(item, containerId);
+    if (!moved) this._selectedInventoryContainerId = previousContainerId;
+  }
+
+  async _onDropExternalInventoryItem(event, data, containerId) {
+    const sourceItem = await Item.implementation.fromDropData(data);
+    if (!sourceItem || !allowedItemTypes.includes(sourceItem.type)) return;
+
+    if (containerId && !this._canMoveItemToContainer(sourceItem, containerId)) return;
+
+    const existingItemIds = new Set(this.actor.items.map(item => item.id));
+    const previousContainerId = this._selectedInventoryContainerId;
+    this._selectedInventoryContainerId = containerId ?? "";
+    await this._onDrop(event);
+
+    const createdItems = this.actor.items.filter(item => !existingItemIds.has(item.id));
+    if (!createdItems.length) {
+      this._selectedInventoryContainerId = previousContainerId;
+      return;
+    }
+    if (!containerId) return;
+
+    await this.actor.updateEmbeddedDocuments("Item", createdItems.map(createdItem => ({
+      _id: createdItem.id,
+      "system.containerId": containerId
+    })));
+  }
+
+  async _onEquipmentDrop(event) {
+    const item = this._getInventoryDragItem(event);
+    if (!item) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    this._clearInventoryDragState();
+    if (!["armor", "weapon", "outfit", "accessory", "shield"].includes(item.type)) return;
+    await this._onEquipItem(item);
+  }
+
+  _getInventoryDragItem(event) {
+    try {
+      const data = JSON.parse(event.dataTransfer.getData("application/json"));
+      return data.id ? this.actor.items.get(data.id) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  _clearInventoryDragState() {
+    this.element?.classList.remove("is-moving-inventory-item");
+    this.element?.querySelectorAll(".is-dragging, .is-drop-target").forEach(element => {
+      element.classList.remove("is-dragging", "is-drop-target");
     });
+  }
+
+  async _moveItemToContainer(item, containerId) {
+    if ((item.system.containerId ?? null) === containerId) return true;
+
+    if (!containerId) {
+      await item.update({ "system.containerId": null });
+      return true;
+    }
+
+    if (!this._canMoveItemToContainer(item, containerId, item.id)) return false;
+
+    await item.update({ "system.containerId": containerId });
+    return true;
+  }
+
+  _canMoveItemToContainer(item, containerId, excludedItemId = null) {
+    const container = this.actor.items.get(containerId);
+    if (!canStoreItem(container, item)) {
+      ui.notifications.warn(game.i18n.localize("BREAK.CONTAINER.InvalidItem"));
+      return false;
+    }
+
+    const usedSlots = getContainerUsedSlots(this.actor, containerId, excludedItemId);
+    if (usedSlots + getItemSlots(item) > container.system.container.capacity) {
+      ui.notifications.warn(game.i18n.localize("BREAK.CONTAINER.NotEnoughCapacity"));
+      return false;
+    }
+
+    return true;
+  }
+
+  async _onEquipItem(item) {
+    if (item.system.containerId) await item.update({ "system.containerId": null });
+    const enableItemEffects = () => Promise.all(item?.effects?.map(effect => effect.update({disabled: false})) ?? []);
     switch(item.type){
       case "armor":
-        this.actor.update({"system.equipment.armor": {...item, _id: item._id}});
-        return;
+        if (this.actor.system.equipment.armor && this.actor.system.equipment.armor._id !== item.id) {
+          await this.actor.unequipItem(this.actor.system.equipment.armor._id, "armor");
+        }
+        await enableItemEffects();
+        return this.actor.update({"system.equipment.armor": {...item, _id: item._id}});
       case "outfit":
-        this.actor.update({ "system.equipment.outfit": { ...item, _id: item._id } });
-        return;
+        if (this.actor.system.equipment.outfit && this.actor.system.equipment.outfit._id !== item.id) {
+          await this.actor.unequipItem(this.actor.system.equipment.outfit._id, "outfit");
+        }
+        await enableItemEffects();
+        return this.actor.update({ "system.equipment.outfit": { ...item, _id: item._id } });
       case "weapon":
+        if (this.actor.system.equipment.weapon.some(weapon => weapon._id === item.id)) return;
         if((item.system.hands ?? 1) <= this.freeHands) {
+          await enableItemEffects();
           this.actor.system.equipment.weapon.push({ ...item, _id: item._id }) 
-          this.actor.update({ "system.equipment.weapon": this.actor.system.equipment.weapon });
+          return this.actor.update({ "system.equipment.weapon": this.actor.system.equipment.weapon });
         } else {
           ui.notifications.warn("Not enough free hands to wield that weapon");
         }
         return;
-      case "shield":
-        if((item.system.hands ?? 1) <= this.freeHands) {
+      case "shield": {
+        if (this.actor.system.equipment.shield?._id === item.id) return;
+        const availableHands = this.freeHands + Number(this.actor.system.equipment.shield?.system?.hands ?? 0);
+        if((item.system.hands ?? 1) <= availableHands) {
+          if (this.actor.system.equipment.shield) await this.actor.unequipItem(this.actor.system.equipment.shield._id, "shield");
+          await enableItemEffects();
           this.actor.system.equipment.shield = item;
-          this.actor.update({ "system.equipment.shield": this.actor.system.equipment.shield });
+          return this.actor.update({ "system.equipment.shield": this.actor.system.equipment.shield });
         } else {
           ui.notifications.warn("Not enough free hands to wield that shield");
         }
         return;
+      }
       case "accessory":
+        if (this.actor.system.equipment.accessory.some(accessory => accessory._id === item.id)) return;
+        await enableItemEffects();
         this.actor.system.equipment.accessory.push({ ...item, _id: item._id })
-        this.actor.update({ "system.equipment.accessory": this.actor.system.equipment.accessory });
-        return;
+        return this.actor.update({ "system.equipment.accessory": this.actor.system.equipment.accessory });
     }
   }
 

@@ -1,5 +1,6 @@
 import { FeatureSelectionDialog } from "../dialogs/feature-selection-dialog.js";
 import { BreakItemSheet } from "./item-sheet.js";
+import { prepareContainerContext, prepareContainerSubmitData } from "../models/container-capable.js";
 
 export class BreakArmorSheet extends BreakItemSheet {
   allowedItemTypes = ["ability"];
@@ -56,6 +57,7 @@ export class BreakArmorSheet extends BreakItemSheet {
       async: true
     });
     context.isArmor = true;
+    prepareContainerContext(context);
     context.requiresType = true;
     context.abilities = context.document.system.abilities ?? [];
     const armorTypes = foundry.utils.deepClone(game.settings.get("break", "armorTypes"));
@@ -100,6 +102,7 @@ export class BreakArmorSheet extends BreakItemSheet {
   static async #onSubmit(event, form, formData) {
     event.preventDefault();
     const updateData = foundry.utils.expandObject(formData.object);
+    prepareContainerSubmitData(updateData);
     updateData.system.speedLimit = Number(updateData.system.speedLimit);
     if(updateData.system.type !== this.item.system.type) {
       const currentType = this.item.system.type;

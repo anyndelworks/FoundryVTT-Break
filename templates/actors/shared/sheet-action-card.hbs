@@ -1,6 +1,11 @@
 <div style="display:flex;align-items:center;border-bottom: 1px solid grey;padding-bottom:6px;column-gap:12px;">
     <div class="weapon-card-column weapon-name" style="align-items: center;">
-        <label style="font-size:16px;font-weight:700;">{{action.name}}</label>
+        <label style="font-size:16px;font-weight:700;">
+            {{action.name}}
+            {{#if action.resolvedMinRank}}
+                <span style="font-size:10px;font-weight:600;opacity:.75;">{{localize "BREAK.ACTION.Rank"}} {{action.resolvedMinRank}}+</span>
+            {{/if}}
+        </label>
         <label style="font-size:12px;">{{action.itemName}}</label>
     </div>
     <div class="weapon-card-column">

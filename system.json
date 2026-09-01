@@ -1,10 +1,10 @@
 {
   "id": "break",
-  "version": "1.2",
+  "version": "1.3",
   "title": "BREAK!!",
   "url": "https://github.com/anyndelworks/FoundryVTT-Break",
-  "manifest": "https://github.com/anyndelworks/FoundryVTT-Break/releases/download/v1.2/system.json",
-  "download": "https://github.com/anyndelworks/FoundryVTT-Break/releases/download/v1.2/v1.2.zip",
+  "manifest": "https://github.com/anyndelworks/FoundryVTT-Break/releases/download/v1.3/system.json",
+  "download": "https://github.com/anyndelworks/FoundryVTT-Break/releases/download/v1.3/v1.3.zip",
   "description": "A BREAK!! TTRPG game system",
   "background": "systems/break/assets/headerimage.jpg",
   "license": "LICENSE",
@@ -86,7 +86,7 @@
         "htmlFields": ["biography", "description", "notes"]
       },
       "gmc": {
-        "htmlFields": ["notes"]
+        "htmlFields": ["description", "notes"]
       },
       "adversary": {
         "htmlFields": ["notes"]
@@ -97,55 +97,55 @@
     },
     "Item": {
       "accessory": {
-        "htmlFields": ["description", "actions.*.description"]
+        "htmlFields": ["description", "actions.*.description", "actions.*.rankVariants.*.description"]
       },
       "armor": {
-        "htmlFields": ["description", "actions.*.description"]
+        "htmlFields": ["description", "actions.*.description", "actions.*.rankVariants.*.description"]
       },
       "item": {
-        "htmlFields": ["description", "actions.*.description"]
+        "htmlFields": ["description", "actions.*.description", "actions.*.rankVariants.*.description"]
       },
       "ammo": {
-        "htmlFields": ["description", "actions.*.description"]
+        "htmlFields": ["description", "actions.*.description", "actions.*.rankVariants.*.description"]
       },
       "outfit": {
-        "htmlFields": ["description", "actions.*.description"]
+        "htmlFields": ["description", "actions.*.description", "actions.*.rankVariants.*.description"]
       },
       "shield": {
-        "htmlFields": ["description", "actions.*.description"]
+        "htmlFields": ["description", "actions.*.description", "actions.*.rankVariants.*.description"]
       },
       "calling": {
-        "htmlFields": ["description", "actions.*.description"]
+        "htmlFields": ["description", "actions.*.description", "actions.*.rankVariants.*.description"]
       },
       "species": {
-        "htmlFields": ["description", "actions.*.description"]
+        "htmlFields": ["description", "actions.*.description", "actions.*.rankVariants.*.description"]
       },
       "homeland": {
-        "htmlFields": ["description", "actions.*.description"]
+        "htmlFields": ["description", "actions.*.description", "actions.*.rankVariants.*.description"]
       },
       "history": {
-        "htmlFields": ["description", "actions.*.description"]
+        "htmlFields": ["description", "actions.*.description", "actions.*.rankVariants.*.description"]
       },
       "quirk": {
-        "htmlFields": ["description", "actions.*.description"]
+        "htmlFields": ["description", "actions.*.description", "actions.*.rankVariants.*.description"]
       },
       "ability": {
-        "htmlFields": ["description", "rules", "actions.*.description"]
+        "htmlFields": ["description", "rules", "actions.*.description", "actions.*.rankVariants.*.description"]
       },
       "area-condition": {
         "htmlFields": ["description"]
       },
       "weapon": {
-        "htmlFields": ["description", "actions.*.description"]
+        "htmlFields": ["description", "actions.*.description", "actions.*.rankVariants.*.description"]
       },
       "material": {
-        "htmlFields": ["description", "actions.*.description"]
+        "htmlFields": ["description", "actions.*.description", "actions.*.rankVariants.*.description"]
       },
       "additive": {
-        "htmlFields": ["description", "actions.*.description"]
+        "htmlFields": ["description", "actions.*.description", "actions.*.rankVariants.*.description"]
       },
       "gift": {
-        "htmlFields": ["description", "actions.*.description"]
+        "htmlFields": ["description", "actions.*.description", "actions.*.rankVariants.*.description"]
       }
     }
   },

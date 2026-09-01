@@ -78,7 +78,11 @@ export class BreakCompanionSheet extends BreakActorSheet {
       });
     });
 
-    new foundry.applications.ux.ContextMenu.implementation(html[0], "[data-id]", [], { onOpen: this._onOpenContextMenu.bind(this), jQuery: false });
+    new foundry.applications.ux.ContextMenu.implementation(html[0], "[data-id]", [], {
+      onOpen: this._onOpenContextMenu.bind(this),
+      jQuery: false,
+      fixed: true
+    });
   }
 
   async _prepareContext(options) {
@@ -135,7 +139,8 @@ export class BreakCompanionSheet extends BreakActorSheet {
     context.showInventorySection = !!(
       context.document.system.capabilities.canCarryGear ||
       context.inventorySlots > 0 ||
-      context.bagContent?.length
+      context.bagContent?.length ||
+      context.inventoryContainers?.length
     );
 
     return context;

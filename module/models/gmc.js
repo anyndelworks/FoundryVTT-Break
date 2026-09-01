@@ -6,7 +6,7 @@ export class BreakGMCDataModel extends BreakBaseActorDataModel {
 
     return {
       ...super.defineSchema(),
-      notes: new fields.HTMLField({ initial: "" })
+      description: new fields.HTMLField({ initial: "" })
     };
   }
 

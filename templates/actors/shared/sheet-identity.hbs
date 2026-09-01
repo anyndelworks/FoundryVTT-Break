@@ -83,8 +83,18 @@
     <!-- LANGUAGES SECTION -->
     <div class="input root">
         <label class="identity-header-label">{{ localize 'BREAK.Languages' }}</label>
-        <div class="input wrapper">
-            <input name="system.languages" type="text" value="{{document.system.languages}}" placeholder="{{ localize 'BREAK.Languages' }}" />
+        <div style="display:flex;flex-direction:column;gap:4px;">
+            {{#each languages as |language|}}
+                <div style="display:flex;align-items:center;gap:6px;">
+                    <input name="system.languages.{{@index}}" type="text" value="{{language}}" placeholder="{{localize 'BREAK.Languages'}}" />
+                    <button type="button" data-action="deleteLanguage" data-index="{{@index}}" style="flex:0 0 28px;width:28px;height:28px;padding:0;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            {{/each}}
+            <button type="button" data-action="addLanguage" style="align-self:center;width:32px;height:28px;padding:0;">
+                <i class="fas fa-plus"></i>
+            </button>
         </div>
     </div>
     <!-- HISTORY SECTION -->

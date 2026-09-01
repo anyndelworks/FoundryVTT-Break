@@ -115,7 +115,10 @@ export class BreakActor extends Actor {
     const attackModifier = ammo?.system.special ? BREAK.ammo_attack_modifiers[ammo.system.attackModifier] : null;
     const damageModifier = ammo?.system.special ? ammo.system.damageModifier : 0;
     const attack = +this.system.attack.total + +bonus;
-    const modifiedExtraDamage = Math.max(0, +extraDamage - +damageModifier);
+    const extraDamageThreshold = Number(extraDamage) || 0;
+    const modifiedExtraDamage = extraDamageThreshold > 0
+      ? Math.max(1, extraDamageThreshold - Number(damageModifier || 0))
+      : 0;
     let flavor = game.i18n.format("BREAK.Attacks");
     new DialogV2({
       window: { title: "Roll attack" },
@@ -264,7 +267,7 @@ export class BreakActor extends Actor {
 
   async useAction(itemId, actionId) {
     const item = this.items.find(i => i._id == itemId);
-    const action = Action.normalize(item.system.actions.find(a => a.id === actionId));
+    const action = Action.resolveForActor(item.system.actions.find(a => a.id === actionId), this);
     const targetActor = Action.getTargetActor(action, this);
     const resolveAction = async (applyEffects = true) => {
       if (!await Action.payCosts(this, action)) return false;

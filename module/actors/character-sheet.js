@@ -1,6 +1,7 @@
 import { RANK_XP} from "../constants.js";
 import { FeatureSelectionDialog } from "../dialogs/feature-selection-dialog.js";
 import { BreakActorSheet } from "./actor-sheet.js";
+import { parseLanguageList } from "../../utils/languages.mjs";
 
 const allowedItemTypes = [
 // Equipment
@@ -33,6 +34,8 @@ export class BreakCharacterSheet extends BreakActorSheet {
       setTrait: this.#onSetTrait,
       addPurview: this.#addPurview,
       deletePurview: this.#deletePurview,
+      addLanguage: this.#addLanguage,
+      deleteLanguage: this.#deleteLanguage,
     },
     form: {
       handler: BreakCharacterSheet.#onSubmit,
@@ -86,7 +89,11 @@ export class BreakCharacterSheet extends BreakActorSheet {
       });
     })
 
-    new foundry.applications.ux.ContextMenu.implementation(html[0], "[data-id]", [], {onOpen: this._onOpenContextMenu.bind(this), jQuery: false});
+    new foundry.applications.ux.ContextMenu.implementation(html[0], "[data-id]", [], {
+      onOpen: this._onOpenContextMenu.bind(this),
+      jQuery: false,
+      fixed: true
+    });
   }
 
   async _prepareContext(options) {
@@ -128,6 +135,7 @@ export class BreakCharacterSheet extends BreakActorSheet {
     }
 
     context.purviews = context.document.system.purviews ?? [];
+    context.languages = context.document.system.languages ?? [];
     context.inventorySlots = context.document.system.slots.total;
 
     const defense = context.document.system.defense;
@@ -235,7 +243,20 @@ export class BreakCharacterSheet extends BreakActorSheet {
         return updateData.system.purviews[k];
     });
     updateData.system.purviews = purviews;
+    updateData.system.languages = parseLanguageList(updateData.system.languages);
     await this.actor.update(updateData);
+  }
+
+  static #addLanguage() {
+    const languages = [...this.actor.system.languages, ""];
+    this.actor.update({"system.languages": languages});
+  }
+
+  static #deleteLanguage(event) {
+    event.preventDefault();
+    const languages = [...this.actor.system.languages];
+    languages.splice(Number(event.target.closest("[data-index]").dataset.index), 1);
+    this.actor.update({"system.languages": languages});
   }
 
   static #addPurview() {

@@ -1,6 +1,7 @@
 import { BaseItemDataModel } from "./base-item.js";
+import { ContainerCapableMixin } from "./container-capable.js";
 
-export class ArmorDataModel extends BaseItemDataModel {
+export class ArmorDataModel extends ContainerCapableMixin(BaseItemDataModel) {
     static defineSchema() {
         const fields = foundry.data.fields;
 

@@ -9,11 +9,13 @@ import Action from "./module/system/action.js";
 import { BreakCharacterSheet } from "./module/actors/character-sheet.js";
 import { BreakAdversarySheet } from "./module/actors/adversary-sheet.js";
 import { BreakCompanionSheet } from "./module/actors/companion-sheet.js";
+import { BreakGMCSheet } from "./module/actors/gmc-sheet.js";
 import {ArmorTypeSettingsForm} from "./module/system/armor-type-settings.js";
 import {WeaponTypeSettingsForm} from "./module/system/weapon-type-settings.js";
 import {ShieldTypeSettingsForm} from "./module/system/shield-type-settings.js";
 import {SizeSettingsForm} from "./module/system/size-settings.js";
 import { registerAreaMovement } from "./module/system/area-movement.js";
+import { registerStatusEffects } from "./module/system/status-effects.js";
 ////// EQUIPMENT
 import { BreakWeaponSheet } from "./module/items/weapon-sheet.js";
 import { BreakArmorSheet } from "./module/items/armor-sheet.js";
@@ -417,7 +419,7 @@ Hooks.once("init", async function() {
     },
     mechanicalLarge: {
       label: "Mechanical (Large)",
-      ranged: false,
+      ranged: true,
       extraDamage: 20,
       loadingTime: 1,
       hands: 1,
@@ -596,6 +598,7 @@ Hooks.once("init", async function() {
   Actors.registerSheet("break", BreakCharacterSheet, {types:['character'], makeDefault: true });
   Actors.registerSheet("break", BreakAdversarySheet, {types:['adversary'], makeDefault: true });
   Actors.registerSheet("break", BreakCompanionSheet, {types:['companion'], makeDefault: true });
+  Actors.registerSheet("break", BreakGMCSheet, {types:['gmc'], makeDefault: true });
   Items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
 /////// EQUIPMENT
   Items.registerSheet("break", BreakWeaponSheet, {types:['weapon'], makeDefault: true });
@@ -662,7 +665,6 @@ Hooks.once("init", async function() {
     if(result) return options.fn(options.data.root);
     return options.inverse(this);       
   });
-
   Handlebars.registerHelper('times', function(n, block) {
     let accum = '';
     for (let i = 0; i < n; ++i) {
@@ -674,6 +676,7 @@ Hooks.once("init", async function() {
   // Preload template partials
   await preloadHandlebarsTemplates();
   registerAreaMovement();
+  registerStatusEffects();
 });
 
 Hooks.once("ready", () => {
@@ -714,58 +717,6 @@ Hooks.on("createItem", (item) => {
   parent.onEmbedItem(item);
 });
 
-function findAilmentStatusPack() {
-  const activeEffectPacks = game.packs.filter(pack => pack.documentName === "ActiveEffect");
-  return activeEffectPacks.find(pack => pack.collection === "break.ailments")
-    ?? activeEffectPacks.find(pack => pack.metadata.id === "ailments")
-    ?? activeEffectPacks.find(pack => /ailment/i.test(pack.collection))
-    ?? activeEffectPacks.find(pack => /ailment/i.test(pack.metadata.label ?? ""))
-    ?? null;
-}
-
-function createStatusEffectConfig(effect) {
-  const statuses = Array.from(effect.statuses ?? []);
-  const id = effect.getFlag("break", "statusId")
-    ?? statuses[0]
-    ?? effect.name.slugify({strict: true});
-
-  return [id, {
-    id,
-    name: effect.name,
-    img: effect.img,
-    hud: true,
-    statuses: [id],
-    description: effect.description ?? "",
-    changes: foundry.utils.deepClone(effect.changes ?? []),
-    tint: effect.tint,
-    showIcon: effect.showIcon,
-    flags: foundry.utils.deepClone(effect.flags ?? {})
-  }];
-}
-
-async function rebuildStatusEffectsFromAilments() {
-  const pack = findAilmentStatusPack();
-  if (!pack) {
-    ui.notifications.warn("BREAK | No ActiveEffect ailment pack was found for status effects.");
-    CONFIG.statusEffects = {};
-    return;
-  }
-
-  const effects = await pack.getDocuments();
-  CONFIG.statusEffects = Object.fromEntries(effects.map(createStatusEffectConfig));
-}
-
-function isAilmentStatusDocument(document) {
-  const pack = findAilmentStatusPack();
-  return !!pack && document?.pack === pack.collection;
-}
-
-async function refreshAilmentStatusEffects(document) {
-  if (!isAilmentStatusDocument(document)) return;
-  await rebuildStatusEffectsFromAilments();
-  canvas.tokens.hud?.render?.();
-}
-
 async function registerWelcomeTour() {
   const Tour = foundry.nue?.Tour ?? foundry.nue?.tours?.Tour;
   if (!Tour || !game.tours) return null;
@@ -785,15 +736,8 @@ async function startWelcomeTour() {
 }
 
 Hooks.once("ready", async () => {
-  game.break.rebuildStatusEffects = rebuildStatusEffectsFromAilments;
-  await rebuildStatusEffectsFromAilments();
-  canvas.tokens.hud?.render?.();
   await startWelcomeTour();
 });
-
-Hooks.on("createActiveEffect", refreshAilmentStatusEffects);
-Hooks.on("updateActiveEffect", refreshAilmentStatusEffects);
-Hooks.on("deleteActiveEffect", refreshAilmentStatusEffects);
 
 Hooks.on("renderChatMessageHTML", (message, html) => {
   const button = html.querySelector("[data-action='ammoCheck']");
@@ -915,7 +859,7 @@ async function onActionCheckChatButton(event, message) {
 
   const actor = await fromUuid(data.actorUuid);
   const item = await fromUuid(data.itemUuid);
-  const action = Action.normalize(item?.system.actions?.find(action => action.id === data.actionId));
+  const action = Action.resolveForActor(item?.system.actions?.find(action => action.id === data.actionId), actor);
   if(!actor || !item || !action?.id) {
     ui.notifications.warn(game.i18n.localize("BREAK.ACTION.SourceMissing"));
     return;
