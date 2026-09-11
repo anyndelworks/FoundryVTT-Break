@@ -8,6 +8,7 @@ The following content is not licensed under the Apache License and remains
 copyrighted material:
 
 - All files in the assets/ directory.
+- All .css files in the project.
 - All content contained in preview compendium packs, including:
   - packs/preview-content/
   - packs/preview-adversaries/

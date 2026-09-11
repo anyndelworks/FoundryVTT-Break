@@ -1,129 +1,4 @@
-@font-face {
-  font-family: 'Montserrat';
-  font-style: italic;
-  font-weight: 100;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/montserrat/v31/JTUFjIg1_i6t8kCHKm459Wx7xQYXK0vOoz6jq6R8aX8.ttf) format('truetype');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: italic;
-  font-weight: 200;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/montserrat/v31/JTUFjIg1_i6t8kCHKm459Wx7xQYXK0vOoz6jqyR9aX8.ttf) format('truetype');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: italic;
-  font-weight: 300;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/montserrat/v31/JTUFjIg1_i6t8kCHKm459Wx7xQYXK0vOoz6jq_p9aX8.ttf) format('truetype');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/montserrat/v31/JTUFjIg1_i6t8kCHKm459Wx7xQYXK0vOoz6jq6R9aX8.ttf) format('truetype');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: italic;
-  font-weight: 500;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/montserrat/v31/JTUFjIg1_i6t8kCHKm459Wx7xQYXK0vOoz6jq5Z9aX8.ttf) format('truetype');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: italic;
-  font-weight: 600;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/montserrat/v31/JTUFjIg1_i6t8kCHKm459Wx7xQYXK0vOoz6jq3p6aX8.ttf) format('truetype');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: italic;
-  font-weight: 700;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/montserrat/v31/JTUFjIg1_i6t8kCHKm459Wx7xQYXK0vOoz6jq0N6aX8.ttf) format('truetype');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: italic;
-  font-weight: 800;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/montserrat/v31/JTUFjIg1_i6t8kCHKm459Wx7xQYXK0vOoz6jqyR6aX8.ttf) format('truetype');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: italic;
-  font-weight: 900;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/montserrat/v31/JTUFjIg1_i6t8kCHKm459Wx7xQYXK0vOoz6jqw16aX8.ttf) format('truetype');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 100;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/montserrat/v31/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCtr6Uw-.ttf) format('truetype');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 200;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/montserrat/v31/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCvr6Ew-.ttf) format('truetype');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/montserrat/v31/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCs16Ew-.ttf) format('truetype');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/montserrat/v31/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCtr6Ew-.ttf) format('truetype');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/montserrat/v31/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCtZ6Ew-.ttf) format('truetype');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/montserrat/v31/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCu170w-.ttf) format('truetype');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/montserrat/v31/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCuM70w-.ttf) format('truetype');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 800;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/montserrat/v31/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCvr70w-.ttf) format('truetype');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 900;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/montserrat/v31/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCvC70w-.ttf) format('truetype');
-}
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 :root {
   --background-primary: white;
   --background-secondary: #e6e6e6;
@@ -1838,6 +1713,80 @@
 #active-effects-panel > hr {
   margin-right: 0;
   width: 48px;
+}
+.break.sheet.history .history-editor {
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 8px 8px;
+}
+.break.sheet.history .history-entry-row,
+.break.sheet.history .history-option-actions,
+.break.sheet.history .history-picks {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+.break.sheet.history .history-entry-row > input:not([type="hidden"]) {
+  flex: 1;
+  min-width: 0;
+}
+.break.sheet.history .history-entry-row > .history-quantity {
+  flex: 0 0 64px;
+}
+.break.sheet.history .history-entry-row > label {
+  flex: 1;
+  min-width: 0;
+}
+.break.sheet.history .history-entry-row > button {
+  flex: 0 0 32px;
+}
+.break.sheet.history .history-picks > input {
+  width: 64px;
+}
+.break.sheet.history .history-option {
+  border: 1px solid var(--color-border-light-primary);
+  border-radius: 4px;
+  padding: 8px;
+  margin: 12px 0;
+}
+.break.sheet.history .history-option-actions {
+  flex-wrap: wrap;
+}
+.break.sheet.history .history-option-actions > button {
+  flex: 1;
+  width: auto;
+}
+.break.sheet.history .hint {
+  font-size: var(--font-size-12);
+  color: var(--color-text-subtle);
+}
+.break.history-selection .window-content {
+  overflow-y: auto;
+}
+.break.history-selection .history-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.break.history-selection .history-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: auto;
+  white-space: normal;
+  text-align: left;
+  padding: 10px;
+  border: 2px solid var(--color-border-light-primary);
+}
+.break.history-selection .history-choice.selected {
+  border-color: #16C4C3;
+  background: color-mix(in srgb, #16C4C3 15%, transparent);
+}
+.break.history-selection .history-choice-rewards {
+  display: flex;
+  flex-direction: column;
+  font-weight: normal;
 }
 #action-form-dialog .action-progression .rank-variant-tab {
   border: 1px solid var(--color-border-light-primary);

@@ -1,32 +1,48 @@
-<section class="description flexcol {{tabs.description.cssClass}} scrollable" data-group="primary" autocomplete="off" style="height: 100%;">
-    <div style="display:flex;justify-content:space-between;flex: 1;column-gap:24px;">
-        <div class="flexcol" style="width: 50%;">
-            <div class="section-header" data-drag="true">{{localize "BREAK.Purviews"}}</div>
-            <div class="purview-list flexcol" style="width:100%;">
-                {{#each purviews}}
-                    <div style="display: flex; margin-bottom: 6px;align-items: center; width: 100%;">
-                        <input name="system.purviews.{{@index}}" type="text" style="margin-right: 6px" value="{{this}}" id="purview-{{@index}}" placeholder="Purview..." class="purview-input" />
-                        <button data-action="deletePurview" data-index="{{@index}}" style="margin-left: auto; max-width: 32px; margin-right: 8px;"><i class="fas fa-trash" style="margin: 0px;"></i></button>
-                    </div>
-                {{/each}}
-                <button data-action="addPurview" style="margin-left: auto; max-width: 32px; margin-right: auto;"><i class="fa-solid fa-plus" style="margin: 0px;"></i></button>
-            </div>
-        </div>
-        <div class="flexcol" style="width: 50%;">
-            <div class="section-header">{{localize "BREAK.GEAR.StartingGear"}}</div>
-            <div class="form-group" style="display: flex;align-items:center;column-gap:8px;">
-                <label>{{localize "BREAK.Pick"}}</label>
-                <input type="text" name="system.gearPicks" style="width: 36px;" value="{{document.system.gearPicks}}">
-            </div>
-            <div class="starting-gear-list flexcol drop-zone" style="display: flex; flex-wrap: wrap;flex-grow: 0;min-height:42px;">
-                {{#each startingGear}}
-                    <div style="display: flex; margin-bottom: 6px;align-items: center;">
-                        <label data-tooltip="{{this.system.description}}">{{this.name}}</label>
-                        <button data-action="deleteItem" class="delete-gear" data-id="{{this.uuid}}" style="margin-left: auto; max-width: 32px; margin-right: 8px;"><i class="fas fa-trash" style="margin: 0px;"></i></button>
-                    </div>
-                {{/each}}
-                <button class="select-feature" data-type="item" data-action="selectFeature" style="height: inherit;">{{localize 'BREAK.PickOrDrag'}} {{localize 'TYPES.Item.item'}}</i></button>
-            </div>
-        </div>
+﻿<section class="description history-editor scrollable">
+    <div class="section-header">{{localize "BREAK.Purviews"}}</div>
+    {{#each purviews}}
+    <div class="history-entry-row">
+        <input name="system.purviews.{{@index}}" value="{{this}}" aria-label="{{localize 'BREAK.Purviews'}}">
+        {{#if ../editable}}<button type="button" data-action="deletePurview" data-index="{{@index}}" aria-label="{{localize 'BREAK.HISTORY.Remove'}}"><i class="fas fa-trash"></i></button>{{/if}}
     </div>
+    {{/each}}
+    {{#if editable}}<button type="button" data-action="addPurview">{{localize "BREAK.HISTORY.AddPurview"}}</button>{{/if}}
+    <div class="section-header">{{localize "BREAK.GEAR.StartingGear"}}</div>
+    <p>{{localize "BREAK.HISTORY.ChoicesHelp"}}</p>
+    <label class="history-picks">{{localize "BREAK.HISTORY.Picks"}} <input type="number" name="system.gearPicks" min="0" step="1" value="{{document.system.gearPicks}}"></label>
+    {{#if canChooseGear}}<button type="button" data-action="chooseHistoryGear">{{localize "BREAK.HISTORY.Choose"}}</button>{{/if}}
+    {{#each choices as |choice ci|}}
+    <article class="history-option" data-history-choice="{{ci}}">
+        <input type="hidden" name="system.startingGear.{{ci}}.id" value="{{choice.id}}">
+        <div class="history-entry-row">
+            <input name="system.startingGear.{{ci}}.name" value="{{choice.name}}" placeholder="{{localize 'BREAK.HISTORY.ChoiceName'}}" aria-label="{{localize 'BREAK.HISTORY.ChoiceName'}}">
+            {{#if ../editable}}<button type="button" data-action="deleteChoice" data-choice="{{ci}}" aria-label="{{localize 'BREAK.HISTORY.RemoveChoice'}}"><i class="fas fa-trash"></i></button>{{/if}}
+        </div>
+        {{#each choice.entries as |entry ei|}}
+        <div class="history-entry-row history-reward">
+            <input type="hidden" name="system.startingGear.{{ci}}.entries.{{ei}}.type" value="{{entry.type}}">
+            {{#if entry.currency}}
+            <label>{{localize "BREAK.HISTORY.coins"}}<input type="number" min="0" step="1" name="system.startingGear.{{ci}}.entries.{{ei}}.coins" value="{{entry.coins}}"></label>
+            <label>{{localize "BREAK.HISTORY.gems"}}<input type="number" min="0" step="1" name="system.startingGear.{{ci}}.entries.{{ei}}.gems" value="{{entry.gems}}"></label>
+            <label>{{localize "BREAK.HISTORY.stones"}}<input type="number" min="0" step="1" name="system.startingGear.{{ci}}.entries.{{ei}}.stones" value="{{entry.stones}}"></label>
+            {{else}}
+            <input type="hidden" name="system.startingGear.{{ci}}.entries.{{ei}}.uuid" value="{{entry.uuid}}">
+            <input class="history-quantity" type="number" min="1" step="1" name="system.startingGear.{{ci}}.entries.{{ei}}.quantity" value="{{entry.quantity}}" aria-label="{{localize 'BREAK.HISTORY.Quantity'}}">
+            <input name="system.startingGear.{{ci}}.entries.{{ei}}.name" value="{{entry.name}}" placeholder="{{entry.label}}" aria-label="{{localize 'BREAK.HISTORY.RewardName'}}">
+            {{#if entry.missing}}<span>{{localize "BREAK.HISTORY.MissingDocument"}}</span>{{/if}}
+            {{/if}}
+            {{#if ../../editable}}<button type="button" data-action="deleteEntry" data-choice="{{ci}}" data-entry="{{ei}}" aria-label="{{localize 'BREAK.HISTORY.Remove'}}"><i class="fas fa-trash"></i></button>{{/if}}
+        </div>
+        {{/each}}
+        {{#if ../editable}}
+        <div class="history-option-actions">
+            <button type="button" data-action="pickDocument" data-choice="{{ci}}" data-kind="item">{{localize "BREAK.HISTORY.AddItem"}}</button>
+            <button type="button" data-action="pickDocument" data-choice="{{ci}}" data-kind="companion">{{localize "BREAK.HISTORY.AddCompanion"}}</button>
+            <button type="button" data-action="addCurrency" data-choice="{{ci}}">{{localize "BREAK.HISTORY.AddCurrency"}}</button>
+        </div>
+        <p class="hint">{{localize "BREAK.HISTORY.DropHelp"}}</p>
+        {{/if}}
+    </article>
+    {{/each}}
+    {{#if editable}}<button type="button" data-action="addChoice">{{localize "BREAK.HISTORY.AddChoice"}}</button>{{/if}}
 </section>

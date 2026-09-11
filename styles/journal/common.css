@@ -202,6 +202,9 @@
         .icon.effusive {
             background-image: url("../../assets/preview-content/icons/gm_effusive.png");
         }
+        .icon.excited {
+            background-image: url("../../assets/preview-content/icons/gm_excited.png");
+        }
         .icon.serious {
             background-image: url("../../assets/preview-content/icons/gm_serious.png");
         }
@@ -219,6 +222,10 @@
             background-image: url("../../assets/preview-content/icons/1up_happy.png");
         }
 
+        .icon.smiling {
+            background-image: url("../../assets/preview-content/icons/1up_smiling.png");
+            border: none;
+        }
         .icon.thinking {
             background-image: url("../../assets/preview-content/icons/1up_thinking.jpg");
         }

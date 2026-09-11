@@ -36,4 +36,35 @@
     .break-ability-magic {
         background-color: #0084C7;
     }
+
+    .species-illustration {
+        display: block;
+        width: 100%;
+        max-width: 48rem;
+        height: auto;
+        margin: 1rem auto;
+        border: none;
+    }
+
+    .species-size-comparison {
+        max-width: 48rem;
+        margin: 1rem auto;
+
+        figcaption {
+            display: grid;
+            grid-template-columns: 15fr 56fr 29fr;
+            gap: 2px;
+            color: white;
+            font-weight: 800;
+            text-transform: uppercase;
+
+            span {
+                padding: 0.5rem;
+            }
+
+            span:nth-child(1) { background-color: #00AEEF; }
+            span:nth-child(2) { background-color: #92278F; }
+            span:nth-child(3) { background-color: #EF4135; }
+        }
+    }
 }

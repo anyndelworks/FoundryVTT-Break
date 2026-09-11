@@ -710,11 +710,15 @@ Hooks.once('canvasInit', (canvas) => {
   game.break.activeEffectPanel.render(true);
 });
 
-Hooks.on("createItem", (item) => {
+Hooks.on("createItem", (item, options, userId) => {
+  if (userId !== game.user.id) return;
   const parent = item.parent;
   if (!(parent instanceof Actor)) return;
   if (item.documentName !== "Item") return;
-  parent.onEmbedItem(item);
+  return parent.onEmbedItem(item)?.catch(error => {
+    console.error("BREAK item application", error);
+    ui.notifications.error(game.i18n.localize("BREAK.HISTORY.Errors.Failed"));
+  });
 });
 
 async function registerWelcomeTour() {

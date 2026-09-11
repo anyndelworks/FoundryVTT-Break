@@ -1,0 +1,17 @@
+<section class="history-choices">
+    <h2>{{name}}</h2>
+    <p>{{instruction}}</p>
+    <p aria-live="polite">{{remaining}}</p>
+    {{#if insufficient}}<p class="notification warning">{{localize "BREAK.HISTORY.Insufficient"}}</p>{{/if}}
+    {{#each choices}}
+    <button type="button" class="history-choice {{#if selected}}selected{{/if}}" data-action="toggleChoice" data-choice="{{id}}" aria-pressed="{{selected}}" {{#if ../applying}}disabled{{/if}}>
+        <strong>{{displayName}}</strong>
+        <span class="history-choice-rewards">
+            {{#each entries}}
+            <span>{{#unless currency}}{{quantity}} &times; {{/unless}}{{label}}{{#if missing}} &mdash; {{localize "BREAK.HISTORY.MissingDocument"}}{{/if}}</span>
+            {{/each}}
+        </span>
+    </button>
+    {{/each}}
+    <button type="submit" {{#unless canConfirm}}disabled{{/unless}}>{{localize "BREAK.HISTORY.Confirm"}}</button>
+</section>

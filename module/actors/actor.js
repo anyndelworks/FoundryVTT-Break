@@ -2,6 +2,7 @@ import { RollBonuses, RollType, roll } from "../../utils/dice.js";
 import BREAK from "../constants.js";
 import Action from "../system/action.js";
 import { FeatureSelectionDialog } from "../dialogs/feature-selection-dialog.js";
+import { HistorySelectionDialog } from "../dialogs/history-selection-dialog.js";
 
 const { DialogV2 } = foundry.applications.api;
 
@@ -304,8 +305,7 @@ export class BreakActor extends Actor {
   onEmbedItem(item) {
     switch(this.type) {
       case "character":
-        this.onEmbedItemCharacter(item);
-        break;
+        return this.onEmbedItemCharacter(item);
     }
   }
 
@@ -315,19 +315,11 @@ export class BreakActor extends Actor {
     switch(item.type) {
       case "history":
         const purviews = item.system.purviews ?? [];
-        this.update({"system.purviews": [...this.system.purviews, ...purviews]});
+        await this.update({"system.purviews": [...this.system.purviews, ...purviews]});
         const picks = item.system.gearPicks ?? 0;
         const startingGear = item.system.startingGear ?? [];
         if (!picks || !startingGear.length) return;
-        const gearItems = await Promise.all(startingGear.map(i => fromUuid(i.uuid)));
-        gearItems.forEach(g => {g.from = item.name});
-        new FeatureSelectionDialog({
-          itemType: "item",
-          picks,
-          document: this,
-          predefinedList: gearItems,
-          filters: []
-        }).render(true);
+        new HistorySelectionDialog(this, item).render(true);
         break;
       case "species":
         abilityUuids = (item.system.abilities ?? []);

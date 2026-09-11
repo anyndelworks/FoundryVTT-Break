@@ -80,6 +80,12 @@ export class FeatureSelectionDialog extends HandlebarsApplicationMixin(Applicati
         a.from = "World";
         a.desc = game.i18n.localize(`TYPES.Actor.${a.type}`);
       });
+      for (const pack of game.packs) {
+        if (pack.documentName !== "Actor" || !pack.visible) continue;
+        const documents = await pack.getDocuments({ type });
+        documents.forEach(actor => { actor.from = pack.metadata.label; });
+        actors.push(...documents);
+      }
       return actors;
     }
 
@@ -102,7 +108,7 @@ export class FeatureSelectionDialog extends HandlebarsApplicationMixin(Applicati
 
     const compendiumItems = [];
     for(const pack of game.packs) {
-      if (pack.documentName !== "Item") continue;
+      if (pack.documentName !== "Item" || !pack.visible) continue;
       const allItems = await pack.getDocuments({type});
       allItems.forEach(i => {
         i.from = `${pack.metadata.label}`;
@@ -129,6 +135,7 @@ export class FeatureSelectionDialog extends HandlebarsApplicationMixin(Applicati
       ]
       : [
         {name: "ability", i18n: "TYPES.Item.ability", active: "ability" === this.#itemType, disabled: !this.#allowedTypes.includes("ability")},
+        ...["ammo", "additive", "material"].map(name => ({ name, i18n: `TYPES.Item.${name}`, active: name === this.#itemType, disabled: !this.#allowedTypes.includes(name) })),
         {name: "accessory", i18n: "TYPES.Item.accessory", active: "accessory" === this.#itemType, disabled: !this.#allowedTypes.includes("accessory")},
         {name: "armor", i18n: "TYPES.Item.armor", active: "armor" === this.#itemType, disabled: !this.#allowedTypes.includes("armor")},
         {name: "armorType", i18n: "TYPES.Item.armor-type", active: "armorType" === this.#itemType, disabled: !this.#allowedTypes.includes("armorType") },
@@ -195,7 +202,7 @@ export class FeatureSelectionDialog extends HandlebarsApplicationMixin(Applicati
       this.pickedItems.push(actor);
       this.remainingPicks -= 1;
       if (this.remainingPicks <= 0) {
-        this.callback(this.pickedItems);
+        await this.callback(this.pickedItems);
         this.close();
       } else {
         this.render(true);
@@ -221,7 +228,7 @@ export class FeatureSelectionDialog extends HandlebarsApplicationMixin(Applicati
       if(this.document.documentName === "Actor") {
         await this.document.createEmbeddedDocuments("Item", this.pickedItems);
       } else if(this.document.documentName === "Item") {
-        this.callback(this.pickedItems);
+        await this.callback(this.pickedItems);
       }
       this.close();
     } else {

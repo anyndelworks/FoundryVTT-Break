@@ -1,0 +1,88 @@
+.break-journal.homeland-section {
+    .header, h2, h3, h4 {
+        background: linear-gradient(90deg, #00BFB3 0%, #64C184 100%);
+        color: white;
+    }
+
+    h2.light, h3.light, h4.light {
+        background: linear-gradient(90deg, #CCF2EF 0%, #E0F2E6 100%);
+        color: #008F88;
+    }
+
+    li::before, ol li::marker { color: #00BFB3; }
+
+    .item-description .icon img {
+        border-color: #00BFB3;
+        width: 120px;
+    }
+
+    .homeland-illustration {
+        display: block;
+        width: 100%;
+        height: auto;
+        margin: 1rem auto;
+        border: none;
+        border-radius: 0 10px 10px 0;
+    }
+
+    .homeland-map {
+        display: block;
+        width: 100%;
+        max-width: 24rem;
+        height: auto;
+        margin: 1rem auto;
+        border: none;
+    }
+
+    .homeland-table-row {
+        display: grid;
+        grid-template-columns: 4.5rem minmax(0, 1fr);
+        gap: 0.5rem;
+        align-items: baseline;
+    }
+
+    .homeland-table-entry {
+        border-top: 1px #9A9B99 dashed;
+        margin-top: 1rem;
+    }
+
+    .homeland-range {
+        color: #008F88;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .history-entry { break-inside: avoid; }
+
+    .outer-world-script {
+        margin: 1.5rem 0;
+
+        img {
+            display: block;
+            width: 100%;
+            max-width: 18rem;
+            height: auto;
+            margin: 1rem auto;
+            border: none;
+        }
+
+        figcaption {
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        + .outer-world-script {
+            border-top: 1px solid #9A9B99;
+            padding-top: 1rem;
+        }
+    }
+
+    @container (max-width: 360px) {
+        .item-description .icon img {
+            width: 84px;
+            min-width: 84px;
+            height: 84px;
+            margin-left: 0.5rem;
+        }
+    }
+}

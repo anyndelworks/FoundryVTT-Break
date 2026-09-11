@@ -6,7 +6,7 @@
   "manifest": "https://raw.githubusercontent.com/anyndelworks/FoundryVTT-Break/refs/heads/main/system.json",
   "download": "https://github.com/anyndelworks/FoundryVTT-Break/releases/download/v1.31/v1.31.zip",
   "description": "A BREAK!! TTRPG game system",
-  "background": "systems/break/assets/headerimage.jpg",
+  "background": "systems/break/assets/BREAK_foundry_cover.jpg",
   "license": "LICENSE",
   "authors": [
     {
@@ -23,7 +23,7 @@
     }
   ],
   "esmodules": ["break.js"],
-  "styles": ["styles/break.css", "styles/journal/common.css","styles/journal/callings.css", "styles/journal/species.css"],
+  "styles": ["styles/break.css", "styles/journal/common.css","styles/journal/callings.css", "styles/journal/species.css", "styles/journal/homeland.css"],
   "languages": [
     {
       "lang": "en",
