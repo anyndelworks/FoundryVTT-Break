@@ -1,4 +1,4 @@
-import { RollBonuses, RollType, roll } from "../../utils/dice.js";
+import { RollBonuses, RollType, roll, setContestDiceColor } from "../../utils/dice.js";
 import { resolveContest } from "../../utils/contest.mjs";
 
 const { DialogV2 } = foundry.applications.api;
@@ -114,9 +114,13 @@ export class AptitudeRollDialog extends DialogV2 {
         ...opponentModifiers, 0, -1, { chat: false });
       const resolution = resolveContest(left, right);
       const winner = resolution.winner;
+      const coloredDice = game.modules.get("dice-so-nice")?.active;
+      if (coloredDice) {
+        setContestDiceColor(right.rolls, "red");
+      }
       const participants = [
         { ...left, name: this.actor.name, aptitude: game.i18n.localize(aptitude.label), winner: winner === "left" },
-        { ...right, name: target.name, aptitude: game.i18n.localize(opponentAptitude.label), winner: winner === "right" }
+        { ...right, name: target.name, aptitude: game.i18n.localize(opponentAptitude.label), winner: winner === "right"}
       ];
       const result = winner === "draw" ? game.i18n.localize("BREAK.CONTEST.Draw")
         : game.i18n.format("BREAK.CONTEST.Winner", { name: winner === "left" ? this.actor.name : target.name });

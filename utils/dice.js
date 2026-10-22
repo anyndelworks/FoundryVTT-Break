@@ -162,8 +162,9 @@ export async function roll(flavor, rollType, targetValue, advantageType, bonusTy
         rollTotal: definitiveRoll.total + statBonus + bonusTotal + customBonusResult,
         outcome: resultText, rolls: [definitiveRoll, ...(failedRoll ? [failedRoll] : [])] };
     if (options.chat === false) return details;
-    const message = await definitiveRoll.toMessage({
+    const message = await ChatMessage.create({
         user: game.user.id,
+        rolls: details.rolls,
         speaker: ChatMessage.getSpeaker({ actor: this }),
         content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-check.hbs", 
         {
@@ -175,7 +176,7 @@ export async function roll(flavor, rollType, targetValue, advantageType, bonusTy
             outcome: resultText
         }),
         flavor,
-    });
+    }, { messageMode: game.settings.get("core", "messageMode") });
     return { ...details, message };
 }
 
@@ -209,9 +210,19 @@ async function rollContest(flavor, targetValue, advantageType, bonusType, custom
             : advantageType === AdvantageTypes.SNAG ? "BREAK.Snag" : null,
         failedRoll, rolls: [selected, ...(failedRoll ? [failedRoll] : [])], extraDamageHit: null });
     if (options.chat === false) return details;
-    const message = await selected.toMessage({
+    const message = await ChatMessage.create({
         user: game.user.id, speaker: ChatMessage.getSpeaker({ actor: this }), flavor,
+        rolls: details.rolls,
         content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-check.hbs", details)
-    });
+    }, { messageMode: game.settings.get("core", "messageMode") });
     return { ...details, message };
+}
+
+export function setContestDiceColor(rolls, colorset) {
+    for (const roll of rolls) {
+        for (const die of roll.dice) {
+            die.options.colorset = colorset;
+            die.options.appearance = { ...die.options.appearance, system: "standard" };
+        }
+    }
 }
