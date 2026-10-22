@@ -162,6 +162,7 @@ export async function roll(flavor, rollType, targetValue, advantageType, bonusTy
         rollTotal: definitiveRoll.total + statBonus + bonusTotal + customBonusResult,
         outcome: resultText, rolls: [definitiveRoll, ...(failedRoll ? [failedRoll] : [])] };
     if (options.chat === false) return details;
+
     const message = await ChatMessage.create({
         user: game.user.id,
         rolls: details.rolls,
@@ -177,6 +178,7 @@ export async function roll(flavor, rollType, targetValue, advantageType, bonusTy
         }),
         flavor,
     }, { messageMode: game.settings.get("core", "messageMode") });
+    
     return { ...details, message };
 }
 
@@ -186,6 +188,7 @@ async function rollContest(flavor, targetValue, advantageType, bonusType, custom
         ...getContestModifiers([bonusType, customBonus, statBonus]),
         edge: advantageType === AdvantageTypes.EDGE
     };
+
     const first = await new Roll("1d20").evaluate();
     let selected = first;
     let failedRoll = null;
@@ -201,6 +204,7 @@ async function rollContest(flavor, targetValue, advantageType, bonusType, custom
             details = candidate;
         }
     }
+
     const result = details.special ? RollResults.SPECIAL_SUCCESS : details.hit ? RollResults.SUCCESS
         : details.naturalRoll === 20 ? RollResults.AUTOMATIC_FAILURE : RollResults.FAILURE;
     const changes = [details.bonusApplied, details.penaltyApplied].filter(Boolean)
@@ -210,11 +214,13 @@ async function rollContest(flavor, targetValue, advantageType, bonusType, custom
             : advantageType === AdvantageTypes.SNAG ? "BREAK.Snag" : null,
         failedRoll, rolls: [selected, ...(failedRoll ? [failedRoll] : [])], extraDamageHit: null });
     if (options.chat === false) return details;
+
     const message = await ChatMessage.create({
         user: game.user.id, speaker: ChatMessage.getSpeaker({ actor: this }), flavor,
         rolls: details.rolls,
         content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-check.hbs", details)
     }, { messageMode: game.settings.get("core", "messageMode") });
+
     return { ...details, message };
 }
 

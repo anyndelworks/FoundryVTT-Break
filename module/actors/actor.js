@@ -92,7 +92,7 @@ export class BreakActor extends Actor {
   }
 
   async rollAptitude(aptitudeId) {
-    return AptitudeRollDialog.openFor(this, aptitudeId);
+    return AptitudeRollDialog.open(this, aptitudeId);
   }
 
   async rollAttack(bonus, extraDamage, resolveAction = null, weaponName = "", ammo = null, options = {}) {

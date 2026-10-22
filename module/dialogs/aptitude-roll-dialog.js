@@ -10,7 +10,7 @@ export class AptitudeRollDialog extends DialogV2 {
   opponentUuid = null;
   rolling = false;
 
-  static async openFor(actor, aptitudeId) {
+  static async open(actor, aptitudeId) {
     const aptitude = actor.system.aptitudes[aptitudeId];
     const dialog = new this({
       form: { closeOnSubmit: false },
