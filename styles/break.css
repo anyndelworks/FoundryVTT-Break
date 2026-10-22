@@ -1481,6 +1481,55 @@
   min-height: 0;
   overflow: hidden;
 }
+.break-roll-dialog {
+  display: grid;
+  gap: 12px;
+  min-width: min(480px, 80vw);
+}
+.break-roll-dialog label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.break-roll-dialog .roll-participant {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px 12px;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid var(--color-border-light-primary);
+  border-radius: 6px;
+}
+.break-roll-dialog .roll-participant[hidden] {
+  display: none;
+}
+.break-roll-dialog .roll-participant legend {
+  font-weight: bold;
+  padding: 0 4px;
+}
+.break-roll-dialog .roll-participant select,
+.break-roll-dialog .roll-participant input {
+  width: 100%;
+  min-width: 0;
+}
+.break-roll-dialog .roll-aptitude-select {
+  grid-column: 1 / -1;
+}
+.break-contest-result .contest-participant {
+  padding: 8px;
+  margin: 8px 0;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+}
+.break-contest-result .contest-winner {
+  border-width: 2px;
+}
+.break-contest-result .contest-result {
+  font-weight: bold;
+}
+.break-contest-result p {
+  margin: 4px 0;
+}
 .break.sheet.gmc form {
   display: flex;
   flex-direction: column;

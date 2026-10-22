@@ -65,6 +65,24 @@
   },
 
   "BREAK": {
+    "CONTEST": {
+      "SpecialWins": "A Special Success beats a standard success.",
+      "EdgeWins": "The contestant with an Edge wins.",
+      "BonusWins": "The contestant with the larger Bonus wins.",
+      "PenaltyLoses": "The contestant with the larger Penalty loses.",
+      "NaturalWins": "The higher natural roll wins.",
+      "NaturalRoll": "Natural roll",
+      "Penalty": "Penalty",
+      "RollFailed": "The roll could not be completed. Please try again.",
+      "Opponent": "Opponent",
+      "CheckTarget": "Check target",
+      "Winner": "Winner: {name}",
+      "Draw": "Draw",
+      "EqualResults": "Stalemate! All tiebreakers are equal. The Contest continues into another Round, unless the GM rules that it cannot continue.",
+      "SuccessBeatsFailure": "A successful check beats a failed check.",
+      "TargetChanged": "The target changed. Review the opposing aptitude before rolling again.",
+      "InvalidAptitude": "Select a valid aptitude for the opponent."
+    },
     "HISTORY": {
       "Choose": "Choose starting gear",
       "ChooseCount": "Choose {count} options. Each option grants everything listed in it.",

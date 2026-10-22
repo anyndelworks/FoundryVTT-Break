@@ -1,3 +1,5 @@
+import { getContestModifiers, resolveContest, resolveContestDie } from "./contest.mjs";
+
 export const RollResults = {
     SUCCESS: "0",
     FAILURE: "1",
@@ -51,23 +53,10 @@ export function getResultText(result){
     }
 }
 
-function applyContestBonus(base, target, range) {
-    const difference = target-base;
-    if(Math.abs(difference) >= range) {
-        return Math.sign(difference)*range;
+export async function roll(flavor, rollType, targetValue, advantageType, bonusType, customBonus, statBonus = 0, extraDamage = -1, options = {}) {
+    if (rollType === RollType.CONTEST) {
+        return rollContest.call(this, flavor, targetValue, advantageType, bonusType, customBonus, statBonus, options);
     }
-    return difference;
-}
-
-function applyContestPenalty(base, target, range) {
-    const difference = target-base;
-    if(base > target || Math.abs(difference) < range) {
-        return +range;
-    }
-    return -range;
-}
-
-export async function roll(flavor, rollType, targetValue, advantageType, bonusType, customBonus, statBonus = 0, extraDamage = -1) {
     let rollFormula = "1d20";
     const baseRoll = new Roll("1d20")
     await baseRoll.evaluate();
@@ -88,12 +77,6 @@ export async function roll(flavor, rollType, targetValue, advantageType, bonusTy
                         failedRoll = baseRoll;
                         rollFormula = `${advantageRoll.total}`
                     }
-                } else if(rollType === RollType.CONTEST) {
-                    if((advantageRoll.total == targetValue && baseRoll.total != targetValue) || (baseRoll.total > targetValue && advantageRoll.total < baseRoll.total) || (advantageRoll.total > baseRoll.total && advantageRoll.total < targetValue)) {
-                        definitiveRoll = advantageRoll;
-                        failedRoll = baseRoll;
-                        rollFormula = `${advantageRoll.total}`
-                    }
                 } else {
                     if(advantageRoll.total > baseRoll.total) {
                         definitiveRoll = advantageRoll;
@@ -109,12 +92,6 @@ export async function roll(flavor, rollType, targetValue, advantageType, bonusTy
                         failedRoll = baseRoll;
                         rollFormula = `${advantageRoll.total}`
                     }
-                } else if(rollType === RollType.CONTEST) {
-                    if(advantageRoll.total != targetValue && advantageRoll.total < baseRoll.total && baseRoll.total <= targetValue) {
-                        definitiveRoll = advantageRoll;
-                        failedRoll = baseRoll;
-                        rollFormula = `${advantageRoll.total}`
-                    }  
                 } else {
                     if(advantageRoll.total < baseRoll.total){
                         definitiveRoll = advantageRoll;
@@ -133,17 +110,13 @@ export async function roll(flavor, rollType, targetValue, advantageType, bonusTy
     let bonusTotal = 0;
     if(bonusType != "" && definitiveRoll.total !== targetValue) {
         if(bonusType === RollBonuses.MINOR_BONUS || bonusType === RollBonuses.MAJOR_BONUS) {
-            if(rollType === RollType.CONTEST) {
-                bonusTotal = applyContestBonus(definitiveRoll.total, targetValue, +bonusType);
-            } else if(rollType === RollType.CHECK) {
+            if(rollType === RollType.CHECK) {
                 bonusTotal = -bonusType;
             } else {
                 bonusTotal = +bonusType
             }
         } else {
-            if(rollType === RollType.CONTEST) {
-                bonusTotal = applyContestPenalty(definitiveRoll.total, targetValue, Math.abs(+bonusType));
-            } else if(rollType === RollType.CHECK) {
+            if(rollType === RollType.CHECK) {
                 bonusTotal = -bonusType;
             } else {
                 bonusTotal = +bonusType;
@@ -154,9 +127,7 @@ export async function roll(flavor, rollType, targetValue, advantageType, bonusTy
 
     let customBonusResult = 0;
     if(customBonus != "" && definitiveRoll.total != targetValue) {
-        if(rollType === RollType.CONTEST) {
-            customBonusResult = applyContestBonus(definitiveRoll.total+bonusTotal, targetValue, Math.abs(+customBonus));
-        } else if(rollType === RollType.CHECK) {
+        if(rollType === RollType.CHECK) {
             customBonusResult = -customBonus;
         } else {
             customBonusResult = +customBonus;
@@ -187,12 +158,16 @@ export async function roll(flavor, rollType, targetValue, advantageType, bonusTy
         resultText = getResultText(result);
     }
     
+    const details = { hit, extraDamageHit, targetValue, rollFormula, failedRoll,
+        rollTotal: definitiveRoll.total + statBonus + bonusTotal + customBonusResult,
+        outcome: resultText, rolls: [definitiveRoll, ...(failedRoll ? [failedRoll] : [])] };
+    if (options.chat === false) return details;
     const message = await definitiveRoll.toMessage({
         user: game.user.id,
         speaker: ChatMessage.getSpeaker({ actor: this }),
         content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-check.hbs", 
         {
-            isCheck: rollType === RollType.CHECK || rollType === RollType.CONTEST,
+            isCheck: rollType === RollType.CHECK,
             targetValue,
             rollFormula,
             failedRoll,
@@ -201,5 +176,42 @@ export async function roll(flavor, rollType, targetValue, advantageType, bonusTy
         }),
         flavor,
     });
-    return { message, hit, extraDamageHit };
+    return { ...details, message };
+}
+
+async function rollContest(flavor, targetValue, advantageType, bonusType, customBonus, statBonus, options) {
+    if (!Number.isFinite(targetValue)) throw new Error("Invalid Contest target");
+    const config = {
+        ...getContestModifiers([bonusType, customBonus, statBonus]),
+        edge: advantageType === AdvantageTypes.EDGE
+    };
+    const first = await new Roll("1d20").evaluate();
+    let selected = first;
+    let failedRoll = null;
+    let details = resolveContestDie(first.total, targetValue, config);
+    if ([AdvantageTypes.EDGE, AdvantageTypes.SNAG].includes(advantageType)) {
+        const second = await new Roll("1d20").evaluate();
+        const candidate = resolveContestDie(second.total, targetValue, config);
+        const preferred = resolveContest(candidate, details).winner;
+        const chooseSecond = advantageType === AdvantageTypes.EDGE ? preferred === "left" : preferred === "right";
+        failedRoll = chooseSecond ? first : second;
+        if (chooseSecond) {
+            selected = second;
+            details = candidate;
+        }
+    }
+    const result = details.special ? RollResults.SPECIAL_SUCCESS : details.hit ? RollResults.SUCCESS
+        : details.naturalRoll === 20 ? RollResults.AUTOMATIC_FAILURE : RollResults.FAILURE;
+    const changes = [details.bonusApplied, details.penaltyApplied].filter(Boolean)
+        .map(value => value > 0 ? ` + ${value}` : ` - ${Math.abs(value)}`).join("");
+    Object.assign(details, { rollFormula: `${details.naturalRoll}${changes}`, outcome: getResultText(result),
+        advantageLabel: advantageType === AdvantageTypes.EDGE ? "BREAK.Edge"
+            : advantageType === AdvantageTypes.SNAG ? "BREAK.Snag" : null,
+        failedRoll, rolls: [selected, ...(failedRoll ? [failedRoll] : [])], extraDamageHit: null });
+    if (options.chat === false) return details;
+    const message = await selected.toMessage({
+        user: game.user.id, speaker: ChatMessage.getSpeaker({ actor: this }), flavor,
+        content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-check.hbs", details)
+    });
+    return { ...details, message };
 }

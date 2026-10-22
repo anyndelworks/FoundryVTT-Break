@@ -1,60 +1,53 @@
-<div class="break-roll-dialog" style="display:grid; grid-template-columns: {{#if aptitude}}repeat(3, minmax(150px, 1fr)){{else}}repeat(2, minmax(150px, 1fr)){{/if}}; gap:12px; min-width:{{#if aptitude}}520px{{else}}360px{{/if}};">
+<div class="break-roll-dialog">
     {{#if aptitude}}
-    <fieldset style="border:1px solid rgba(0,0,0,0.2); border-radius:6px; padding:10px; margin:0;gap: 0;">
-        <legend style="font-weight:700; padding:0 4px;">{{localize "BREAK.RollType"}}</legend>
-        <label style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px;">
-            <span>{{localize "BREAK.Check"}}</span>
-            <input name="rollType" type="radio" value="0" {{#if defaultCheck}}checked{{/if}} {{#if limited}}disabled{{/if}}/>
+    <label class="roll-type-select">{{localize "BREAK.RollType"}}
+        <select name="rollType" {{#if limited}}disabled{{/if}}>
+            <option value="0" {{#unless defaultContest}}selected{{/unless}}>{{localize "BREAK.Check"}}</option>
+            <option value="1" {{#if defaultContest}}selected{{/if}}>{{localize "BREAK.Contest"}}</option>
+        </select>
+    </label>
+    {{/if}}
+    <fieldset class="roll-participant">
+        <legend>{{localize "BREAK.Roll"}}</legend>
+        <label>{{localize "BREAK.Edge"}}
+            <select name="edge">
+                <option value="">{{localize "BREAK.None"}}</option>
+                <option value="1" {{#when defaultEdge 'eq' '1'}}selected{{/when}}>{{localize "BREAK.Edge"}}</option>
+                <option value="2" {{#when defaultEdge 'eq' '2'}}selected{{/when}}>{{localize "BREAK.Snag"}}</option>
+            </select>
         </label>
-        <label style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
-            <span>{{localize "BREAK.Contest"}}</span>
-            <input name="rollType" type="radio" value="1" {{#if defaultContest}}checked{{/if}} {{#if limited}}disabled{{/if}}/>
+        <label>{{localize "BREAK.Bonus"}}
+            <select name="bonus">
+                <option value="">{{localize "BREAK.None"}}</option>
+                <option value="{{bonuses.MINOR_BONUS}}" {{#when defaultBonus 'eq' bonuses.MINOR_BONUS}}selected{{/when}}>{{localize "BREAK.MinorBonus"}}</option>
+                <option value="{{bonuses.MAJOR_BONUS}}" {{#when defaultBonus 'eq' bonuses.MAJOR_BONUS}}selected{{/when}}>{{localize "BREAK.MajorBonus"}}</option>
+                <option value="{{bonuses.MINOR_PENALTY}}" {{#when defaultBonus 'eq' bonuses.MINOR_PENALTY}}selected{{/when}}>{{localize "BREAK.MinorPenalty"}}</option>
+                <option value="{{bonuses.MAJOR_PENALTY}}" {{#when defaultBonus 'eq' bonuses.MAJOR_PENALTY}}selected{{/when}}>{{localize "BREAK.MajorPenalty"}}</option>
+            </select>
         </label>
+        <label>{{localize "BREAK.CustomBonus"}}<input name="customBonus" type="number"></label>
+    </fieldset>
+    {{#if opposedControls}}
+    <fieldset class="roll-participant contest-opponent" hidden>
+        <legend>{{localize "BREAK.CONTEST.Opponent"}}: <span data-opponent-name></span></legend>
+        <label class="roll-aptitude-select">{{localize "BREAK.Aptitudes"}}<select name="opponentAptitude" disabled></select></label>
+        <label>{{localize "BREAK.Edge"}}
+            <select name="opponentEdge" disabled>
+                <option value="">{{localize "BREAK.None"}}</option>
+                <option value="1">{{localize "BREAK.Edge"}}</option>
+                <option value="2">{{localize "BREAK.Snag"}}</option>
+            </select>
+        </label>
+        <label>{{localize "BREAK.Bonus"}}
+            <select name="opponentBonus" disabled>
+                <option value="">{{localize "BREAK.None"}}</option>
+                <option value="{{bonuses.MINOR_BONUS}}">{{localize "BREAK.MinorBonus"}}</option>
+                <option value="{{bonuses.MAJOR_BONUS}}">{{localize "BREAK.MajorBonus"}}</option>
+                <option value="{{bonuses.MINOR_PENALTY}}">{{localize "BREAK.MinorPenalty"}}</option>
+                <option value="{{bonuses.MAJOR_PENALTY}}">{{localize "BREAK.MajorPenalty"}}</option>
+            </select>
+        </label>
+        <label>{{localize "BREAK.CustomBonus"}}<input name="opponentCustomBonus" type="number" disabled></label>
     </fieldset>
     {{/if}}
-    <fieldset style="border:1px solid rgba(0,0,0,0.2); border-radius:6px; padding:10px; margin:0;gap: 0;">
-        <legend style="font-weight:700; padding:0 4px;">{{localize "BREAK.Edge"}}</legend>
-        <label style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px;">
-            <span>{{localize "BREAK.None"}}</span>
-            <input name="edge" type="radio" value="" {{#unless defaultEdge}}checked{{/unless}} />
-        </label>
-        <label style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px;">
-            <span>{{localize "BREAK.Edge"}}</span>
-            <input name="edge" type="radio" value="1" {{#when defaultEdge 'eq' '1'}}checked{{/when}} />
-        </label>
-        <label style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
-            <span>{{localize "BREAK.Snag"}}</span>
-            <input name="edge" type="radio" value="2" {{#when defaultEdge 'eq' '2'}}checked{{/when}} />
-        </label>
-    </fieldset>
-    <fieldset style="border:1px solid rgba(0,0,0,0.2); border-radius:6px; padding:10px; margin:0;gap: 0;">
-        <legend style="font-weight:700; padding:0 4px;">{{localize "BREAK.Bonus"}}</legend>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px 12px;">
-            <div style="display:flex; flex-direction:column; row-gap:6px;">
-                <label style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
-                    <span>{{localize "BREAK.None"}}</span>
-                    <input name="bonus" type="radio" value="" {{#unless defaultBonus}}checked{{/unless}} />
-                </label>
-                <label style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
-                    <span>{{localize "BREAK.MinorBonus"}}</span>
-                    <input name="bonus" type="radio" value="{{bonuses.MINOR_BONUS}}" {{#when defaultBonus 'eq' bonuses.MINOR_BONUS}}checked{{/when}} />
-                </label>
-                <label style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
-                    <span>{{localize "BREAK.MajorBonus"}}</span>
-                    <input name="bonus" type="radio" value="{{bonuses.MAJOR_BONUS}}" {{#when defaultBonus 'eq' bonuses.MAJOR_BONUS}}checked{{/when}} />
-                </label>
-            </div>
-            <div style="display:flex; flex-direction:column; row-gap:6px;">
-                <label style="display:flex; align-items:center; justify-content:space-between; gap:8px;margin-top:auto;">
-                    <span>{{localize "BREAK.MinorPenalty"}}</span>
-                    <input name="bonus" type="radio" value="{{bonuses.MINOR_PENALTY}}" {{#when defaultBonus 'eq' bonuses.MINOR_PENALTY}}checked{{/when}} />
-                </label>
-                <label style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
-                    <span>{{localize "BREAK.MajorPenalty"}}</span>
-                    <input name="bonus" type="radio" value="{{bonuses.MAJOR_PENALTY}}" {{#when defaultBonus 'eq' bonuses.MAJOR_PENALTY}}checked{{/when}} />
-                </label>
-            </div>
-        </div>
-        <input name="customBonus" placeholder="{{localize 'BREAK.CustomBonus'}}" style="width:100%; margin-top:10px;" type="number">
-    </fieldset>
 </div>

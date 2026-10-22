@@ -65,6 +65,24 @@
   },
 
   "BREAK": {
+    "CONTEST": {
+      "SpecialWins": "Un éxito especial gana frente a un éxito normal.",
+      "EdgeWins": "Gana el participante que tiene Edge.",
+      "BonusWins": "Gana el participante con el Bonus mayor.",
+      "PenaltyLoses": "Pierde el participante con el Penalty mayor.",
+      "NaturalWins": "Gana la tirada natural más alta.",
+      "NaturalRoll": "Tirada natural",
+      "Penalty": "Penalty",
+      "RollFailed": "No se ha podido completar la tirada. Inténtalo de nuevo.",
+      "Opponent": "Rival",
+      "CheckTarget": "Objetivo del check",
+      "Winner": "Ganador: {name}",
+      "Draw": "Empate",
+      "EqualResults": "¡Empate! Todos los criterios coinciden. El Contest continúa otra ronda, salvo que el GM determine que no puede continuar.",
+      "SuccessBeatsFailure": "Un check exitoso gana frente a uno fallido.",
+      "TargetChanged": "El objetivo ha cambiado. Revisa la aptitud rival antes de volver a tirar.",
+      "InvalidAptitude": "Selecciona una aptitud válida para el rival."
+    },
     "HISTORY": {
       "Choose": "Elegir equipo inicial",
       "ChooseCount": "Elige {count} opciones. Cada opción entrega todo lo que contiene.",

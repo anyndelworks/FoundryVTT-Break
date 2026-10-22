@@ -1,0 +1,15 @@
+<section class="break-contest-result">
+    <h3>{{localize "BREAK.Contest"}}</h3>
+    {{#each participants}}
+    <section class="contest-participant {{#if winner}}contest-winner{{/if}}">
+        <h4>{{name}}</h4>
+        <p>{{localize "BREAK.CONTEST.NaturalRoll"}}: <strong>{{naturalRoll}}</strong>{{#if advantageLabel}} · {{localize advantageLabel}}{{/if}}</p>
+        <p>{{localize "BREAK.Bonus"}}: {{bonus}} · {{localize "BREAK.CONTEST.Penalty"}}: {{penalty}}</p>
+        <p>{{aptitude}} — {{localize "BREAK.CONTEST.CheckTarget"}}: <strong>{{targetValue}}</strong></p>
+        <p>{{localize "BREAK.Roll"}}: {{#if failedRoll}}<s>{{failedRoll.total}}</s> · {{/if}}{{rollFormula}} = <strong>{{rollTotal}}</strong></p>
+        <p><strong>{{outcome}}</strong></p>
+    </section>
+    {{/each}}
+    <h4 class="contest-result">{{result}}</h4>
+    <p>{{reason}}</p>
+</section>

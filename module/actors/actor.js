@@ -3,6 +3,7 @@ import BREAK from "../constants.js";
 import Action from "../system/action.js";
 import { FeatureSelectionDialog } from "../dialogs/feature-selection-dialog.js";
 import { HistorySelectionDialog } from "../dialogs/history-selection-dialog.js";
+import { AptitudeRollDialog } from "../dialogs/aptitude-roll-dialog.js";
 
 const { DialogV2 } = foundry.applications.api;
 
@@ -91,24 +92,7 @@ export class BreakActor extends Actor {
   }
 
   async rollAptitude(aptitudeId) {
-    const aptitude = this.system.aptitudes[aptitudeId];
-    const targetValue = +aptitude.total;
-
-    new DialogV2({
-      window: { title: "Roll " +game.i18n.localize(aptitude.label)+ " check" },
-      content: await foundry.applications.handlebars.renderTemplate("systems/break/templates/rolls/roll-dialog.hbs",{bonuses: RollBonuses, aptitude: true}),
-      buttons: [{
-        action: "roll",
-        label: "BREAK.Roll",
-        icon: "fa-solid fa-dice-d20",
-        default: true,
-        callback: async (event, button) => {
-          const form = button.form.elements;
-          const flavor = form.rollType.value === RollType.CHECK ? game.i18n.format("BREAK.AptitudeCheck", {aptitude:  game.i18n.localize(aptitude.label)}) : game.i18n.format("BREAK.AptitudeContest", {aptitude:  game.i18n.localize(aptitude.label)});
-          return roll(flavor, form.rollType.value, targetValue, form.edge.value, form.bonus.value, form.customBonus.value);
-        }
-      }]
-    }).render({force: true});
+    return AptitudeRollDialog.openFor(this, aptitudeId);
   }
 
   async rollAttack(bonus, extraDamage, resolveAction = null, weaponName = "", ammo = null, options = {}) {
