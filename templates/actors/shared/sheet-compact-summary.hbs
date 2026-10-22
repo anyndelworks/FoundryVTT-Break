@@ -2,7 +2,7 @@
     <div class="compact-summary-aptitudes">
         {{#each document.system.aptitudes as |attr key|}}
         <div class="compact-summary-aptitude">
-            <div class="compact-summary-input" style="display:flex; align-items:center; justify-content:center;">{{attr.total}}</div>
+            <button type="button" class="compact-summary-input" data-action="rollAptitude" data-id="{{key}}" aria-label="{{localize 'BREAK.Roll'}}: {{localize attr.label}}">{{attr.total}}</button>
             <label class="compact-summary-label">{{localize attr.label}}</label>
             <div class="compact-summary-aptitude-values" style="display:flex; align-items:center; justify-content:center; gap:8px; font-size:11px; line-height:1; margin-top:3px;">
                 {{#if @root.editable}}

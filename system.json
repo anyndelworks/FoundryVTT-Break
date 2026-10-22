@@ -1,10 +1,10 @@
 {
   "id": "break",
-  "version": "1.31",
+  "version": "1.40",
   "title": "BREAK!!",
   "url": "https://github.com/anyndelworks/FoundryVTT-Break",
   "manifest": "https://raw.githubusercontent.com/anyndelworks/FoundryVTT-Break/refs/heads/main/system.json",
-  "download": "https://github.com/anyndelworks/FoundryVTT-Break/releases/download/v1.31/v1.31.zip",
+  "download": "https://github.com/anyndelworks/FoundryVTT-Break/releases/download/v1.40/v1.40.zip",
   "description": "A BREAK!! TTRPG game system",
   "background": "systems/break/assets/BREAK_foundry_cover.jpg",
   "license": "LICENSE",

@@ -1783,6 +1783,26 @@
 }
 
 .break.sheet.adversary {
+  .inventory-tab {
+    flex: 1;
+    height: auto;
+    overflow-y: auto;
+  }
+
+  .inventory-workspace-simple {
+    height: auto;
+
+    .inventory-storage-surface,
+    .inventory-location-panel,
+    .inventory-drop-zone {
+      flex: none;
+    }
+
+    .inventory-drop-zone {
+      overflow-y: visible;
+    }
+  }
+
   form {
     display: flex;
     flex-direction: row;

@@ -4,7 +4,9 @@ import { parseLanguageList } from "../../utils/languages.mjs";
 export class BreakCharacterDataModel extends BreakBaseActorDataModel {
   static migrateData(source) {
     source = super.migrateData(source);
-    if (!Array.isArray(source.languages)) source.languages = parseLanguageList(source.languages);
+    if (Object.hasOwn(source, "languages") && !Array.isArray(source.languages)) {
+      source.languages = parseLanguageList(source.languages);
+    }
     return source;
   }
 
@@ -56,19 +58,17 @@ export class BreakCharacterDataModel extends BreakBaseActorDataModel {
     this._calling = calling ?? null;
     this.hasCalling = !!calling;
     let rank = 1;
+    this.xpNextRank = 0;
     if (this.hasCalling && calling.system.advancementTable) {
       const table = calling.system.advancementTable;
-      calling.system.advancementTable.forEach((callingRank, index) => {
+      table.forEach((callingRank, index) => {
         if(callingRank.xp <= actor.system.xp.current) {
           rank = index+1;
-          if(calling.system.advancementTable.length >= index) {
-            this.xpNextRank = calling.system.advancementTable[index+1].xp - actor.system.xp.current;
-          } else {
-            this.xpNextRank = 0;
-          }
         }
       });
       this.xp.rank = rank;
+      const nextRank = table[rank];
+      if (nextRank) this.xpNextRank = Math.max(0, nextRank.xp - actor.system.xp.current);
 
       if (table[this.xp.rank - 1]) {
         const stats = table[this.xp.rank - 1];

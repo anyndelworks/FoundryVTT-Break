@@ -239,11 +239,12 @@ export class BreakCharacterSheet extends BreakActorSheet {
   static async #onSubmit(event, form, formData) {
     event.preventDefault();
     const updateData = foundry.utils.expandObject(formData.object);
-    const purviews = Object.keys(updateData.system.purviews ?? {}).map((k) => {
-        return updateData.system.purviews[k];
-    });
-    updateData.system.purviews = purviews;
-    updateData.system.languages = parseLanguageList(updateData.system.languages);
+    if (updateData.system && Object.hasOwn(updateData.system, "purviews")) {
+      updateData.system.purviews = Object.values(updateData.system.purviews ?? {});
+    }
+    if (updateData.system && Object.hasOwn(updateData.system, "languages")) {
+      updateData.system.languages = parseLanguageList(updateData.system.languages);
+    }
     await this.actor.update(updateData);
   }
 

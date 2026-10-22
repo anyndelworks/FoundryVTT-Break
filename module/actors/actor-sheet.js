@@ -84,7 +84,7 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
 
   _toggleSheetControls(disabled) {
-    const viewActions = "[data-action='toggleEditable'], [data-action='toggleHeader'], [data-action='tab'], [data-action='selectInventoryContainer']";
+    const viewActions = "[data-action='toggleEditable'], [data-action='toggleHeader'], [data-action='tab'], [data-action='selectInventoryContainer'], [data-action='rollAptitude']";
     const content = $(this.element).find(".window-content");
     const root = content.length ? content : $(this.element);
     root
@@ -360,11 +360,13 @@ export class BreakActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     });
   }
 
-  static async #onAdjustItemQuantity(event) {
+  static async #onAdjustItemQuantity(event, target) {
     event.preventDefault();
-    const button = event.target;
-    const { type } = button.parentElement.dataset;
-    const input = button.parentElement.parentElement.querySelector("input");
+    const button = target ?? event.target.closest('[data-action="adjustItemQuantity"]');
+    const type = button?.dataset.type;
+    if (type !== "increase" && type !== "decrease") return;
+    const input = button.closest(".inventory-quantity")?.querySelector("input.item-quantity");
+    if (!input) return;
     const min = input.min ? Number(input.min) : -Infinity;
     const max = input.max ? Number(input.max) : Infinity;
     let value = Number(input.value);
