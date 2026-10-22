@@ -1,3 +1,8 @@
 2026/10/22-11:27:47.389 2fcc Recovering log #197
 2026/10/22-11:27:47.400 2fcc Delete type=0 #197
 2026/10/22-11:27:47.400 2fcc Delete type=3 #195
+2026/10/22-11:50:07.374 684 Level-0 table #202: started
+2026/10/22-11:50:07.374 684 Level-0 table #202: 0 bytes OK
+2026/10/22-11:50:07.380 684 Delete type=0 #200
+2026/10/22-11:50:07.390 684 Manual compaction at level-0 from '!folders!3I8pM2p2WP6hFbLe' @ 72057594037927935 : 1 .. '!items.effects!xOBk3FgMy0uUdbgz.nBXw6vk1yjcthAzB' @ 0 : 0; will stop at (end)
+2026/10/22-11:50:07.390 684 Manual compaction at level-1 from '!folders!3I8pM2p2WP6hFbLe' @ 72057594037927935 : 1 .. '!items.effects!xOBk3FgMy0uUdbgz.nBXw6vk1yjcthAzB' @ 0 : 0; will stop at (end)
